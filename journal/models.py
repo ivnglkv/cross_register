@@ -213,14 +213,22 @@ class Phone(CrossPoint):
         verbose_name = 'телефон'
         verbose_name_plural = 'телефоны'
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-class Subscriber(CrossPoint):
+        self._meta.get_field('location').limit_choices_to = {
+                                            'room__isnull': False,
+                                        }
+
+
+class Subscriber(models.Model):
     first_name = models.CharField(verbose_name='имя', max_length=30)
     last_name = models.CharField(verbose_name='фамилия', max_length=40)
     patronymic = models.CharField(verbose_name='отчество', max_length=35, blank=True)
     phone = models.ManyToManyField(Phone,
                                    verbose_name='телефоны',
-                                   related_name='subscribers')
+                                   related_name='subscribers',
+                                   blank=True)
 
     class Meta:
         verbose_name = 'абонент'
@@ -231,10 +239,3 @@ class Subscriber(CrossPoint):
                                   self.first_name[0],
                                   self.patronymic[0]
                                   )
-
-    def __init__(self, *args, **kwargs):
-        super(Subscriber, self).__init__(*args, **kwargs)
-        print('init')
-        self._meta.get_field('location').limit_choices_to = {
-                                            'room__isnull': False,
-                                        }
