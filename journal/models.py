@@ -95,13 +95,9 @@ class CrossPoint(models.Model):
         except models.ObjectDoesNotExist as e:
             pbxport = None
         try:
-            extension = Extension.objects.get(crosspoint_ptr=self.pk)
+            punch_block = PunchBlock.objects.get(crosspoint_ptr=self.pk)
         except models.ObjectDoesNotExist as e:
-            extension = None
-        try:
-            trunk = Trunk.objects.get(crosspoint_ptr=self.pk)
-        except models.ObjectDoesNotExist as e:
-            trunk = None
+            punch_block = None
         try:
             phone = Phone.objects.get(crosspoint_ptr=self.pk)
         except models.ObjectDoesNotExist as e:
@@ -109,10 +105,8 @@ class CrossPoint(models.Model):
 
         if pbxport:
             return str(pbxport)
-        elif extension:
-            return str(extension)
-        elif trunk:
-            return str(trunk)
+        elif punch_block:
+            return str(punch_block)
         elif phone:
             return str(phone)
 
@@ -169,10 +163,36 @@ class PBXPort(CrossPoint):
 
 
 class PunchBlock(CrossPoint):
+    PUNCHBLOCK_TYPES = (
+        ('city', 'Гром-полоса'),
+        ('extension', 'Распределение'),
+        ('trunk', 'Магистраль'),
+    )
+
     number = models.SmallIntegerField(verbose_name='номер')
+    type = models.CharField(verbose_name='тип',
+                            choices=PUNCHBLOCK_TYPES,
+                            default='trunk',
+                            max_length=9)
+    is_station = models.BooleanField(verbose_name='станционная (-ое)',
+                                     blank=True)
 
     def __str__(self):
-        return '{}/{}'.format(self.number, self.location.cabinet.number)
+        result = ''
+
+        if self.type == 'city':
+            result = 'Гр'
+        elif self.type == 'extension':
+            result = 'Р'
+        elif self.type == 'trunk':
+            result = 'М'
+
+        if self.is_station:
+            result = result + 'с{}'.format(self.number)
+        else:
+            result = result + '{}/{}'.format(self.number, self.location.cabinet)
+
+        return result
 
     def __init__(self, *args, **kwargs):
         super(PunchBlock, self).__init__(*args, **kwargs)
@@ -181,28 +201,8 @@ class PunchBlock(CrossPoint):
                                         }
 
     class Meta:
-        abstract = True
-
         verbose_name = 'плинт'
         verbose_name_plural = 'плинты'
-
-
-class Trunk(PunchBlock):
-    def __str__(self):
-        return 'М' + super().__str__()
-
-    class Meta:
-        verbose_name = 'магистраль'
-        verbose_name_plural = 'магистрали'
-
-
-class Extension(PunchBlock):
-    def __str__(self):
-        return 'Р' + super().__str__()
-
-    class Meta:
-        verbose_name = 'распределение'
-        verbose_name_plural = 'распределения'
 
 
 class Phone(CrossPoint):
