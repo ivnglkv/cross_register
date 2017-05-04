@@ -3,27 +3,25 @@ from django.contrib import admin
 from .models import (
     Building,
     Cabinet,
-    Extension,
     Location,
     PBX,
     PBXPort,
     Phone,
+    PunchBlock,
     Room,
     Subscriber,
-    Trunk,
 )
 
 
 admin.site.register(
     [Building,
      Cabinet,
-     Extension,
      Location,
      PBX,
      PBXPort,
      Phone,
+     PunchBlock,
      Room,
      Subscriber,
-     Trunk,
      ]
 )
