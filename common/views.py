@@ -1,3 +1,10 @@
-from django.shortcuts import render
+from django.views.generic.list import ListView
 
-# Create your views here.
+from journal.models import PBX
+
+
+class IndexView(ListView):
+    template_name = 'common/index.html'
+    context_object_name = 'pbx_list'
+
+    model = PBX
