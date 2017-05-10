@@ -35,8 +35,10 @@ git remote add --track develop --track master upstream git@bitbucket.org:communi
 следующее:
 
 1. Перейти в каталог проекта
+
     cd ~/Projects/cross_journals
 2. Перейти на ветку `develop`
+
     git checkout develop
 3. Получить все изменения из центрального репозитория
  `git fetch upstream`
