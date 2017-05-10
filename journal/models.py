@@ -98,25 +98,16 @@ class CrossPoint(models.Model):
                                     )
 
     def __str__(self):
-        try:
-            pbxport = PBXPort.objects.get(crosspoint_ptr=self.pk)
-        except models.ObjectDoesNotExist as e:
-            pbxport = None
-        try:
-            punch_block = PunchBlock.objects.get(crosspoint_ptr=self.pk)
-        except models.ObjectDoesNotExist as e:
-            punch_block = None
-        try:
-            phone = Phone.objects.get(crosspoint_ptr=self.pk)
-        except models.ObjectDoesNotExist as e:
-            phone = None
+        # Такой перебор по подклассам необходим
+        # для отображения строки в виджете выбора поля destination,
+        # потому что там вызывается метод CrossPoint.__str__()
+        for cp_subclass in CrossPoint.__subclasses__():
+            try:
+                cp_object = cp_subclass.objects.get(crosspoint_ptr=self.pk)
+            except models.ObjectDoesNotExist as e:
+                pass
 
-        if pbxport:
-            return str(pbxport)
-        elif punch_block:
-            return str(punch_block)
-        elif phone:
-            return str(phone)
+        return(str(cp_object))
 
 
 class PBX(models.Model):
