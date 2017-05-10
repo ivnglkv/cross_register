@@ -1,6 +1,7 @@
 from django.forms import ModelForm, ModelChoiceField
 from django.db.models import Q
 from .models import (
+    CrossPoint,
     Location,
     PBXPort,
     Phone,
@@ -25,6 +26,10 @@ class PhoneForm(ModelForm):
                                 queryset=Location.objects.filter(
                                     Q(room__isnull=False))
                                 )
+    destination = ModelChoiceField(label='Откуда приходит',
+                                   queryset=CrossPoint.objects.filter(
+                                        Q(punchblock__type='extension'))
+                                   )
 
     class Meta:
         model = Phone
