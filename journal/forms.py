@@ -15,6 +15,11 @@ class PunchBlockForm(ModelForm):
                                     Q(cabinet__isnull=False) |
                                     Q(room__pbxroom__isnull=False)),
                                 )
+    destination = ModelChoiceField(label='Откуда приходит',
+                                   queryset=CrossPoint.objects.filter(
+                                        Q(punchblock__isnull=False) |
+                                        Q(pbxport__type='analog'))
+                                   )
 
     class Meta:
         model = PunchBlock
