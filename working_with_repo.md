@@ -36,8 +36,8 @@ git remote add --track develop --track master upstream git@bitbucket.org:communi
 
 1. Перейти в каталог проекта
 
-      :::bash
-      cd ~/Projects/cross_journals
+        :::bash
+        cd ~/Projects/cross_journals
 
 2. Перейти на ветку `develop`
 
