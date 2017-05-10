@@ -35,6 +35,14 @@ class Room(models.Model):
         return '{}, {}'.format(self.building, self.room)
 
 
+class PBXRoom(models.Model):
+    room = models.OneToOneField(Room, verbose_name='помещение')
+
+    class Meta:
+        verbose_name = 'станционное помещение'
+        verbose_name_plural = 'станционные помещения'
+
+
 class Cabinet(models.Model):
     room = models.ForeignKey(
         Room,
@@ -194,12 +202,6 @@ class PunchBlock(CrossPoint):
 
         return result
 
-    def __init__(self, *args, **kwargs):
-        super(PunchBlock, self).__init__(*args, **kwargs)
-        self._meta.get_field('location').limit_choices_to = {
-                                            'cabinet__isnull': False,
-                                        }
-
     class Meta:
         verbose_name = 'плинт'
         verbose_name_plural = 'плинты'
@@ -215,10 +217,6 @@ class Phone(CrossPoint):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        self._meta.get_field('location').limit_choices_to = {
-                                            'room__isnull': False,
-                                        }
 
 
 class Subscriber(models.Model):
