@@ -42,7 +42,6 @@ class PBXPortForm(ModelForm):
         model = PBXPort
         fields = [
             'location',
-            'destination',
             'pbx',
             'number',
             'type',
