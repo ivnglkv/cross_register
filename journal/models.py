@@ -218,10 +218,6 @@ class Phone(CrossPoint):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self._meta.get_field('location').limit_choices_to = {
-                                            'room__isnull': False,
-                                        }
-
 
 class Subscriber(models.Model):
     first_name = models.CharField(verbose_name='имя', max_length=30)
