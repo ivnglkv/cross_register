@@ -2,6 +2,7 @@ from django.forms import ModelForm, ModelChoiceField
 from django.db.models import Q
 from .models import (
     Location,
+    PBXPort,
     Phone,
     PunchBlock,
 )
@@ -28,3 +29,23 @@ class PhoneForm(ModelForm):
     class Meta:
         model = Phone
         fields = ['location', 'destination']
+
+
+class PBXPortForm(ModelForm):
+    location = ModelChoiceField(label='Расположение',
+                                queryset=Location.objects.filter(
+                                    Q(cabinet__isnull=False) |
+                                    Q(room__pbxroom__isnull=False)),
+                                )
+
+    class Meta:
+        model = PBXPort
+        fields = [
+            'location',
+            'destination',
+            'pbx',
+            'number',
+            'type',
+            'subscriber_number',
+            'description',
+        ]

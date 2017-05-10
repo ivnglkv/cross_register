@@ -1,6 +1,10 @@
 from django.contrib import admin
 
-from .forms import PunchBlockForm, PhoneForm
+from .forms import (
+    PunchBlockForm,
+    PhoneForm,
+    PBXPortForm,
+)
 from .models import (
     Building,
     Cabinet,
@@ -20,7 +24,6 @@ admin.site.register(
      Cabinet,
      Location,
      PBX,
-     PBXPort,
      PBXRoom,
      Room,
      Subscriber,
@@ -36,3 +39,8 @@ class PunchBlockAdmin(admin.ModelAdmin):
 @admin.register(Phone)
 class PhoneAdmin(admin.ModelAdmin):
     form = PhoneForm
+
+
+@admin.register(PBXPort)
+class PBXPortAdmin(admin.ModelAdmin):
+    form = PBXPortForm
