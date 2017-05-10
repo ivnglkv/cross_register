@@ -35,33 +35,19 @@ git remote add --track develop --track master upstream git@bitbucket.org:communi
 следующее:
 
 1. Перейти в каталог проекта
-
  `cd ~/Projects/cross_journals`
-
 2. Перейти на ветку `develop`
-
  `git checkout develop`
-
 3. Получить все изменения из центрального репозитория
-
  `git fetch upstream`
-
 4. Слить ветку develop из центрального и локального репозиториев
-
  `git merge upstream/develop`
-
 5. Создать ветку для новой задачи
-
  `git branch feature/new-index-page`
-
 6. Переключиться на новую ветку
-
  `git checkout feature/new-index-page`
-
 7. Установите удаленную ветку для отслеживания относительно текущей ветки
-
  `git push --set-upstream origin feature/new-index-page`
- 
 8. Начать работу над задачей
 
 ### Процесс работы над задачей
