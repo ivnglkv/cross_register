@@ -200,7 +200,39 @@ class PunchBlock(CrossPoint):
 
 class Phone(CrossPoint):
     def __str__(self):
-        return 'Телефон'
+        from django.db import connection
+        src = None
+
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                WITH RECURSIVE
+                Rec (id, destination_id, location_id)
+                AS (
+                      SELECT *, id AS main_id
+                        FROM journal_crosspoint
+                       WHERE destination_id IS NULL
+                    UNION ALL
+                      SELECT cp.*, r.main_id AS main_id
+                        FROM Rec r
+                        JOIN journal_crosspoint cp ON (r.id = cp.destination_id)
+                )
+                SELECT main_id
+                  FROM Rec
+                 WHERE id = {}'''.format(self.pk))
+
+            row = cursor.fetchone()
+            try:
+                src = PBXPort.objects.get(pk=row[0])
+            except:
+                pass
+
+        result = ''
+        if src and src.subscriber_number:
+            result = str(src.subscriber_number)
+        else:
+            result = 'Телефон'
+
+        return result
 
     class Meta:
         verbose_name = 'телефон'
