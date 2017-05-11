@@ -18,7 +18,8 @@ class PunchBlockForm(ModelForm):
     destination = ModelChoiceField(label='Откуда приходит',
                                    queryset=CrossPoint.objects.filter(
                                         Q(punchblock__isnull=False) |
-                                        Q(pbxport__type='analog'))
+                                        Q(pbxport__type='analog')),
+                                   required=False,
                                    )
 
     class Meta:
@@ -33,7 +34,8 @@ class PhoneForm(ModelForm):
                                 )
     destination = ModelChoiceField(label='Откуда приходит',
                                    queryset=CrossPoint.objects.filter(
-                                        Q(punchblock__type='extension'))
+                                        Q(punchblock__type='extension')),
+                                   required=False,
                                    )
 
     class Meta:
