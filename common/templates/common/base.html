@@ -3,7 +3,10 @@
 	<head>
 	<meta charset="UTF-8">
 	<title>{% block title%}{% endblock %}</title>
-		{% block css%}{% endblock%}
+			{% block css%}
+			{% load staticfiles %}
+			<link rel="stylesheet" type="text/css" href="{% static 'journal/style.css' %}" />
+			{% endblock%}
 	</head>
 <body>
 <table class="text">

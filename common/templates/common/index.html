@@ -4,11 +4,6 @@
 	Главная страница
 {% endblock %}
 
-{% block css %}
-{% load staticfiles %}
-		<link rel="stylesheet" type="text/css" href="{% static 'journal/style.css' %}" />
-{% endblock%}
-
 {% block page %}
  	 {% for pbx in pbx.list %}
  	 	<p><a href="">{{ pbx }}</a></p>
