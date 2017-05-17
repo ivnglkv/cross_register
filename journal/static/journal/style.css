@@ -5,7 +5,7 @@ ul.hr li {
 	padding:7px; /* Поля вокруг текста */
 }
 
-A{
+a.h1{
 	text-decoration: none; /* Убирает подчеркивание для ссылок */
 } 
 
