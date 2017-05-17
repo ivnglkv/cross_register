@@ -1,4 +1,4 @@
-ul.h0 li {
+ul.menu_list li {
 	display: inline; /* Отображать как строчный элемент */
 	margin-right: 10px; /* Отступ слева */
 	border: 1px solid #000; /* Рамка вокруг текста */
