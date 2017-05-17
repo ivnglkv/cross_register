@@ -1,10 +1,37 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
+	<head>
+	<meta charset="UTF-8">
+	<title>{% block title%}{% endblock %}</title>
+		{% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{% static 'journal/style.css' %}" />
+	</head>
 <body>
-    
+<table class="text">
+	<tr>
+	<td>
+	<ul class="hr">
+		<li><a href=""><u>Меню</u></a></li>
+		<li><a href=""><u>Меню</u></a></li>
+		<li><a href=""><u>Меню</u></a></li>
+		<li><a href=""><u>Меню</u></a></li>
+		<li><a href=""><u>Меню</u></a></li> 	 
+	</ul>
+	</td>
+	<td valign="top" class="rightcol">
+	<p><input type="search" name="q" placeholder="Поиск..."><input type="submit" value="Найти"></p>
+
+	<td nowrap valign="top"> 
+		{% if request.user.is_authenticated %}
+			<p>Вы вошли как {{ request.user.last_name }} {{ request.user.first_name }}</p>
+		{% else %}
+			<p><a href="admin/">Войти</a></p>
+		{% endif %}
+	</td>
+	</td>
+	</tr>
+</table>
+<hr><br>
+	{% block page %}{% endblock %}
 </body>
 </html>
