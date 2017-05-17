@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block page %}
- 	 {% for PBX in pbx.list %}
- 	 	<p><a href="">{{ pbx.list }}</a></p>
+	{% for pbx in pbx_list %}
+		<p><a href="">{{ pbx }}</a></p>
 	 {% endfor %}
 {% endblock%}
