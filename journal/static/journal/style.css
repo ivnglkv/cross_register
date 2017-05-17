@@ -5,13 +5,13 @@ ul.h0 li {
 	padding:7px; /* Поля вокруг текста */
 }
 
-a.h1{
+a.none_line{
 	text-decoration: none; /* Убирает подчеркивание для ссылок */
 } 
 
-table.top_menu_line  {
+table.text  {
 	width:  100%; /* Ширина таблицы */
-	border-spacing: 0; /* Расстояние между ячейками */
+	border-spacing: 5; /* Расстояние между ячейками */
 }
 table.text td {
 	width: 50%; /* Ширина ячеек */
