@@ -11,7 +11,8 @@ a.none_line{
 
 table.text  {
 	width:  100%; /* Ширина таблицы */
-	border-spacing: 5; /* Расстояние между ячейками */
+	border-spacing: 8px; /* Расстояние между ячейками */
+
 }
 table.text td {
 	width: 50%; /* Ширина ячеек */
