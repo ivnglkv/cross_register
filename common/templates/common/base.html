@@ -9,31 +9,32 @@
 	{% endblock%}
 	</head>
 <body>
-<table class="text">
-<tr>
-<td>
-<ul class="h0" >
-	<li><a class="none_line" href="">Меню</a></li>
-	<li><a class="none_line" href="">Меню</a></li>
-	<li><a class="none_line" href="">Меню</a></li>
-	<li><a class="none_line" href="">Меню</a></li>
-	<li><a class="none_line" href="">Меню</a></li> 	 
-</ul>
-</td>
-<td valign="top" class="rightcol">
-<p><input type="search" name="q" placeholder="Поиск..."> <input type="submit" value="Найти"></p>
+	<table class="text">
+	<tr>
+	<td>
+		<ul class="h0" >
+			<li><a class="menu_link" href="">Меню</a></li>
+			<li><a class="menu_link" href="">Меню</a></li>
+			<li><a class="menu_link" href="">Меню</a></li>
+			<li><a class="menu_link" href="">Меню</a></li>
+			<li><a class="menu_link" href="">Меню</a></li>
+		</ul>
+	</td>
+	<td valign="top" class="rightcol">
+		<p><input type="search" name="q" placeholder="Поиск..."> <input type="submit" value="Найти"></p>
 
-<td nowrap valign="top"> 
-	{% if request.user.is_authenticated %}
-		<p>Вы вошли как {{ request.user.last_name }} {{ request.user.first_name }}</p>
-	{% else %}
-		<p><a href=" admin/login/?next={{ request.path }} ">Войти</a></p>
-	{% endif %}
-</td>
-</td>
-</tr>
-</table>
-<hr><br>
+		<td nowrap valign="top">
+			{% if request.user.is_authenticated %}
+				<p>Вы вошли как {{ request.user.last_name }} {{ request.user.first_name }}</p>
+			{% else %}
+				<p><a href=" admin/login/?next={{ request.path }} ">Войти</a></p>
+			{% endif %}
+		</td>
+	</td>
+	</tr>
+	</table>
+	<hr><br>
+
 	{% block page %}{% endblock %}
 </body>
 </html>
