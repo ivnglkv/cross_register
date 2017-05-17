@@ -3,8 +3,7 @@
 	<head>
 	<meta charset="UTF-8">
 	<title>{% block title%}{% endblock %}</title>
-		{% load staticfiles %}
-		<link rel="stylesheet" type="text/css" href="{% static 'journal/style.css' %}" />
+		{% block css%}{% enblock%}
 	</head>
 <body>
 <table class="text">
