@@ -1,4 +1,4 @@
-ul.hr li {
+ul.h0 li {
 	display: inline; /* Отображать как строчный элемент */
 	margin-right: 10px; /* Отступ слева */
 	border: 1px solid #000; /* Рамка вокруг текста */
@@ -9,7 +9,7 @@ a.h1{
 	text-decoration: none; /* Убирает подчеркивание для ссылок */
 } 
 
-table.text  {
+table.top_menu_line  {
 	width:  100%; /* Ширина таблицы */
 	border-spacing: 0; /* Расстояние между ячейками */
 }
