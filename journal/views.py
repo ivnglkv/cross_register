@@ -8,12 +8,56 @@ from .models import PBXPort, PBX, CrossPoint
 
 
 class CrosspathPoint:
-    crosspoint = None
+    crosspoint_id = None
+    location_id = None
+    parent_id = None
+    main_src_id = None
+    level = 0
     admin_url = ''
     destination = None
 
+    def __init__(self, crosspoint):
+        self.crosspoint_id = crosspoint['id']
+        self.location_id = crosspoint['location_id']
+        self.parent_id = crosspoint['parent']
+        self.main_src_id = crosspoint['main_src_id']
+        self.level = crosspoint['level']
+
+        cp_tmp = CrossPoint.objects.get(pk=self.crosspoint_id)
+        self.admin_url = reverse(
+            'admin:journal_{}_change'.format(cp_tmp.get_subclass()._meta.model_name),
+            args=(self.crosspoint_id,))
+
+        self.destination = []
+
     def __str__(self):
-        return('boot')
+        return self.__repr__()
+
+    def __repr__(self):
+        res = '{0} crosspoint_id: {1}, ' \
+              'main_src_id: {2}, parent_id: {3}, level: {4}\n' \
+              '{0} destination: {5}'.format('  ' * self.level,
+                                            self.crosspoint_id,
+                                            self.main_src_id,
+                                            self.parent_id,
+                                            self.level,
+                                            self.destination,
+                                            )
+        return res
+
+    def find_parent(self, parent_id):
+        result = None
+
+        for child in self.destination:
+            if child.crosspoint_id == parent_id:
+                result = child
+            else:
+                result = child.find_parent(parent_id)
+
+            if result:
+                break
+
+        return result
 
 
 def dictfetchall(cursor):
@@ -46,7 +90,6 @@ def pbx_ports_view(request, pbx, page):
 
     context['pbx'] = pbx
     context['pbx_object'] = PBX.objects.get(pk=pbx)
-    context['pbxports_list'] = pbxports_list
     context['pbxports_count'] = pbxports_count
     context['current_page'] = current_page
     context['pages_count'] = pages_count
@@ -72,30 +115,19 @@ def pbx_ports_view(request, pbx, page):
     crosspath = []
     current_crosspath_index = -1
 
-    current_source_point_id = -1
-    last_point = None
     for point in crosspoints:
-        if point['main_src_id'] != current_source_point_id:
-            current_source_point_id = point['id']
+        cur_point = CrosspathPoint(point)
 
-        cur_point = CrosspathPoint()
-
-        cur_point.crosspoint = point
-        cp_tmp = CrossPoint.objects.get(pk=point['id'])
-        cur_point.admin_url = reverse(
-            'admin:journal_{}_change'.format(cp_tmp.get_subclass()._meta.model_name),
-            args=(point['id'],))
-
-        level = point['level']
-
-        if level > 0:
-            last_point.destination = cur_point
+        if cur_point.level == 1:
+            crosspath[current_crosspath_index].destination.append(cur_point)
+        elif cur_point.level >= 2:
+            source_point = crosspath[current_crosspath_index]
+            parent = source_point.find_parent(cur_point.parent_id)
+            parent.destination.append(cur_point)
             pass
         else:
             crosspath.append(cur_point)
             current_crosspath_index += 1
-
-        last_point = cur_point
 
     context['crosspath'] = crosspath
 
