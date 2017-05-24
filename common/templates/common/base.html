@@ -13,11 +13,10 @@
 	<tr>
 	<td>
 		<ul class="menu_list" >
-			<li><a class="menu_link" href="">Меню</a></li>
-			<li><a class="menu_link" href="">Меню</a></li>
-			<li><a class="menu_link" href="">Меню</a></li>
-			<li><a class="menu_link" href="">Меню</a></li>
-			<li><a class="menu_link" href="">Меню</a></li>
+			<li><a class="menu_link" href="{% url 'index' %}">АТС</a></li>
+            {% if request.user.is_staff %}
+                <li><a class="menu_link" href="{% url 'admin:index' %}">Администрирование</a></li>
+            {% endif %}
 		</ul>
 	</td>
 	<td valign="top" class="rightcol">
