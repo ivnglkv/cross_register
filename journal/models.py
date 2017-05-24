@@ -97,17 +97,58 @@ class CrossPoint(models.Model):
                                     blank=True,
                                     )
 
-    def __str__(self):
-        # Такой перебор по подклассам необходим
-        # для отображения строки в виджете выбора поля destination,
-        # потому что там вызывается метод CrossPoint.__str__()
+    def get_subclass(self):
+        """
+        Метод необходим для случаев, когда мы оперируем объектами класса
+        CrossPoint, но необходимо знать подкласс объекта, например, для
+        формирования строкового представления, специфичного для этого подкласса
+        """
+
+        result = None
+
         for cp_subclass in CrossPoint.__subclasses__():
             try:
-                cp_object = cp_subclass.objects.get(crosspoint_ptr=self.pk)
+                cp_subclass.objects.get(crosspoint_ptr=self.pk)
+                result = cp_subclass
             except models.ObjectDoesNotExist as e:
                 pass
+        return result
 
-        return(str(cp_object))
+    def get_parent(self):
+        """
+        Функция находит родительскую точку кросса для текущей точки,
+        предполагая, что у всех точек родительской является порт АТС
+        """
+        from django.db import connection
+        src = None
+
+        with connection.cursor() as cursor:
+            from os import path
+            from django.conf import settings
+
+            sqlfile = open(path.join(settings.BASE_DIR,
+                                     'journal',
+                                     'sql',
+                                     'get_crosspoint_parent.sql',
+                                     ),
+                           'r')
+            sql = sqlfile.read().replace('/n', ' ')
+
+            cursor.execute(sql.format(self.pk))
+
+            row = cursor.fetchone()
+            try:
+                src = PBXPort.objects.get(pk=row[0])
+            except:
+                pass
+
+        return src
+
+    def journal_str(self):
+        return self.get_subclass().objects.get(crosspoint_ptr=self.pk).journal_str()
+
+    def __str__(self):
+        return(str(self.get_subclass().objects.get(crosspoint_ptr=self.pk)))
 
 
 class PBX(models.Model):
@@ -156,6 +197,9 @@ class PBXPort(CrossPoint):
                                              self.number,
                                              self.get_type_display())
 
+    def journal_str(self):
+        return '{}'.format(self.subscriber_number)
+
     class Meta:
         verbose_name = 'порт АТС'
         verbose_name_plural = 'порты АТС'
@@ -176,6 +220,9 @@ class PunchBlock(CrossPoint):
     is_station = models.BooleanField(verbose_name='станционная (-ое)',
                                      blank=True)
 
+    def journal_str(self):
+        return str(self)
+
     def __str__(self):
         result = ''
 
@@ -189,7 +236,7 @@ class PunchBlock(CrossPoint):
         if self.is_station:
             result = result + 'с{}'.format(self.number)
         else:
-            result = result + '{}/{}'.format(self.number, self.location.cabinet)
+            result = result + '{}/{}'.format(self.number, self.location.cabinet.number)
 
         return result
 
@@ -200,28 +247,7 @@ class PunchBlock(CrossPoint):
 
 class Phone(CrossPoint):
     def __str__(self):
-        from django.db import connection
-        src = None
-
-        with connection.cursor() as cursor:
-            from os import path
-            from django.conf import settings
-
-            sqlfile = open(path.join(settings.BASE_DIR,
-                                     'journal',
-                                     'sql',
-                                     'get_crosspoint_parent.sql',
-                                     ),
-                           'r')
-            sql = sqlfile.read().replace('/n', ' ')
-
-            cursor.execute(sql.format(self.pk))
-
-            row = cursor.fetchone()
-            try:
-                src = PBXPort.objects.get(pk=row[0])
-            except:
-                pass
+        src = self.get_parent()
 
         result = ''
         if src and src.subscriber_number:
@@ -230,6 +256,9 @@ class Phone(CrossPoint):
             result = 'Телефон'
 
         return result
+
+    def journal_str(self):
+        return '{}'.format(self.location)
 
     class Meta:
         verbose_name = 'телефон'
