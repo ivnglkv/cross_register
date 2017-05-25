@@ -8,25 +8,30 @@
 {% endblock title %}
 
 {% block page %}
-    <p><b>{{ pbx_object }}</b></p>
-    <p>
-    {% for n in pages_count|range %}
-        <a href="{% url 'pbx_ports' pbx n %}">
-        {% if n == current_page %}
-            <b>{{ n }}</b>
-        {% else %}
-            {{ n }}
-        {% endif %}
-        </a>
-    {% endfor %}
-    </p>
-    <p>Отображаются элементы {{ first_element_index }}-{{ last_element_index }} из
-    {{ pbxports_count }}</p>
-    {% for point in crosspath %}
-        <table>
-        {% autoescape off %}
-            {% get_point_path_table point 1 0 %}
-        {% endautoescape %}
-        </table>
-    {% endfor %}
+  <p><b>{{ pbx_object }}</b></p>
+
+  <p>
+  {% for n in pages_count|range %}
+    <a href="{% url 'pbx_ports' pbx n %}">
+    {% if n == current_page %}
+      <b>{{ n }}</b>
+    {% else %}
+      {{ n }}
+    {% endif %}
+    </a>
+  {% endfor %}
+  </p>
+
+  <p>
+    Отображаются элементы {{ first_element_index }}-{{ last_element_index }} из
+    {{ pbxports_count }}
+  </p>
+
+  {% for point in crosspath %}
+    <table>
+    {% autoescape off %}
+      {% get_point_path_table point 1 0 %}
+    {% endautoescape %}
+    </table>
+  {% endfor %}
 {% endblock %}

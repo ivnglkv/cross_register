@@ -1,51 +1,54 @@
 <!DOCTYPE html>
 <html class="no-js" lang="ru" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{% block title%}{% endblock %}</title>
+  <title>{% block title%}{% endblock %}</title>
 
-    {% block css%}
-    	{% load staticfiles %}
-        <link rel="stylesheet" href="{% static 'common/css/foundation.css' %}">
-        <link rel="stylesheet" href="{% static 'common/css/app.css' %}">
-    {% endblock%}
+  {% block css %}
+    {% load staticfiles %}
+      <link rel="stylesheet" href="{% static 'common/css/foundation.css' %}">
+      <link rel="stylesheet" href="{% static 'common/css/app.css' %}">
+  {% endblock%}
 </head>
 <body>
-	<table class="text">
-	<tr>
-	<td>
-		<ul class="menu_list" >
-			<li><a class="menu_link" href="{% url 'index' %}">АТС</a></li>
-            {% if request.user.is_staff %}
-                <li><a class="menu_link" href="{% url 'admin:index' %}">Администрирование</a></li>
-            {% endif %}
-		</ul>
-	</td>
-	<td valign="top" class="rightcol">
-		<p><input type="search" name="q" placeholder="Поиск..."> <input type="submit" value="Найти"></p>
+  <table class="text">
+  <tr>
+  <td>
+    <ul class="menu_list" >
+      <li><a class="menu_link" href="{% url 'index' %}">АТС</a></li>
+      {% if request.user.is_staff %}
+        <li><a class="menu_link" href="{% url 'admin:index' %}">Администрирование</a></li>
+      {% endif %}
+    </ul>
+  </td>
+  <td valign="top" class="rightcol">
+    <p>
+      <input type="search" name="q" placeholder="Поиск...">
+      <input type="submit" value="Найти">
+    </p>
 
-		<td nowrap valign="top">
-			{% if request.user.is_authenticated %}
-				<p>Вы вошли как {{ request.user.last_name }} {{ request.user.first_name }}</p>
-			{% else %}
-				<p><a href=" admin/login/?next={{ request.path }} ">Войти</a></p>
-			{% endif %}
-		</td>
-	</td>
-	</tr>
-	</table>
-	<hr><br>
+    <td nowrap valign="top">
+      {% if request.user.is_authenticated %}
+        <p>Вы вошли как {{ request.user.last_name }} {{ request.user.first_name }}</p>
+      {% else %}
+        <p><a href=" admin/login/?next={{ request.path }} ">Войти</a></p>
+      {% endif %}
+    </td>
+  </td>
+  </tr>
+  </table>
+  <hr><br>
 
-	{% block page %}{% endblock %}
+  {% block page %}{% endblock %}
 
-    {% block js %}
-        <script src="{% static 'common/js/vendor/jquery.js' %}"></script>
-        <script src="{% static 'common/js/vendor/what-input.js' %}"></script>
-        <script src="{% static 'common/js/vendor/foundation.js' %}"></script>
-        <script src="{% static 'common/js/app.js' %}"></script>
-    {% endblock js %}
+  {% block js %}
+    <script src="{% static 'common/js/vendor/jquery.js' %}"></script>
+    <script src="{% static 'common/js/vendor/what-input.js' %}"></script>
+    <script src="{% static 'common/js/vendor/foundation.js' %}"></script>
+    <script src="{% static 'common/js/app.js' %}"></script>
+  {% endblock js %}
 </body>
 </html>
