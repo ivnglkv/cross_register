@@ -1,39 +1,54 @@
 <!DOCTYPE html>
-<html lang="ru">
-	<head>
-	<meta charset="UTF-8">
-	<title>{% block title%}{% endblock %}</title>
-	{% block css%}
-		{% load staticfiles %}
-		<link rel="stylesheet" type="text/css" href="{% static 'journal/style.css' %}" />
-	{% endblock%}
-	</head>
+<html class="no-js" lang="ru" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{% block title%}{% endblock %}</title>
+
+  {% block css %}
+    {% load staticfiles %}
+      <link rel="stylesheet" href="{% static 'common/css/foundation.css' %}">
+      <link rel="stylesheet" href="{% static 'common/css/app.css' %}">
+  {% endblock%}
+</head>
 <body>
-	<table class="text">
-	<tr>
-	<td>
-		<ul class="menu_list" >
-			<li><a class="menu_link" href="{% url 'index' %}">АТС</a></li>
-            {% if request.user.is_staff %}
-                <li><a class="menu_link" href="{% url 'admin:index' %}">Администрирование</a></li>
-            {% endif %}
-		</ul>
-	</td>
-	<td valign="top" class="rightcol">
-		<p><input type="search" name="q" placeholder="Поиск..."> <input type="submit" value="Найти"></p>
+   <div class="top-bar">
+    <div class="top-bar-left">
+      <ul class="dropdown menu">
+        <li class="menu-text">Кроссовые журналы</li>
+        <li><a href="{% url 'index' %}">АТС</a></li>
 
-		<td nowrap valign="top">
-			{% if request.user.is_authenticated %}
-				<p>Вы вошли как {{ request.user.last_name }} {{ request.user.first_name }}</p>
-			{% else %}
-				<p><a href=" admin/login/?next={{ request.path }} ">Войти</a></p>
-			{% endif %}
-		</td>
-	</td>
-	</tr>
-	</table>
-	<hr><br>
+        {% if request.user.is_staff %}
+          <li><a href="{% url 'admin:index' %}">Администрирование</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    <div class="top-bar-right">
+      <ul class="menu">
+        <li><input type="search" placeholder="Поиск…"></li>
+        <li><button type="button" class="button">Искать</button></li>
+        <li style="padding-left: 20px">
+          {% if request.user.is_authenticated %}
+            Вы вошли как {{ request.user.last_name }} {{ request.user.first_name }}
+          {% else %}
+            <a href=" admin/login/?next={{ request.path }} ">Войти</a>
+          {% endif %}
+        </li>
+      </ul>
+    </div>
+  </div>
 
-	{% block page %}{% endblock %}
+  <div class="row">
+    {% block page %}{% endblock %}
+  </div>
+
+  {% block js %}
+    <script src="{% static 'common/js/vendor/jquery.js' %}"></script>
+    <script src="{% static 'common/js/vendor/what-input.js' %}"></script>
+    <script src="{% static 'common/js/vendor/foundation.js' %}"></script>
+    <script src="{% static 'common/js/app.js' %}"></script>
+  {% endblock js %}
 </body>
 </html>

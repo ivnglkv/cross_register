@@ -1,11 +1,11 @@
 {% extends "common/base.html" %}
 
 {% block title%}
-	Главная страница
+  Главная страница
 {% endblock %}
 
 {% block page %}
-	{% for pbx in pbx_list %}
-		<p><a href="{% url 'pbx_ports' pbx.pk 1 %}">{{ pbx }}</a></p>
-	 {% endfor %}
+  {% for pbx in pbx_list %}
+    <p><a href="{% url 'pbx_ports' pbx.pk 1 %}">{{ pbx }}</a></p>
+  {% endfor %}
 {% endblock%}
