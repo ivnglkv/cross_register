@@ -1,13 +1,18 @@
 <!DOCTYPE html>
-<html lang="ru">
-	<head>
-	<meta charset="UTF-8">
-	<title>{% block title%}{% endblock %}</title>
-	{% block css%}
-		{% load staticfiles %}
-		<link rel="stylesheet" type="text/css" href="{% static 'journal/style.css' %}" />
-	{% endblock%}
-	</head>
+<html class="no-js" lang="ru" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title%}{% endblock %}</title>
+
+    {% block css%}
+    	{% load staticfiles %}
+        <link rel="stylesheet" href="{% static 'common/css/foundation.css' %}">
+        <link rel="stylesheet" href="{% static 'common/css/app.css' %}">
+    {% endblock%}
+</head>
 <body>
 	<table class="text">
 	<tr>
@@ -35,5 +40,12 @@
 	<hr><br>
 
 	{% block page %}{% endblock %}
+
+    {% block js %}
+        <script src="{% static 'common/js/vendor/jquery.js' %}"></script>
+        <script src="{% static 'common/js/vendor/what-input.js' %}"></script>
+        <script src="{% static 'common/js/vendor/foundation.js' %}"></script>
+        <script src="{% static 'common/js/app.js' %}"></script>
+    {% endblock js %}
 </body>
 </html>
