@@ -1,3 +1,16 @@
 .top-bar {
   margin-bottom: 20px;
 }
+
+.crosspath {
+  width: auto;
+  margin-bottom: 0rem;
+}
+
+.crosspath tbody td {
+  padding: 0.0rem 0.0rem 0.625rem;
+}
+
+.crosspath tbody tr:nth-child(even) {
+  background-color: #fff;
+}

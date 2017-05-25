@@ -28,7 +28,7 @@
   </p>
 
   {% for point in crosspath %}
-    <table>
+    <table class="crosspath">
     {% autoescape off %}
       {% get_point_path_table point 1 0 %}
     {% endautoescape %}
