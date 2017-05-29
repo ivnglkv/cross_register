@@ -4,11 +4,11 @@
 {% load journal_extras %}
 
 {% block title %}
-    test
+    {{ pbx_object }}
 {% endblock title %}
 
 {% block page %}
-  <p><b>{{ pbx_object }}</b></p>
+  <h3>{{ pbx_object }}</h3>
 
   <ul class="pagination">
     <li class="pagination-previous
