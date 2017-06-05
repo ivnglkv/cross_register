@@ -86,6 +86,8 @@ def pbx_ports_view(request, pbx, page):
 
     points_ids = tuple(x.crosspoint_ptr_id for x in pbxports_list)
 
+    crosspoints = {}
+
     last_element_index = first_element_index + pbxports_list.count()
 
     context['pbx'] = pbx
@@ -95,6 +97,7 @@ def pbx_ports_view(request, pbx, page):
     context['pages_count'] = pages_count
     context['first_element_index'] = first_element_index + 1
     context['last_element_index'] = last_element_index
+    context['can_add_pbxport'] = request.user.has_perm('journal.add_pbxport')
 
     with connection.cursor() as cursor:
         from os import path
@@ -108,9 +111,14 @@ def pbx_ports_view(request, pbx, page):
                        'r')
         sql = sqlfile.read()
 
-        cursor.execute(sql.format(points_ids))
+        if len(points_ids) > 0:
+            if len(points_ids) == 1:
+                points_ids_str = '({})'.format(points_ids[0])
+            else:
+                points_ids_str = '{}'.format(points_ids)
 
-        crosspoints = dictfetchall(cursor)
+            cursor.execute(sql.format(points_ids_str))
+            crosspoints = dictfetchall(cursor)
 
     crosspath = []
     current_crosspath_index = -1
