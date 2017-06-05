@@ -145,7 +145,7 @@ class CrossPoint(models.Model):
         return src
 
     def clean(self):
-        if self.destination.pk == self.pk:
+        if self.pk and self.destination.pk == self.pk:
             raise ValidationError({'destination': 'Нельзя составлять кольцевые связи'})
 
     def journal_str(self):
