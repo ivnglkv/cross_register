@@ -148,6 +148,19 @@ def pbx_ports_view(request, pbx, page):
     return render(request, template, context)
 
 
+def subscriber_card_view(request, card):
+    context = {}
+    template = 'journal/subscriber_card.html'
+
+    pbxport = PBXPort.objects.get(subscriber_number=card)
+
+    context['pbxport'] = pbxport
+    points_ids = (pbxport.crosspoint_ptr_id,)
+    context['point'] = get_crosspath(points_ids)
+
+    return render(request, template, context)
+
+
 class PBXPortsView(ListView):
     model = PBXPort
     template_name = 'journal/pbx_ports.html'
