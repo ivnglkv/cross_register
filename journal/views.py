@@ -69,35 +69,8 @@ def dictfetchall(cursor):
     ]
 
 
-def pbx_ports_view(request, pbx, page):
-    context = {}
-    template = 'journal/pbx_ports.html'
-
-    ports_per_page = 100
-
-    current_page = int(page)
-
-    first_element_index = (current_page - 1) * ports_per_page
-    last_element_index = first_element_index + ports_per_page
-
-    pbxports_list = PBXPort.objects.filter(pbx=pbx)[first_element_index:last_element_index]
-    pbxports_count = PBXPort.objects.filter(pbx=pbx).count()
-    pages_count = ceil(pbxports_count / ports_per_page)
-
-    points_ids = tuple(x.crosspoint_ptr_id for x in pbxports_list)
-
+def get_crosspath(points):
     crosspoints = {}
-
-    last_element_index = first_element_index + pbxports_list.count()
-
-    context['pbx'] = pbx
-    context['pbx_object'] = PBX.objects.get(pk=pbx)
-    context['pbxports_count'] = pbxports_count
-    context['current_page'] = current_page
-    context['pages_count'] = pages_count
-    context['first_element_index'] = first_element_index + 1
-    context['last_element_index'] = last_element_index
-    context['can_add_pbxport'] = request.user.has_perm('journal.add_pbxport')
 
     with connection.cursor() as cursor:
         from os import path
@@ -111,11 +84,11 @@ def pbx_ports_view(request, pbx, page):
                        'r')
         sql = sqlfile.read()
 
-        if len(points_ids) > 0:
-            if len(points_ids) == 1:
-                points_ids_str = '({})'.format(points_ids[0])
+        if len(points) > 0:
+            if len(points) == 1:
+                points_ids_str = '({})'.format(points[0])
             else:
-                points_ids_str = '{}'.format(points_ids)
+                points_ids_str = '{}'.format(points)
 
             cursor.execute(sql.format(points_ids_str))
             crosspoints = dictfetchall(cursor)
@@ -136,6 +109,39 @@ def pbx_ports_view(request, pbx, page):
         else:
             crosspath.append(cur_point)
             current_crosspath_index += 1
+
+    return crosspath
+
+
+def pbx_ports_view(request, pbx, page):
+    context = {}
+    template = 'journal/pbx_ports.html'
+
+    ports_per_page = 100
+
+    current_page = int(page)
+
+    first_element_index = (current_page - 1) * ports_per_page
+    last_element_index = first_element_index + ports_per_page
+
+    pbxports_list = PBXPort.objects.filter(pbx=pbx)[first_element_index:last_element_index]
+    pbxports_count = PBXPort.objects.filter(pbx=pbx).count()
+    pages_count = ceil(pbxports_count / ports_per_page)
+
+    points_ids = tuple(x.crosspoint_ptr_id for x in pbxports_list)
+
+    last_element_index = first_element_index + pbxports_list.count()
+
+    context['pbx'] = pbx
+    context['pbx_object'] = PBX.objects.get(pk=pbx)
+    context['pbxports_count'] = pbxports_count
+    context['current_page'] = current_page
+    context['pages_count'] = pages_count
+    context['first_element_index'] = first_element_index + 1
+    context['last_element_index'] = last_element_index
+    context['can_add_pbxport'] = request.user.has_perm('journal.add_pbxport')
+
+    crosspath = get_crosspath(points_ids)
 
     context['crosspath'] = crosspath
 
