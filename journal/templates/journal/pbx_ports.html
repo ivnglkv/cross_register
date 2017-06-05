@@ -10,54 +10,58 @@
 {% block page %}
   <h3>{{ pbx_object }}</h3>
 
-  <ul class="pagination">
-    <li class="pagination-previous
-                {% if current_page == 1 %}
-                  disabled
-                {% endif %}">
-      {% if current_page == 1 %}
-        Предыдущая
-      {% else %}
-        <a href="{% url 'pbx_ports' pbx current_page|add:'-1' %}">Предыдущая</a>
-      {% endif %}
-    </li>
-    {% for n in pages_count|range %}
-        <li
-          {% if n == current_page %}
-            class="current"
-          {% endif %}
-        >
-          {% if n == current_page %}
-            {{ n }}
-          {% else %}
-            <a href="{% url 'pbx_ports' pbx n %}">{{ n }}</a>
-          {% endif %}
-        </li>
-    {% endfor %}
-    <li class="pagination-next
-                {% if current_page == pages_count %}
-                  disabled
-                {% endif %}">
-      {% if current_page == pages_count %}
-        Следующая
-      {% else %}
-        <a href="{% url 'pbx_ports' pbx current_page|add:'1' %}">
+  {% if pbxports_count == 0 %}
+    <p>В данный момент у этой АТС не заполнены данные по абонентской емкости.</p>
+  {% else %}
+    <ul class="pagination">
+      <li class="pagination-previous
+                  {% if current_page == 1 %}
+                    disabled
+                  {% endif %}">
+        {% if current_page == 1 %}
+          Предыдущая
+        {% else %}
+          <a href="{% url 'pbx_ports' pbx current_page|add:'-1' %}">Предыдущая</a>
+        {% endif %}
+      </li>
+      {% for n in pages_count|range %}
+          <li
+            {% if n == current_page %}
+              class="current"
+            {% endif %}
+          >
+            {% if n == current_page %}
+              {{ n }}
+            {% else %}
+              <a href="{% url 'pbx_ports' pbx n %}">{{ n }}</a>
+            {% endif %}
+          </li>
+      {% endfor %}
+      <li class="pagination-next
+                  {% if current_page == pages_count %}
+                    disabled
+                  {% endif %}">
+        {% if current_page == pages_count %}
           Следующая
-        </a>
-      {% endif %}
-    </li>
-  </ul>
+        {% else %}
+          <a href="{% url 'pbx_ports' pbx current_page|add:'1' %}">
+            Следующая
+          </a>
+        {% endif %}
+      </li>
+    </ul>
 
-  <p>
-    Отображаются элементы {{ first_element_index }}-{{ last_element_index }} из
-    {{ pbxports_count }}
-  </p>
+    <p>
+      Отображаются элементы {{ first_element_index }}-{{ last_element_index }} из
+      {{ pbxports_count }}
+    </p>
 
-  {% for point in crosspath %}
-    <table class="crosspath">
-    {% autoescape off %}
-      {% get_point_path_table point 1 0 %}
-    {% endautoescape %}
-    </table>
-  {% endfor %}
+    {% for point in crosspath %}
+      <table class="crosspath">
+      {% autoescape off %}
+        {% get_point_path_table point 1 0 %}
+      {% endautoescape %}
+      </table>
+    {% endfor %}
+  {% endif %}
 {% endblock %}
