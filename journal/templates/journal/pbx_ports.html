@@ -12,6 +12,10 @@
 
   {% if pbxports_count == 0 %}
     <p>В данный момент у этой АТС не заполнены данные по абонентской емкости.</p>
+    {% if can_add_pbxport %}
+      <p>Для того, чтобы начать вносить данные по АТС, пройдите по
+      <a href="{% url 'admin:journal_pbxport_add' %}">этой ссылке.</a></p>
+    {% endif %}
   {% else %}
     <ul class="pagination">
       <li class="pagination-previous

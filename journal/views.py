@@ -97,6 +97,7 @@ def pbx_ports_view(request, pbx, page):
     context['pages_count'] = pages_count
     context['first_element_index'] = first_element_index + 1
     context['last_element_index'] = last_element_index
+    context['can_add_pbxport'] = request.user.has_perm('journal.add_pbxport')
 
     with connection.cursor() as cursor:
         from os import path
