@@ -262,7 +262,20 @@ class Phone(CrossPoint):
         return result
 
     def journal_str(self):
-        return '{}'.format(self.location)
+        res = '{}'
+        subscribers = self.subscribers.all()
+
+        if subscribers:
+            res += ' ('
+            subscribers_count = len(subscribers)
+            for i, s in enumerate(subscribers):
+                if i == subscribers_count - 1:
+                    res += str(s)
+                else:
+                    res += '{}, '.format(s)
+            res += ')'
+
+        return res.format(self.location, subscribers)
 
     class Meta:
         verbose_name = 'телефон'
