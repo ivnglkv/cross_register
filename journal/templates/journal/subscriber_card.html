@@ -8,15 +8,12 @@
 
 {% block page %}
   <h3>Телефон №{{ pbxport.subscriber_number }}</h3>
-  <p>Расположения телефонных аппаратов: {{ phones_locations }}</p>
-  <p>Абоненты: {{ subscribers }}</p>
-  <p>Маршрут:</p>
+  <p><b>АТС:</b> {{ pbxport.pbx }}</p>
   <table class="crosspath">
   {% autoescape off %}
-    {% get_point_path_table point.0 1 0 %}
+    {% get_point_path_table point 1 0 %}
   {% endautoescape %}
   </table>
 
-  <p>Последние изменения: {{ last_edit_person }}</p>
-  <p>АТС: {{ pbxport.pbx }}</p>
+  <p><b>Последние изменения:</b> {{ last_edit_person }}</p>
 {% endblock page %}

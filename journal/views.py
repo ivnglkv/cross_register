@@ -156,7 +156,7 @@ def subscriber_card_view(request, card):
 
     context['pbxport'] = pbxport
     points_ids = (pbxport.crosspoint_ptr_id,)
-    context['point'] = get_crosspath(points_ids)
+    context['point'] = get_crosspath(points_ids)[0]
 
     return render(request, template, context)
 
