@@ -127,3 +127,7 @@ DEBUG_TOOLBAR_PANELS = [
     'debug_toolbar.panels.templates.TemplatesPanel',
     'debug_toolbar.panels.logging.LoggingPanel',
 ]
+
+DEBUG_TOOLBAR_CONFIG = {
+    'JQUERY_URL': '',
+}
