@@ -1,4 +1,5 @@
 from django.contrib import admin
+from simple_history.admin import SimpleHistoryAdmin
 
 from .forms import (
     PunchBlockForm,
@@ -27,20 +28,21 @@ admin.site.register(
      PBXRoom,
      Room,
      Subscriber,
-     ]
+     ],
+    admin_class=SimpleHistoryAdmin,
 )
 
 
 @admin.register(PunchBlock)
-class PunchBlockAdmin(admin.ModelAdmin):
+class PunchBlockAdmin(SimpleHistoryAdmin):
     form = PunchBlockForm
 
 
 @admin.register(Phone)
-class PhoneAdmin(admin.ModelAdmin):
+class PhoneAdmin(SimpleHistoryAdmin):
     form = PhoneForm
 
 
 @admin.register(PBXPort)
-class PBXPortAdmin(admin.ModelAdmin):
+class PBXPortAdmin(SimpleHistoryAdmin):
     form = PBXPortForm
