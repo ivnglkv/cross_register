@@ -1,8 +1,16 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from simple_history.models import HistoricalRecords
 
 
-class Building(models.Model):
+class BaseHistoryTrackerModel(models.Model):
+    history = HistoricalRecords(inherit=True)
+
+    class Meta:
+        abstract = True
+
+
+class Building(BaseHistoryTrackerModel):
     number = models.CharField(verbose_name='номер', max_length=5, unique=True)
     letter = models.CharField(verbose_name='литера', max_length=2, blank=True)
 
@@ -19,7 +27,7 @@ class Building(models.Model):
         verbose_name_plural = 'корпуса'
 
 
-class Room(models.Model):
+class Room(BaseHistoryTrackerModel):
     building = models.ForeignKey(Building,
                                  verbose_name='корпус',
                                  related_name='rooms')
@@ -35,7 +43,7 @@ class Room(models.Model):
         return '{}, {}'.format(self.building, self.room)
 
 
-class PBXRoom(models.Model):
+class PBXRoom(BaseHistoryTrackerModel):
     room = models.OneToOneField(Room, verbose_name='помещение')
 
     class Meta:
@@ -43,7 +51,7 @@ class PBXRoom(models.Model):
         verbose_name_plural = 'станционные помещения'
 
 
-class Cabinet(models.Model):
+class Cabinet(BaseHistoryTrackerModel):
     room = models.ForeignKey(
         Room,
         verbose_name='расположение',
@@ -59,7 +67,7 @@ class Cabinet(models.Model):
         verbose_name_plural = 'шкафы'
 
 
-class Location(models.Model):
+class Location(BaseHistoryTrackerModel):
     cabinet = models.OneToOneField(Cabinet,
                                    verbose_name='шкаф',
                                    blank=True,
@@ -87,7 +95,7 @@ class Location(models.Model):
         verbose_name_plural = 'расположения'
 
 
-class CrossPoint(models.Model):
+class CrossPoint(BaseHistoryTrackerModel):
     location = models.ForeignKey(Location,
                                  verbose_name='расположение')
     destination = models.ForeignKey('self',
@@ -155,7 +163,7 @@ class CrossPoint(models.Model):
         return(str(self.get_subclass().objects.get(crosspoint_ptr=self.pk)))
 
 
-class PBX(models.Model):
+class PBX(BaseHistoryTrackerModel):
     MANUFACTURERS = (
         ('asterisk', 'Asterisk'),
         ('avaya', 'Avaya'),
@@ -272,7 +280,7 @@ class Phone(CrossPoint):
         super().__init__(*args, **kwargs)
 
 
-class Subscriber(models.Model):
+class Subscriber(BaseHistoryTrackerModel):
     first_name = models.CharField(verbose_name='имя', max_length=30)
     last_name = models.CharField(verbose_name='фамилия', max_length=40)
     patronymic = models.CharField(verbose_name='отчество', max_length=35, blank=True)
