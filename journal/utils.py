@@ -13,6 +13,7 @@ class CrosspathPoint:
     level = 0
     admin_url = ''
     destination = None
+    journal_str = ''
 
     def __init__(self, crosspoint=None):
         if crosspoint is not None:
@@ -23,9 +24,14 @@ class CrosspathPoint:
             self.level = crosspoint['level']
 
             cp_tmp = CrossPoint.objects.get(pk=self.crosspoint_id)
+            cp_subclass = cp_tmp.get_subclass()
+
             self.admin_url = reverse(
-                'admin:journal_{}_change'.format(cp_tmp.get_subclass()._meta.model_name),
+                'admin:journal_{}_change'.format(cp_subclass._meta.model_name),
                 args=(self.crosspoint_id,))
+
+            cp = cp_subclass.objects.get(pk=cp_tmp.pk)
+            self.journal_str = cp.journal_str()
 
             self.destination = []
         else:
