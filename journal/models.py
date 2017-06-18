@@ -202,6 +202,9 @@ class PBXPort(CrossPoint):
                                                          null=True,
                                                          unique=True)
     description = models.CharField(verbose_name='описание', max_length=150, blank=True)
+    json_path = models.TextField(verbose_name='маршрут в формате JSON',
+                                 blank=True,
+                                 editable=False)
 
     def __str__(self):
         return '{}: {} (порт {}, {})'.format(self.pbx,
