@@ -70,7 +70,14 @@ def dictfetchall(cursor):
     ]
 
 
-def get_crosspath(points):
+def get_crosspath(source):
+    """
+    source -- int или tuple
+
+    Функция получает id портов АТС, для которых нужно получить маршрут
+    и возвращает его либо в виде одиночного объекта CrosspathPoint (если source -- int),
+    либо в виде списка CrosspathPoint (если source -- tuple)
+    """
     crosspoints = {}
 
     with connection.cursor() as cursor:
@@ -85,14 +92,16 @@ def get_crosspath(points):
                        'r')
         sql = sqlfile.read()
 
-        if len(points) > 0:
-            if len(points) == 1:
-                points_ids_str = '({})'.format(points[0])
-            else:
-                points_ids_str = '{}'.format(points)
+        if isinstance(source, tuple):
+            if len(source) == 1:
+                points_ids_str = '({})'.format(source[0])
+            elif len(source) > 1:
+                points_ids_str = '{}'.format(source)
+        elif isinstance(source, int):
+            points_ids_str = '({})'.format(source)
 
-            cursor.execute(sql.format(points_ids_str))
-            crosspoints = dictfetchall(cursor)
+        cursor.execute(sql.format(points_ids_str))
+        crosspoints = dictfetchall(cursor)
 
     crosspath = []
     current_crosspath_index = -1
@@ -111,7 +120,7 @@ def get_crosspath(points):
             crosspath.append(cur_point)
             current_crosspath_index += 1
 
-    return crosspath
+    return crosspath if isinstance(source, tuple) else crosspath[0]
 
 
 class CrosspathPointEncoder(JSONEncoder):
