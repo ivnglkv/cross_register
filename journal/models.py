@@ -153,8 +153,9 @@ class CrossPoint(BaseHistoryTrackerModel):
         return src
 
     def clean(self):
-        if self.pk and self.destination.pk == self.pk:
-            raise ValidationError({'destination': 'Нельзя составлять кольцевые связи'})
+        if self.pk and self.destination:
+            if self.destination.pk == self.pk:
+                raise ValidationError({'destination': 'Нельзя составлять кольцевые связи'})
 
     def journal_str(self):
         return self.get_subclass().objects.get(crosspoint_ptr=self.pk).journal_str()
