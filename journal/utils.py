@@ -12,7 +12,7 @@ class CrosspathPoint:
     main_src_id = None
     level = 0
     admin_url = ''
-    destination = None
+    destination = []
     journal_str = ''
 
     def __init__(self, crosspoint=None):
@@ -32,8 +32,6 @@ class CrosspathPoint:
 
             cp = cp_subclass.objects.get(pk=cp_tmp.pk)
             self.journal_str = cp.journal_str()
-
-            self.destination = []
         else:
             pass
 
@@ -162,8 +160,9 @@ class CrosspathPointDecoder(JSONDecoder):
 
             for k, v in decoded_json.items():
                 if k == 'destination':
+                    point_dict[k] = []
+
                     if isinstance(v, list) and len(v) > 0:
-                        point_dict[k] = []
 
                         for dst in v:
                             if isinstance(dst, dict):
@@ -171,8 +170,6 @@ class CrosspathPointDecoder(JSONDecoder):
                                 point_dict[k].append(self.decode(child_json))
                             else:
                                 continue
-                    else:
-                        point_dict[k] = None
                 else:
                     point_dict[k] = v
 
