@@ -1,5 +1,6 @@
 from django.db import connection
 from django.urls import reverse
+from json import JSONEncoder, JSONDecoder, dumps
 
 from .models import CrossPoint
 
@@ -111,3 +112,57 @@ def get_crosspath(points):
             current_crosspath_index += 1
 
     return crosspath
+
+
+class CrosspathPointEncoder(JSONEncoder):
+    def default(self, obj):
+        result = None
+
+        if isinstance(obj, CrosspathPoint):
+            result = {}
+            for k, v in obj.__dict__.items():
+                if k == 'destination':
+                    result[k] = [] if v is not None else None
+                    for dst in v:
+                        if isinstance(dst, CrosspathPoint):
+                            result[k].append(self.default(dst))
+                        else:
+                            continue
+                else:
+                    result[k] = v
+        else:
+            result = JSONEncoder.default(self, obj)
+        return result
+
+
+class CrosspathPointDecoder(JSONDecoder):
+    def decode(self, json_string):
+        result = None
+
+        decoded_json = super().decode(json_string)
+
+        if isinstance(decoded_json, dict):
+            result = CrosspathPoint()
+            point_dict = {}
+
+            for k, v in decoded_json.items():
+                if k == 'destination':
+                    if isinstance(v, list) and len(v) > 0:
+                        point_dict[k] = []
+
+                        for dst in v:
+                            if isinstance(dst, dict):
+                                child_json = dumps(dst, cls=CrosspathPointEncoder)
+                                point_dict[k].append(self.decode(child_json))
+                            else:
+                                continue
+                    else:
+                        point_dict[k] = None
+                else:
+                    point_dict[k] = v
+
+            result.__dict__ = point_dict
+        else:
+            result = decoded_json
+
+        return result
