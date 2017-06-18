@@ -1,3 +1,5 @@
+from json import dumps, loads
+
 from django.db import models
 from django.core.exceptions import ValidationError
 from simple_history.models import HistoricalRecords
@@ -212,6 +214,27 @@ class PBXPort(CrossPoint):
                                              self.subscriber_number,
                                              self.number,
                                              self.get_type_display())
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            from .utils import (
+                CrosspathPointEncoder,
+                CrosspathPointDecoder,
+                get_crosspath,
+            )
+
+            last_self = PBXPort.objects.get(pk=self.pk)
+            if last_self.subscriber_number != self.subscriber_number:
+
+                if len(self.json_path) > 0:
+                    cp = loads(self.json_path, cls=CrosspathPointDecoder)
+                else:
+                    cp = get_crosspath(self.pk)
+
+                cp.journal_str = self.journal_str()
+                self.json_path = dumps(cp, cls=CrosspathPointEncoder)
+
+        super().save(*args, **kwargs)
 
     def journal_str(self):
         return '{}'.format(self.subscriber_number)
