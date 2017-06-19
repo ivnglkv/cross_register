@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.views.generic import ListView
 from math import ceil
@@ -50,6 +51,11 @@ def subscriber_card_view(request, card):
     context['pbxport'] = pbxport
     points_ids = (pbxport.crosspoint_ptr_id,)
     context['point'] = get_crosspath(points_ids)[0]
+
+    last_pbxport_state = pbxport.history.values()[0]
+
+    last_edit_person = User.objects.get(pk=last_pbxport_state['history_user_id'])
+    context['last_edit_person'] = last_edit_person
 
     return render(request, template, context)
 
