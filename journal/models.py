@@ -1,3 +1,5 @@
+from json import dumps, loads
+
 from django.db import models
 from django.core.exceptions import ValidationError
 from simple_history.models import HistoricalRecords
@@ -153,8 +155,9 @@ class CrossPoint(BaseHistoryTrackerModel):
         return src
 
     def clean(self):
-        if self.pk and self.destination.pk == self.pk:
-            raise ValidationError({'destination': 'Нельзя составлять кольцевые связи'})
+        if self.pk and self.destination:
+            if self.destination.pk == self.pk:
+                raise ValidationError({'destination': 'Нельзя составлять кольцевые связи'})
 
     def journal_str(self):
         return self.get_subclass().objects.get(crosspoint_ptr=self.pk).journal_str()
@@ -202,12 +205,36 @@ class PBXPort(CrossPoint):
                                                          null=True,
                                                          unique=True)
     description = models.CharField(verbose_name='описание', max_length=150, blank=True)
+    json_path = models.TextField(verbose_name='маршрут в формате JSON',
+                                 blank=True,
+                                 editable=False)
 
     def __str__(self):
         return '{}: {} (порт {}, {})'.format(self.pbx,
                                              self.subscriber_number,
                                              self.number,
                                              self.get_type_display())
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            from .utils import (
+                CrosspathPointEncoder,
+                CrosspathPointDecoder,
+                get_crosspath,
+            )
+
+            last_self = PBXPort.objects.get(pk=self.pk)
+            if last_self.subscriber_number != self.subscriber_number:
+
+                if len(self.json_path) > 0:
+                    cp = loads(self.json_path, cls=CrosspathPointDecoder)
+                else:
+                    cp = get_crosspath(self.pk)
+
+                cp.journal_str = self.journal_str()
+                self.json_path = dumps(cp, cls=CrosspathPointEncoder)
+
+        super().save(*args, **kwargs)
 
     def journal_str(self):
         return '{}'.format(self.subscriber_number)
@@ -270,7 +297,20 @@ class Phone(CrossPoint):
         return result
 
     def journal_str(self):
-        return '{}'.format(self.location)
+        res = '{}'
+        subscribers = self.subscribers.all()
+
+        if subscribers:
+            res += ' ('
+            subscribers_count = len(subscribers)
+            for i, s in enumerate(subscribers):
+                if i == subscribers_count - 1:
+                    res += str(s)
+                else:
+                    res += '{}, '.format(s)
+            res += ')'
+
+        return res.format(self.location, subscribers)
 
     class Meta:
         verbose_name = 'телефон'
