@@ -12,7 +12,7 @@ class CrosspathPoint:
     main_src_id = None
     level = 0
     admin_url = ''
-    destination = []
+    destination = None
     journal_str = ''
 
     def __init__(self, crosspoint=None):
@@ -34,6 +34,8 @@ class CrosspathPoint:
             self.journal_str = cp.journal_str()
         else:
             pass
+
+        self.destination = []
 
     def __str__(self):
         return self.__repr__()
