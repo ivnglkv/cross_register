@@ -15,5 +15,10 @@
   {% endautoescape %}
   </table>
 
-  <p><b>Последние изменения:</b> {{ last_edit_person }}</p>
+  <p><b>Последние изменения:</b>
+  {% if last_edit_person %}
+    {{ last_edit_person }}
+  {% else %}
+    Неизвестный пользователь
+  {% endif %}</p>
 {% endblock page %}

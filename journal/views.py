@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.views.generic import ListView
 from math import ceil
@@ -54,7 +55,12 @@ def subscriber_card_view(request, card):
 
     last_pbxport_state = pbxport.history.values()[0]
 
-    last_edit_person = User.objects.get(pk=last_pbxport_state['history_user_id'])
+    last_edit_person = None
+    try:
+        last_edit_person = User.objects.get(pk=last_pbxport_state['history_user_id'])
+    except ObjectDoesNotExist:
+        pass
+
     context['last_edit_person'] = last_edit_person
 
     return render(request, template, context)
