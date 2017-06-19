@@ -7,7 +7,7 @@ from django.views.generic import ListView
 from math import ceil
 
 from .models import PBXPort, PBX
-from .utils import get_crosspath, CrosspathPointDecoder
+from .utils import CrosspathPointDecoder
 
 
 def pbx_ports_view(request, pbx, page):
@@ -52,8 +52,7 @@ def subscriber_card_view(request, card):
     pbxport = PBXPort.objects.get(subscriber_number=card)
 
     context['pbxport'] = pbxport
-    points_ids = (pbxport.crosspoint_ptr_id,)
-    context['point'] = get_crosspath(points_ids)[0]
+    context['point'] = loads(pbxport.json_path, cls=CrosspathPointDecoder)
 
     last_pbxport_state = pbxport.history.values()[0]
 
