@@ -9,6 +9,12 @@ class JournalConfig(AppConfig):
     verbose_name = 'Журнал'
 
     def ready(self):
-        from .models import PBXPort
+        from .models import PBXPort, PunchBlock, Phone
 
         signals.post_save.connect(journal_signals.pbxport_post_save, sender=PBXPort)
+
+        signals.pre_save.connect(journal_signals.crosspoint_pre_save, sender=PunchBlock)
+        signals.pre_save.connect(journal_signals.crosspoint_pre_save, sender=Phone)
+
+        signals.post_save.connect(journal_signals.crosspoint_post_save, sender=PunchBlock)
+        signals.post_save.connect(journal_signals.crosspoint_post_save, sender=Phone)
