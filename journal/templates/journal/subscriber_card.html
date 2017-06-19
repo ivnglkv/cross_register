@@ -17,7 +17,11 @@
 
   <p><b>Последние изменения:</b>
   {% if last_edit_person %}
-    {{ last_edit_person }}
+    {% if last_edit_person.last_name or last_edit_person.first_name %}
+      {{ last_edit_person.last_name }} {{ last_edit_person.first_name }}
+    {% else %}
+      {{ last_edit_person.username }}
+    {% endif %}
   {% else %}
     Неизвестный пользователь
   {% endif %}</p>
