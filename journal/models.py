@@ -284,6 +284,8 @@ class PunchBlock(CrossPoint):
                             choices=PUNCHBLOCK_TYPES,
                             default='trunk',
                             max_length=9)
+    type_tmp = models.ForeignKey(PunchBlockType,
+                                 verbose_name='тип')
     is_station = models.BooleanField(verbose_name='станционная (-ое)',
                                      blank=True)
 
