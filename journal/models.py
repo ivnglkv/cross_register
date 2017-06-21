@@ -280,12 +280,8 @@ class PunchBlock(CrossPoint):
     )
 
     number = models.SmallIntegerField(verbose_name='номер')
-    type = models.CharField(verbose_name='тип',
-                            choices=PUNCHBLOCK_TYPES,
-                            default='trunk',
-                            max_length=9)
-    type_tmp = models.ForeignKey(PunchBlockType,
-                                 verbose_name='тип')
+    type = models.ForeignKey(PunchBlockType,
+                             verbose_name='тип')
     is_station = models.BooleanField(verbose_name='станционная (-ое)',
                                      blank=True)
 
@@ -293,14 +289,7 @@ class PunchBlock(CrossPoint):
         return str(self)
 
     def __str__(self):
-        result = ''
-
-        if self.type == 'city':
-            result = 'Гр'
-        elif self.type == 'extension':
-            result = 'Р'
-        elif self.type == 'trunk':
-            result = 'М'
+        result = self.type.short_name
 
         if self.is_station:
             result = result + 'с{}'.format(self.number)

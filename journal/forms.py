@@ -24,7 +24,7 @@ class PunchBlockForm(ModelForm):
 
     class Meta:
         model = PunchBlock
-        fields = ['location', 'destination', 'number', 'type', 'is_station']
+        fields = ['type', 'location', 'destination', 'number', 'is_station']
 
 
 class PhoneForm(ModelForm):
