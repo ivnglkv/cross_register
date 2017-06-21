@@ -244,6 +244,31 @@ class PBXPort(CrossPoint):
         verbose_name_plural = 'порты АТС'
 
 
+class PunchBlockType(BaseHistoryTrackerModel):
+    long_name = models.CharField(verbose_name='название',
+                                 max_length=50,
+                                 unique=True)
+    short_name = models.CharField(verbose_name='сокращение',
+                                  max_length=3,
+                                  unique=True)
+    regexp = models.CharField(verbose_name='регулярное выражение',
+                              max_length=255)
+    is_station_group = models.PositiveSmallIntegerField(
+        verbose_name='группа станционного расположения',
+        blank=True,
+        null=True)
+    number_group = models.PositiveSmallIntegerField(
+        verbose_name='группа номера')
+    location_group = models.PositiveSmallIntegerField(
+        verbose_name='группа расположения',
+        blank=True,
+        null=True)
+
+    class Meta:
+        verbose_name = 'тип плинта'
+        verbose_name_plural = 'типы плинтов'
+
+
 class PunchBlock(CrossPoint):
     PUNCHBLOCK_TYPES = (
         ('city', 'Гром-полоса'),
