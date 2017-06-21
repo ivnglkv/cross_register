@@ -15,6 +15,7 @@ from .models import (
     PBXRoom,
     Phone,
     PunchBlock,
+    PunchBlockType,
     Room,
     Subscriber,
 )
@@ -26,6 +27,7 @@ admin.site.register(
      Location,
      PBX,
      PBXRoom,
+     PunchBlockType,
      Room,
      Subscriber,
      ],

@@ -244,6 +244,34 @@ class PBXPort(CrossPoint):
         verbose_name_plural = 'порты АТС'
 
 
+class PunchBlockType(BaseHistoryTrackerModel):
+    long_name = models.CharField(verbose_name='название',
+                                 max_length=50,
+                                 unique=True)
+    short_name = models.CharField(verbose_name='сокращение',
+                                  max_length=3,
+                                  unique=True)
+    regexp = models.CharField(verbose_name='регулярное выражение',
+                              max_length=255)
+    is_station_group = models.PositiveSmallIntegerField(
+        verbose_name='группа станционного расположения',
+        blank=True,
+        null=True)
+    number_group = models.PositiveSmallIntegerField(
+        verbose_name='группа номера')
+    location_group = models.PositiveSmallIntegerField(
+        verbose_name='группа расположения',
+        blank=True,
+        null=True)
+
+    class Meta:
+        verbose_name = 'тип плинта'
+        verbose_name_plural = 'типы плинтов'
+
+    def __str__(self):
+        return(self.long_name)
+
+
 class PunchBlock(CrossPoint):
     PUNCHBLOCK_TYPES = (
         ('city', 'Гром-полоса'),
@@ -252,10 +280,8 @@ class PunchBlock(CrossPoint):
     )
 
     number = models.SmallIntegerField(verbose_name='номер')
-    type = models.CharField(verbose_name='тип',
-                            choices=PUNCHBLOCK_TYPES,
-                            default='trunk',
-                            max_length=9)
+    type = models.ForeignKey(PunchBlockType,
+                             verbose_name='тип')
     is_station = models.BooleanField(verbose_name='станционная (-ое)',
                                      blank=True)
 
@@ -263,14 +289,7 @@ class PunchBlock(CrossPoint):
         return str(self)
 
     def __str__(self):
-        result = ''
-
-        if self.type == 'city':
-            result = 'Гр'
-        elif self.type == 'extension':
-            result = 'Р'
-        elif self.type == 'trunk':
-            result = 'М'
+        result = self.type.short_name
 
         if self.is_station:
             result = result + 'с{}'.format(self.number)

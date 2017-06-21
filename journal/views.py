@@ -1,3 +1,5 @@
+from json import loads
+
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
@@ -5,7 +7,7 @@ from django.views.generic import ListView
 from math import ceil
 
 from .models import PBXPort, PBX
-from .utils import get_crosspath
+from .utils import CrosspathPointDecoder
 
 
 def pbx_ports_view(request, pbx, page):
@@ -23,8 +25,6 @@ def pbx_ports_view(request, pbx, page):
     pbxports_count = PBXPort.objects.filter(pbx=pbx).count()
     pages_count = ceil(pbxports_count / ports_per_page)
 
-    points_ids = tuple(x.crosspoint_ptr_id for x in pbxports_list)
-
     last_element_index = first_element_index + pbxports_list.count()
 
     context['pbx'] = pbx
@@ -36,7 +36,9 @@ def pbx_ports_view(request, pbx, page):
     context['last_element_index'] = last_element_index
     context['can_add_pbxport'] = request.user.has_perm('journal.add_pbxport')
 
-    crosspath = get_crosspath(points_ids)
+    crosspath = [
+        loads(point.json_path, cls=CrosspathPointDecoder) for point in pbxports_list
+    ]
 
     context['crosspath'] = crosspath
 
@@ -50,8 +52,7 @@ def subscriber_card_view(request, card):
     pbxport = PBXPort.objects.get(subscriber_number=card)
 
     context['pbxport'] = pbxport
-    points_ids = (pbxport.crosspoint_ptr_id,)
-    context['point'] = get_crosspath(points_ids)[0]
+    context['point'] = loads(pbxport.json_path, cls=CrosspathPointDecoder)
 
     last_pbxport_state = pbxport.history.values()[0]
 

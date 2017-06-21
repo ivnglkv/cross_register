@@ -1,8 +1,6 @@
 from django import template
 from django.urls import reverse
 
-from journal.models import CrossPoint, PBXPort
-
 register = template.Library()
 
 
@@ -18,17 +16,14 @@ def get_point_path_table(point, start_new_line, cells):
     else:
         res += '<td>'
 
-    crosspoint_journal_str = CrossPoint.objects.get(pk=point.crosspoint_id).journal_str()
     if point.level > 0:
         res += '<a href="{}">{}</a>'.format(point.admin_url,
-                                            crosspoint_journal_str,
+                                            point.journal_str,
                                             )
     else:
-        subscriber_number = PBXPort.objects.get(pk=point.crosspoint_id).subscriber_number
-
         res += '<a href="{}">{}</a>'.format(
-            reverse('subscriber_card', args=[subscriber_number]),
-            crosspoint_journal_str,
+            reverse('subscriber_card', args=[int(point.journal_str)]),
+            point.journal_str,
             )
 
     if len(point.destination) > 1:
