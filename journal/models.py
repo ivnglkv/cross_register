@@ -242,6 +242,7 @@ class PBXPort(CrossPoint):
     class Meta:
         verbose_name = 'порт АТС'
         verbose_name_plural = 'порты АТС'
+        ordering = ['subscriber_number']
 
 
 class PunchBlockType(BaseHistoryTrackerModel):
