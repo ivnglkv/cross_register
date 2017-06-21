@@ -1,7 +1,8 @@
 from django.forms import ModelForm, ModelChoiceField
 from django.db.models import Q
+
+from .fields import CrosspointField
 from .models import (
-    CrossPoint,
     Location,
     PBXPort,
     Phone,
@@ -15,12 +16,9 @@ class PunchBlockForm(ModelForm):
                                     Q(cabinet__isnull=False) |
                                     Q(room__pbxroom__isnull=False)),
                                 )
-    destination = ModelChoiceField(label='Откуда приходит',
-                                   queryset=CrossPoint.objects.filter(
-                                        Q(punchblock__isnull=False) |
-                                        Q(pbxport__type='analog')),
-                                   required=False,
-                                   )
+    destination = CrosspointField(label='Откуда приходит',
+                                  required=False,
+                                  )
 
     class Meta:
         model = PunchBlock
@@ -32,11 +30,9 @@ class PhoneForm(ModelForm):
                                 queryset=Location.objects.filter(
                                     Q(room__isnull=False))
                                 )
-    destination = ModelChoiceField(label='Откуда приходит',
-                                   queryset=CrossPoint.objects.filter(
-                                        Q(punchblock__type='extension')),
-                                   required=False,
-                                   )
+    destination = CrosspointField(label='Откуда приходит',
+                                  required=False,
+                                  )
 
     class Meta:
         model = Phone
