@@ -268,6 +268,9 @@ class PunchBlockType(BaseHistoryTrackerModel):
         verbose_name = 'тип плинта'
         verbose_name_plural = 'типы плинтов'
 
+    def __str__(self):
+        return(self.long_name)
+
 
 class PunchBlock(CrossPoint):
     PUNCHBLOCK_TYPES = (
