@@ -106,6 +106,10 @@ class CrossPoint(BaseHistoryTrackerModel):
                                     null=True,
                                     blank=True,
                                     )
+    child_class = models.CharField(verbose_name='дочерний класс',
+                                   max_length=100,
+                                   blank=True,
+                                   editable=False)
 
     def get_subclass(self):
         """
