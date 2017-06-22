@@ -22,7 +22,7 @@ def get_point_path_table(point, start_new_line, cells):
                                             )
     else:
         res += '<a href="{}">{}</a>'.format(
-            reverse('subscriber_card', args=[int(point.journal_str)]),
+            reverse('journal:subscriber_card', args=[int(point.journal_str)]),
             point.journal_str,
             )
 

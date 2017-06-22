@@ -25,7 +25,7 @@
         {% if current_page == 1 %}
           Предыдущая
         {% else %}
-          <a href="{% url 'pbx_ports' pbx current_page|add:'-1' %}">Предыдущая</a>
+          <a href="{% url 'journal:pbx_ports' pbx current_page|add:'-1' %}">Предыдущая</a>
         {% endif %}
       </li>
       {% for n in pages_count|range %}
@@ -37,7 +37,7 @@
             {% if n == current_page %}
               {{ n }}
             {% else %}
-              <a href="{% url 'pbx_ports' pbx n %}">{{ n }}</a>
+              <a href="{% url 'journal:pbx_ports' pbx n %}">{{ n }}</a>
             {% endif %}
           </li>
       {% endfor %}
@@ -48,7 +48,7 @@
         {% if current_page == pages_count %}
           Следующая
         {% else %}
-          <a href="{% url 'pbx_ports' pbx current_page|add:'1' %}">
+          <a href="{% url 'journal:pbx_ports' pbx current_page|add:'1' %}">
             Следующая
           </a>
         {% endif %}

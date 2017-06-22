@@ -14,3 +14,7 @@
 .crosspath tbody tr:nth-child(even) {
   background-color: #fff;
 }
+
+.top-bar-search {
+  margin-bottom: 0rem;
+}
