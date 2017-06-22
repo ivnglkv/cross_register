@@ -5,7 +5,12 @@
 {% endblock %}
 
 {% block page %}
-  {% for pbx in pbx_list %}
-    <p><a href="{% url 'journal:pbx_ports' pbx.pk 1 %}">{{ pbx }}</a></p>
-  {% endfor %}
+  <div class="row">
+    <div class="small-6 column">
+      <h3>АТС предприятия</h3>
+      {% for pbx in pbx_list %}
+        <p><a href="{% url 'journal:pbx_ports' pbx.pk 1 %}">{{ pbx }}</a></p>
+      {% endfor %}
+    </div>
+  </div>
 {% endblock%}
