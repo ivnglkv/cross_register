@@ -1,10 +1,10 @@
 from json import loads
+from math import ceil
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.views.generic import ListView
-from math import ceil
 
 from .models import PBXPort, PBX
 from .utils import CrosspathPointDecoder
