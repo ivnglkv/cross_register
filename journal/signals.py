@@ -54,3 +54,9 @@ def crosspoint_post_save(instance, **kwargs):
             pbxport = PBXPort.objects.get(pk=pbxport_point.crosspoint_id)
             pbxport.json_path = dumps(pbxport_point, cls=CrosspathPointEncoder)
             pbxport.save()
+
+        if len(instance.child_class) == 0:
+            subclass = instance.get_subclass().__name__
+
+            instance.child_class = subclass
+            instance.save_without_historical_record()
