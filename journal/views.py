@@ -1,9 +1,12 @@
 from json import loads
 from math import ceil
+import re
 
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.generic import ListView
 
 from .models import PBXPort, PBX
@@ -65,6 +68,20 @@ def subscriber_card_view(request, card):
     context['last_edit_person'] = last_edit_person
 
     return render(request, template, context)
+
+
+def search(request):
+    result = None
+
+    search_input = request.GET.get('search_input', None)
+
+    if search_input is not None and re.match('\d+', search_input):
+        get_object_or_404(PBXPort, subscriber_number=int(search_input))
+        result = redirect(reverse('journal:subscriber_card', args=(search_input,)))
+    else:
+        raise Http404
+
+    return result
 
 
 class PBXPortsView(ListView):

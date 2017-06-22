@@ -27,8 +27,16 @@
     </div>
     <div class="top-bar-right">
       <ul class="menu">
-        <li><input type="search" placeholder="Поиск…"></li>
-        <li><button type="button" class="button">Искать</button></li>
+        <li>
+          <form action="{% url 'journal:search' %}" method="get">
+            <div class="input-group top-bar-search">
+              <input name="search_input" type="search" placeholder="Поиск…" class="input-group-field" >
+              <div class="input-group-button">
+                <input type="submit" class="button" value="Искать">
+              </div>
+            </div>
+          </form>
+        </li>
         <li style="padding-left: 20px">
           {% if request.user.is_authenticated %}
             Вы вошли как {{ request.user.last_name }} {{ request.user.first_name }}
