@@ -22,7 +22,7 @@ from common import views as common_views
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', common_views.IndexView.as_view(), name='index'),
-    url(r'^journal/', include('journal.urls')),
+    url(r'^journal/', include('journal.urls', namespace='journal')),
 ]
 
 if settings.DEBUG:

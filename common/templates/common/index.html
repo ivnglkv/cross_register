@@ -6,6 +6,6 @@
 
 {% block page %}
   {% for pbx in pbx_list %}
-    <p><a href="{% url 'pbx_ports' pbx.pk 1 %}">{{ pbx }}</a></p>
+    <p><a href="{% url 'journal:pbx_ports' pbx.pk 1 %}">{{ pbx }}</a></p>
   {% endfor %}
 {% endblock%}
