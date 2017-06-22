@@ -1,3 +1,4 @@
+import sys
 from json import dumps, loads
 
 from django.db import models
@@ -118,15 +119,7 @@ class CrossPoint(BaseHistoryTrackerModel):
         формирования строкового представления, специфичного для этого подкласса
         """
 
-        result = None
-
-        for cp_subclass in CrossPoint.__subclasses__():
-            try:
-                cp_subclass.objects.get(crosspoint_ptr=self.pk)
-                result = cp_subclass
-            except models.ObjectDoesNotExist as e:
-                pass
-        return result
+        return getattr(sys.modules[self.__module__], self.child_class)
 
     def get_parent(self):
         """
