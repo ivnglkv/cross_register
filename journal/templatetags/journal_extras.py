@@ -1,5 +1,8 @@
 from django import template
+from django.contrib.auth.models import User
 from django.urls import reverse
+
+from journal.models import HistoricalPunchBlock, HistoricalPhone
 
 register = template.Library()
 
@@ -39,3 +42,55 @@ def get_point_path_table(point, start_new_line, cells):
         res += '</tr>'
 
     return res
+
+
+class RecentChange:
+    ACTION_TO_ICON = {
+        '+': 'journal/icons/add.svg',
+        '~': 'journal/icons/edit.svg',
+        '-': 'journal/icons/delete.svg',
+    }
+
+    READABLE_ACTION = {
+        '+': 'добавил (-а)',
+        '~': 'изменил (-а)',
+        '-': 'удалил (-а)',
+    }
+
+    def __init__(self, historical_item, user_manager):
+        self.historical_item = historical_item
+
+        self.icon = self.ACTION_TO_ICON[historical_item.history_type]
+        self.action = self.READABLE_ACTION[historical_item.history_type]
+
+        self.user = historical_item.history_user
+
+        pass
+
+    def __repr__(self):
+        return self.historical_item.__repr__()
+
+
+@register.inclusion_tag('journal/recent_changes.html')
+def recent_changes(items_count, **kwargs):
+    user_manager = kwargs.get('user_manager', User.objects)
+    changelist = []
+
+    last_historical_objects = [
+        HistoricalPunchBlock.objects.all()[:items_count],
+        HistoricalPhone.objects.all()[:items_count],
+    ]
+
+    for objects_list in last_historical_objects:
+        changelist += [RecentChange(object, user_manager) for object in objects_list]
+
+    changelist = sorted(changelist,
+                        key=lambda object: object.historical_item.history_date,
+                        reverse=True
+                        )[:10]
+
+    print(changelist)
+
+    return {
+        'changelist': changelist,
+    }
