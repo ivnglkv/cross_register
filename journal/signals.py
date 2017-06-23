@@ -22,6 +22,7 @@ def pbxport_post_save(instance, created, **kwargs):
 
         last_port_state = instance.history.values()[0]
         last_saved_historical_port = HistoricalPBXPort.objects.get(pk=last_port_state['history_id'])
+        last_saved_historical_port.json_path = instance.json_path
         last_saved_historical_port.save()
 
 
