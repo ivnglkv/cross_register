@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django import template
 from django.contrib.auth.models import User
 from django.urls import reverse
@@ -65,6 +67,12 @@ class RecentChange:
 
         self.user = historical_item.history_user
 
+        self.new_object_state = historical_item.history_object.journal_str()
+
+        if historical_item.history_type == '~':
+            moment_earlier = historical_item.history_date - timedelta(microseconds=1)
+            self.old_object_state = historical_item.history_object.history.as_of(moment_earlier).journal_str()
+
         pass
 
     def __repr__(self):
@@ -88,8 +96,6 @@ def recent_changes(items_count, **kwargs):
                         key=lambda object: object.historical_item.history_date,
                         reverse=True
                         )[:10]
-
-    print(changelist)
 
     return {
         'changelist': changelist,
