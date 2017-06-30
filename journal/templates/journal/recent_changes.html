@@ -2,7 +2,7 @@
 
 {% for change in changelist %}
   <p>
-    <img src="{% static change.icon %}" alt=>
+    <img src="{% static change.icon %}" alt="{{ change.historical_item.history_type }}">
     {% if change.user %}
       {{ change.user.last_name }} {{ change.user.first_name }}
     {% else %}
