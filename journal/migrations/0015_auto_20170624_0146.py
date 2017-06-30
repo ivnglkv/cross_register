@@ -8,7 +8,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('journal', '0014_auto_20170622_1652'),
+        ('journal', 'fill_child_class'),
     ]
 
     operations = [
