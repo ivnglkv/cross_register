@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('journal', '0010_auto_20170621_1248'),
+        ('journal', '0009_auto_20170630_1515'),
     ]
 
     operations = [
@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='punchblock',
             name='type_tmp',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='journal.PunchBlockType', verbose_name='тип'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='journal.PunchBlockType', verbose_name='тип'),
             preserve_default=False,
         ),
     ]

@@ -8,15 +8,6 @@ from .models import CrossPoint, PBXPort, PunchBlock, PunchBlockType
 
 
 class CrosspointField(CharField):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.punchblock_types = PunchBlockType.objects.all()
-        self.patterns_types_list = []
-
-        for pb_type in self.punchblock_types:
-            self.patterns_types_list.append((re.compile(pb_type.regexp), pb_type))
-
     def prepare_value(self, value):
         result = ''
 
@@ -31,7 +22,13 @@ class CrosspointField(CharField):
     def clean(self, value):
         result = None
 
-        for pattern_type in self.patterns_types_list:
+        punchblock_types = PunchBlockType.objects.all()
+        patterns_types_list = []
+
+        for pb_type in punchblock_types:
+            patterns_types_list.append((re.compile(pb_type.regexp), pb_type))
+
+        for pattern_type in patterns_types_list:
             match = pattern_type[0].match(value)
 
             if match:
