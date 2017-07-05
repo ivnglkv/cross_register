@@ -7,10 +7,7 @@ from simple_history.models import HistoricalRecords
 
 
 class BaseHistoryTrackerModel(models.Model):
-    history = HistoricalRecords(inherit=True,
-                                excluded_fields=[
-                                    'child_class',
-                                ])
+    history = HistoricalRecords(inherit=True)
 
     class Meta:
         abstract = True
