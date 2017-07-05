@@ -9,7 +9,6 @@ from .forms import (
 from .models import (
     Building,
     Cabinet,
-    Location,
     PBX,
     PBXPort,
     PBXRoom,
@@ -24,7 +23,6 @@ from .models import (
 admin.site.register(
     [Building,
      Cabinet,
-     Location,
      PBX,
      PBXRoom,
      PunchBlockType,
