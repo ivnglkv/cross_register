@@ -42,6 +42,19 @@ def crosspoint_pre_save(instance, **kwargs):
             get_parent_and_invalidate_json_path(instance)
 
 
+def autocreate_location(instance, created, **kwargs):
+    if created and not kwargs.get('raw', False):
+        from .models import Cabinet, Location, Room
+
+        new_location = Location()
+        if isinstance(instance, Cabinet):
+            new_location.cabinet = instance
+        elif isinstance(instance, Room):
+            new_location.room = instance
+
+        new_location.save()
+
+
 def crosspoint_post_save(instance, **kwargs):
     if not kwargs.get('raw', False):
         from .models import PBXPort
