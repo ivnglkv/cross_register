@@ -22,6 +22,9 @@ class CrosspointField(CharField):
     def clean(self, value):
         result = None
 
+        if len(value) == 0:
+            return result
+
         punchblock_types = PunchBlockType.objects.all()
         patterns_types_list = []
 
