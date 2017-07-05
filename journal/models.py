@@ -159,6 +159,10 @@ class CrossPoint(BaseHistoryTrackerModel):
     def journal_str(self):
         return self.get_subclass().objects.get(crosspoint_ptr=self.pk).journal_str()
 
+    def save(self, *args, **kwargs):
+        self.child_class = self.__class__.__name__
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return(str(self.get_subclass().objects.get(crosspoint_ptr=self.pk)))
 

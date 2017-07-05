@@ -47,12 +47,6 @@ def crosspoint_post_save(instance, **kwargs):
         from .models import PBXPort
         from .utils import CrosspathPointEncoder, get_crosspath
 
-        if len(instance.child_class) == 0:
-            subclass = instance.get_subclass().__name__
-
-            instance.child_class = subclass
-            instance.save_without_historical_record()
-
         invalid_ports = PBXPort.objects.filter(json_path=INVALID_JSON_PATH_MARK)
 
         if invalid_ports:
