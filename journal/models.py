@@ -318,6 +318,11 @@ class PunchBlock(CrossPoint):
         else:
             result += '{}/{}'.format(self.number, self.location.cabinet.number)
 
+        parent_pbx_port = self.get_parent()
+
+        if parent_pbx_port:
+            result += ' (тел. {})'.format(parent_pbx_port.subscriber_number)
+
         return result
 
     class Meta:
