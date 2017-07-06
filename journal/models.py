@@ -361,10 +361,10 @@ class Subscriber(BaseHistoryTrackerModel):
     first_name = models.CharField(verbose_name='имя', max_length=30)
     last_name = models.CharField(verbose_name='фамилия', max_length=40)
     patronymic = models.CharField(verbose_name='отчество', max_length=35, blank=True)
-    phone = models.ManyToManyField(Phone,
-                                   verbose_name='телефоны',
-                                   related_name='subscribers',
-                                   blank=True)
+    phones = models.ManyToManyField(Phone,
+                                    verbose_name='телефоны',
+                                    related_name='subscribers',
+                                    blank=True)
 
     class Meta:
         verbose_name = 'абонент'
