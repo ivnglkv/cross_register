@@ -314,9 +314,9 @@ class PunchBlock(CrossPoint):
         result = self.type.short_name
 
         if self.is_station:
-            result = result + 'с{}'.format(self.number)
+            result += 'с{}'.format(self.number)
         else:
-            result = result + '{}/{}'.format(self.number, self.location.cabinet.number)
+            result += '{}/{}'.format(self.number, self.location.cabinet.number)
 
         return result
 
