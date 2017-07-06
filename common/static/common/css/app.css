@@ -1,5 +1,10 @@
+html, body {
+  height: 100%;
+  background: aliceblue repeat;
+}
+
 .top-bar {
-  margin-bottom: 20px;
+  margin-bottom: 1rem;
 }
 
 .crosspath {
@@ -17,4 +22,12 @@
 
 .top-bar-search {
   margin-bottom: 0rem;
+}
+
+.content-row {
+  background: white repeat;
+  position: relative;
+  top: -1rem;
+  min-height: calc(100% - 56px - 1rem);
+  padding-top: 1rem;
 }

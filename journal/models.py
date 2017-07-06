@@ -1,3 +1,4 @@
+import sys
 from json import dumps, loads
 
 from django.db import models
@@ -106,6 +107,10 @@ class CrossPoint(BaseHistoryTrackerModel):
                                     null=True,
                                     blank=True,
                                     )
+    child_class = models.CharField(verbose_name='дочерний класс',
+                                   max_length=100,
+                                   blank=True,
+                                   editable=False)
 
     def get_subclass(self):
         """
@@ -114,15 +119,7 @@ class CrossPoint(BaseHistoryTrackerModel):
         формирования строкового представления, специфичного для этого подкласса
         """
 
-        result = None
-
-        for cp_subclass in CrossPoint.__subclasses__():
-            try:
-                cp_subclass.objects.get(crosspoint_ptr=self.pk)
-                result = cp_subclass
-            except models.ObjectDoesNotExist as e:
-                pass
-        return result
+        return getattr(sys.modules[self.__module__], self.child_class)
 
     def get_parent(self):
         """
@@ -161,6 +158,13 @@ class CrossPoint(BaseHistoryTrackerModel):
 
     def journal_str(self):
         return self.get_subclass().objects.get(crosspoint_ptr=self.pk).journal_str()
+
+    def changes_str(self):
+        return self.get_subclass().objects.get(crosspoint_ptr=self.pk).changes_str()
+
+    def save(self, *args, **kwargs):
+        self.child_class = self.__class__.__name__
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return(str(self.get_subclass().objects.get(crosspoint_ptr=self.pk)))
@@ -289,6 +293,16 @@ class PunchBlock(CrossPoint):
     def journal_str(self):
         return str(self)
 
+    def changes_str(self):
+        src_phone = self.get_parent()
+
+        result = self.journal_str()
+
+        if src_phone is not None:
+            result += '(тел. {})'.format(src_phone.subscriber_number)
+
+        return result
+
     def __str__(self):
         result = self.type.short_name
 
@@ -331,6 +345,9 @@ class Phone(CrossPoint):
             res += ')'
 
         return res.format(self.location, subscribers)
+
+    def changes_str(self):
+        return 'тел. {} ({})'.format(self, self.journal_str())
 
     class Meta:
         verbose_name = 'телефон'

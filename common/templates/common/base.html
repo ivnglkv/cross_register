@@ -48,9 +48,12 @@
     </div>
   </div>
 
-  <div class="row">
-    {% block page %}{% endblock %}
-  </div>
+    <div class="row content-row">
+      <div class="small-1 column"></div>
+      <div class="small-11 column">
+        {% block page %}{% endblock %}
+      </div>
+    </div>
 
   {% block js %}
     <script src="{% static 'common/js/vendor/jquery.js' %}"></script>
