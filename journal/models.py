@@ -159,6 +159,9 @@ class CrossPoint(BaseHistoryTrackerModel):
     def journal_str(self):
         return self.get_subclass().objects.get(crosspoint_ptr=self.pk).journal_str()
 
+    def changes_str(self):
+        return self.get_subclass().objects.get(crosspoint_ptr=self.pk).changes_str()
+
     def save(self, *args, **kwargs):
         self.child_class = self.__class__.__name__
         super().save(*args, **kwargs)
@@ -290,6 +293,16 @@ class PunchBlock(CrossPoint):
     def journal_str(self):
         return str(self)
 
+    def changes_str(self):
+        src_phone = self.get_parent()
+
+        result = self.journal_str()
+
+        if src_phone is not None:
+            result += '(тел. {})'.format(src_phone.subscriber_number)
+
+        return result
+
     def __str__(self):
         result = self.type.short_name
 
@@ -332,6 +345,9 @@ class Phone(CrossPoint):
             res += ')'
 
         return res.format(self.location, subscribers)
+
+    def changes_str(self):
+        return 'тел. {} ({})'.format(self, self.journal_str())
 
     class Meta:
         verbose_name = 'телефон'
