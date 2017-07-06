@@ -9,7 +9,7 @@ class JournalConfig(AppConfig):
     def ready(self):
         import journal.signals as journal_signals
 
-        from .models import Cabinet, CrossPoint, PBXPort, PunchBlock, Phone, Room
+        from .models import Cabinet, CrossPoint, PBXPort, PunchBlock, Phone, Room, Subscriber
 
         signals.post_save.connect(journal_signals.pbxport_post_save, sender=PBXPort)
 
@@ -23,3 +23,5 @@ class JournalConfig(AppConfig):
 
         signals.post_save.connect(journal_signals.autocreate_location, sender=Cabinet)
         signals.post_save.connect(journal_signals.autocreate_location, sender=Room)
+
+        signals.m2m_changed.connect(journal_signals.subscriber_phones_changed, sender=Subscriber.phones.through)

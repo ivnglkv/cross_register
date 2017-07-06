@@ -71,3 +71,19 @@ def autocreate_location(instance, created, **kwargs):
 def crosspoint_post_save(instance, **kwargs):
     if not kwargs.get('raw', False):
         restore_json_path()
+
+
+def subscriber_phones_changed(instance, action, reverse, model, pk_set, **kwargs):
+    from .models import Phone
+
+    pre_actions = ['pre_add', 'pre_remove', 'pre_clean']
+    post_actions = ['post_add', 'post_remove', 'post_clean']
+
+    if action in pre_actions:
+        phones_set = Phone.objects.filter(pk__in=pk_set)
+        pbx_ports = set(map(lambda x: x.get_parent(), phones_set))
+
+        for pbx_port in pbx_ports:
+            invalidate_json_path(pbx_port)
+    elif action in post_actions:
+        restore_json_path()
