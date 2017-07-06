@@ -243,6 +243,13 @@ class PBXPort(CrossPoint):
     def journal_str(self):
         return '{}'.format(self.subscriber_number)
 
+    def update_json(self):
+        from .utils import CrosspathPointEncoder, get_crosspath
+
+        cp = get_crosspath(self.pk)
+        self.json_path = dumps(cp, cls=CrosspathPointEncoder)
+        self.save()
+
     class Meta:
         verbose_name = 'порт АТС'
         verbose_name_plural = 'порты АТС'

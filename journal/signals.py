@@ -4,6 +4,20 @@ from json import dumps
 INVALID_JSON_PATH_MARK = 'INVALID'
 
 
+def invalidate_json_path(pbx_port):
+    pbx_port.json_path = INVALID_JSON_PATH_MARK
+    pbx_port.save_without_historical_record()
+
+
+def restore_json_path():
+    from .models import PBXPort
+
+    invalid_ports = PBXPort.objects.filter(json_path=INVALID_JSON_PATH_MARK)
+
+    for pbx_port in invalid_ports:
+        pbx_port.update_json()
+
+
 def pbxport_post_save(instance, created, **kwargs):
     if created and not kwargs.get('raw', False):
         from .models import HistoricalPBXPort
@@ -31,8 +45,7 @@ def crosspoint_pre_save(instance, **kwargs):
         pbxport = crosspoint.get_parent()
 
         if pbxport:
-            pbxport.json_path = INVALID_JSON_PATH_MARK
-            pbxport.save_without_historical_record()
+            invalidate_json_path(pbxport)
 
     if not kwargs.get('raw', False):
         if instance.destination is not None:
@@ -57,15 +70,4 @@ def autocreate_location(instance, created, **kwargs):
 
 def crosspoint_post_save(instance, **kwargs):
     if not kwargs.get('raw', False):
-        from .models import PBXPort
-        from .utils import CrosspathPointEncoder, get_crosspath
-
-        invalid_ports = PBXPort.objects.filter(json_path=INVALID_JSON_PATH_MARK)
-
-        if invalid_ports:
-            cp = get_crosspath(tuple(port.pk for port in invalid_ports))
-
-            for pbxport_point in cp:
-                pbxport = PBXPort.objects.get(pk=pbxport_point.crosspoint_id)
-                pbxport.json_path = dumps(pbxport_point, cls=CrosspathPointEncoder)
-                pbxport.save()
+        restore_json_path()
