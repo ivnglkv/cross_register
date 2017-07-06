@@ -10,7 +10,7 @@
     {% endif %}
     {{ change.action }}
     {% if change.historical_item.history_type == '~' %}
-      {{ change.last_object_state }} на
+      {{ change.old_object_state }} на
     {% endif %}
     {{ change.new_object_state }}
   </p>
