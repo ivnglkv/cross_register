@@ -9,7 +9,7 @@
 
   {% block css %}
     {% load staticfiles %}
-      <link rel="stylesheet" href="{% static 'common/css/foundation.css' %}">
+      <link rel="stylesheet" href="{% static 'common/css/foundation.min.css' %}">
       <link rel="stylesheet" href="{% static 'common/css/app.css' %}">
   {% endblock%}
 </head>
@@ -56,9 +56,9 @@
     </div>
 
   {% block js %}
-    <script src="{% static 'common/js/vendor/jquery.js' %}"></script>
+    <script src="{% static 'common/js/vendor/jquery.min.js' %}"></script>
     <script src="{% static 'common/js/vendor/what-input.js' %}"></script>
-    <script src="{% static 'common/js/vendor/foundation.js' %}"></script>
+    <script src="{% static 'common/js/vendor/foundation.min.js' %}"></script>
     <script src="{% static 'common/js/app.js' %}"></script>
   {% endblock js %}
 </body>
