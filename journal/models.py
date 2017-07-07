@@ -301,14 +301,7 @@ class PunchBlock(CrossPoint):
         return str(self)
 
     def changes_str(self):
-        src_phone = self.get_parent()
-
-        result = self.journal_str()
-
-        if src_phone is not None:
-            result += '(тел. {})'.format(src_phone.subscriber_number)
-
-        return result
+        return str(self)
 
     def __str__(self):
         result = self.type.short_name
