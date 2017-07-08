@@ -101,12 +101,12 @@ class Location(BaseHistoryTrackerModel):
 class CrossPoint(BaseHistoryTrackerModel):
     location = models.ForeignKey(Location,
                                  verbose_name='расположение')
-    destination = models.ForeignKey('self',
-                                    verbose_name='направление',
-                                    related_name='incoming',
-                                    null=True,
-                                    blank=True,
-                                    )
+    source = models.ForeignKey('self',
+                               verbose_name='откуда приходит',
+                               related_name='destinations',
+                               null=True,
+                               blank=True,
+                               )
     child_class = models.CharField(verbose_name='дочерний класс',
                                    max_length=100,
                                    blank=True,
@@ -152,9 +152,9 @@ class CrossPoint(BaseHistoryTrackerModel):
         return src
 
     def clean(self):
-        if self.pk and self.destination:
-            if self.destination.pk == self.pk:
-                raise ValidationError({'destination': 'Нельзя составлять кольцевые связи'})
+        if self.pk and self.source:
+            if self.source.pk == self.pk:
+                raise ValidationError({'source': 'Нельзя составлять кольцевые связи'})
 
     def journal_str(self):
         return self.get_subclass().objects.get(crosspoint_ptr=self.pk).journal_str()
