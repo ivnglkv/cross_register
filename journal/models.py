@@ -109,7 +109,7 @@ class CrossPoint(BaseHistoryTrackerModel):
                                     )
     source = models.ForeignKey('self',
                                verbose_name='откуда приходит',
-                               related_name='+',
+                               related_name='destinations',
                                null=True,
                                blank=True,
                                )
