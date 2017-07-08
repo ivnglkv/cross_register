@@ -101,12 +101,6 @@ class Location(BaseHistoryTrackerModel):
 class CrossPoint(BaseHistoryTrackerModel):
     location = models.ForeignKey(Location,
                                  verbose_name='расположение')
-    destination = models.ForeignKey('self',
-                                    verbose_name='направление',
-                                    related_name='incoming',
-                                    null=True,
-                                    blank=True,
-                                    )
     source = models.ForeignKey('self',
                                verbose_name='откуда приходит',
                                related_name='destinations',
