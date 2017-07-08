@@ -48,8 +48,8 @@ def crosspoint_pre_save(instance, **kwargs):
             invalidate_json_path(pbxport)
 
     if not kwargs.get('raw', False):
-        if instance.destination is not None:
-            get_parent_and_invalidate_json_path(instance.destination)
+        if instance.source is not None:
+            get_parent_and_invalidate_json_path(instance.source)
 
         if instance.pk is not None:
             get_parent_and_invalidate_json_path(instance)

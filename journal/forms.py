@@ -16,13 +16,13 @@ class PunchBlockForm(ModelForm):
                                     Q(cabinet__isnull=False) |
                                     Q(room__pbxroom__isnull=False)),
                                 )
-    destination = CrosspointField(label='Откуда приходит',
-                                  required=False,
-                                  )
+    source = CrosspointField(label='Откуда приходит',
+                             required=False,
+                             )
 
     class Meta:
         model = PunchBlock
-        fields = ['type', 'location', 'destination', 'number', 'is_station']
+        fields = ['type', 'location', 'source', 'number', 'is_station']
 
 
 class PhoneForm(ModelForm):
@@ -30,13 +30,13 @@ class PhoneForm(ModelForm):
                                 queryset=Location.objects.filter(
                                     Q(room__isnull=False))
                                 )
-    destination = CrosspointField(label='Откуда приходит',
-                                  required=False,
-                                  )
+    source = CrosspointField(label='Откуда приходит',
+                             required=False,
+                             )
 
     class Meta:
         model = Phone
-        fields = ['location', 'destination']
+        fields = ['location', 'source']
 
 
 class PBXPortForm(ModelForm):
