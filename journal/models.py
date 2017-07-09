@@ -315,9 +315,9 @@ class PunchBlock(CrossPoint):
         result = self.type.short_name
 
         if self.is_station:
-            result += 'с{}'.format(self.number)
+            result += 'с{}'.format(self.char_number)
         else:
-            result += '{}/{}'.format(self.number, self.location.cabinet.number)
+            result += '{}/{}'.format(self.char_number, self.location.cabinet.number)
 
         parent_pbx_port = self.get_parent()
 

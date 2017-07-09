@@ -42,13 +42,13 @@ class CrosspointField(CharField):
                 else:
                     pb_is_station = False
 
-                pb_number = int(match.group(pb_type.number_group))
+                pb_number = match.group(pb_type.number_group)
                 pb_location = match.group(pb_type.location_group)
 
                 try:
                     result = PunchBlock.objects.get(type=pb_type,
                                                     is_station=pb_is_station,
-                                                    number=pb_number,
+                                                    char_number=pb_number,
                                                     location__cabinet__number=pb_location)
                 except ObjectDoesNotExist:
                     pass
