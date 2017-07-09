@@ -295,10 +295,10 @@ class PunchBlock(CrossPoint):
         ('trunk', 'Магистраль'),
     )
 
-    char_number = models.CharField(verbose_name='номер',
-                                   max_length=4,
-                                   blank=True,
-                                   null=True)
+    number = models.CharField(verbose_name='номер',
+                              max_length=4,
+                              blank=True,
+                              null=True)
     type = models.ForeignKey(PunchBlockType,
                              verbose_name='тип')
     is_station = models.BooleanField(verbose_name='станционная (-ое)',
@@ -314,9 +314,9 @@ class PunchBlock(CrossPoint):
         result = self.type.short_name
 
         if self.is_station:
-            result += 'с{}'.format(self.char_number)
+            result += 'с{}'.format(self.number)
         else:
-            result += '{}/{}'.format(self.char_number, self.location.cabinet.number)
+            result += '{}/{}'.format(self.number, self.location.cabinet.number)
 
         parent_pbx_port = self.get_parent()
 

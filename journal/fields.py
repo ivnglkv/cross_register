@@ -48,7 +48,7 @@ class CrosspointField(CharField):
                 try:
                     result = PunchBlock.objects.get(type=pb_type,
                                                     is_station=pb_is_station,
-                                                    char_number=pb_number,
+                                                    number=pb_number,
                                                     location__cabinet__number=pb_location)
                 except ObjectDoesNotExist:
                     pass
