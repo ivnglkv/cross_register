@@ -33,6 +33,12 @@ admin.site.register(
 )
 
 
+def update_json_path(modeladmin, request, queryset):
+    for pbx_port in queryset:
+        pbx_port.update_json(save_without_historical_record=True)
+update_json_path.short_description = 'Обновить отображение в журнале'
+
+
 @admin.register(PunchBlock)
 class PunchBlockAdmin(SimpleHistoryAdmin):
     form = PunchBlockForm
@@ -46,3 +52,6 @@ class PhoneAdmin(SimpleHistoryAdmin):
 @admin.register(PBXPort)
 class PBXPortAdmin(SimpleHistoryAdmin):
     form = PBXPortForm
+    actions = [
+        update_json_path,
+    ]
