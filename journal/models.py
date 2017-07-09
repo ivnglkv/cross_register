@@ -295,7 +295,6 @@ class PunchBlock(CrossPoint):
         ('trunk', 'Магистраль'),
     )
 
-    number = models.SmallIntegerField(verbose_name='номер')
     char_number = models.CharField(verbose_name='номер',
                                    max_length=4,
                                    blank=True,
