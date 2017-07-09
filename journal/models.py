@@ -243,12 +243,16 @@ class PBXPort(CrossPoint):
     def journal_str(self):
         return '{}'.format(self.subscriber_number)
 
-    def update_json(self):
+    def update_json(self, save_without_historical_record=False):
         from .utils import CrosspathPointEncoder, get_crosspath
 
         cp = get_crosspath(self.pk)
         self.json_path = dumps(cp, cls=CrosspathPointEncoder)
-        self.save()
+
+        if not save_without_historical_record:
+            self.save()
+        else:
+            self.save_without_historical_record()
 
     class Meta:
         verbose_name = 'порт АТС'
