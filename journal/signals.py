@@ -40,7 +40,7 @@ def pbxport_post_save(instance, created, **kwargs):
         last_saved_historical_port.save()
 
 
-def crosspoint_pre_save(instance, **kwargs):
+def on_crosspoint_pre_change(instance, **kwargs):
     def get_parent_and_invalidate_json_path(crosspoint):
         pbxport = crosspoint.get_parent()
 
@@ -68,7 +68,7 @@ def autocreate_location(instance, created, **kwargs):
         new_location.save()
 
 
-def crosspoint_post_save(instance, **kwargs):
+def on_crosspoint_post_change(instance, **kwargs):
     if not kwargs.get('raw', False):
         restore_json_path()
 
