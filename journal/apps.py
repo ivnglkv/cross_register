@@ -13,13 +13,17 @@ class JournalConfig(AppConfig):
 
         signals.post_save.connect(journal_signals.pbxport_post_save, sender=PBXPort)
 
-        signals.pre_save.connect(journal_signals.crosspoint_pre_save, sender=PunchBlock)
-        signals.pre_save.connect(journal_signals.crosspoint_pre_save, sender=Phone)
+        signals.pre_save.connect(journal_signals.on_crosspoint_pre_change, sender=PunchBlock)
+        signals.pre_save.connect(journal_signals.on_crosspoint_pre_change, sender=Phone)
+        signals.pre_delete.connect(journal_signals.on_crosspoint_pre_change, sender=PunchBlock)
+        signals.pre_delete.connect(journal_signals.on_crosspoint_pre_change, sender=Phone)
 
-        signals.post_save.connect(journal_signals.crosspoint_post_save, sender=PunchBlock)
-        signals.post_save.connect(journal_signals.crosspoint_post_save, sender=Phone)
+        signals.post_save.connect(journal_signals.on_crosspoint_post_change, sender=PunchBlock)
+        signals.post_save.connect(journal_signals.on_crosspoint_post_change, sender=Phone)
 
-        signals.post_save.connect(journal_signals.crosspoint_post_save, sender=CrossPoint)
+        signals.post_save.connect(journal_signals.on_crosspoint_post_change, sender=CrossPoint)
+
+        signals.post_delete.connect(journal_signals.on_crosspoint_post_change, sender=CrossPoint)
 
         signals.post_save.connect(journal_signals.autocreate_location, sender=Cabinet)
         signals.post_save.connect(journal_signals.autocreate_location, sender=Room)
