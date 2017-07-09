@@ -298,12 +298,12 @@ class PunchBlock(CrossPoint):
                                      blank=True)
 
     def journal_str(self):
-        return str(self)
+        return self.__str__(add_phone=False)
 
     def changes_str(self):
         return str(self)
 
-    def __str__(self):
+    def __str__(self, add_phone=True):
         result = self.type.short_name
 
         if self.is_station:
@@ -313,7 +313,7 @@ class PunchBlock(CrossPoint):
 
         parent_pbx_port = self.get_parent()
 
-        if parent_pbx_port:
+        if parent_pbx_port and add_phone:
             result += ' (тел. {})'.format(parent_pbx_port.subscriber_number)
 
         return result
