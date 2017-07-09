@@ -42,7 +42,7 @@ class CrosspointField(CharField):
                 else:
                     pb_is_station = False
 
-                pb_number = int(match.group(pb_type.number_group))
+                pb_number = match.group(pb_type.number_group)
                 pb_location = match.group(pb_type.location_group)
 
                 try:

@@ -295,7 +295,10 @@ class PunchBlock(CrossPoint):
         ('trunk', 'Магистраль'),
     )
 
-    number = models.SmallIntegerField(verbose_name='номер')
+    number = models.CharField(verbose_name='номер',
+                              max_length=4,
+                              blank=True,
+                              null=True)
     type = models.ForeignKey(PunchBlockType,
                              verbose_name='тип')
     is_station = models.BooleanField(verbose_name='станционная (-ое)',
