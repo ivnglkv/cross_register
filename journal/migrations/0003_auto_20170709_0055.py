@@ -10,7 +10,7 @@ def migrate_destination_to_source(apps, schema_editor):
 
     for cp in CrossPoint.objects.all():
         cp.source = cp.destination
-        cp.save_without_historical_record()
+        cp.save()
 
 
 class Migration(migrations.Migration):
