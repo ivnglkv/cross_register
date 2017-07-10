@@ -1,3 +1,9 @@
+"""
+Release: 0.1
+Author: Golikov Ivan
+Date: 10.07.2017
+"""
+
 from django.forms import ModelForm, ModelChoiceField
 from django.db.models import Q
 

@@ -1,3 +1,7 @@
+-- Release: 0.1
+-- Author: Golikov Ivan
+-- Date: 10.07.2017
+
 WITH RECURSIVE cable_path (location_id, id, source_id, main_src_id, level) AS
   (SELECT location_id,
           id,

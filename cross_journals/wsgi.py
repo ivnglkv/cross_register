@@ -1,4 +1,8 @@
 """
+Release: 0.1
+Author: Golikov Ivan
+Date: 10.07.2017
+
 WSGI config for cross_journals project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
