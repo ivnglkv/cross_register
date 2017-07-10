@@ -186,6 +186,7 @@ class PBX(BaseHistoryTrackerModel):
     location = models.ForeignKey(Location,
                                  verbose_name='расположение')
     description = models.CharField(verbose_name='примечание',
+                                   help_text='Подразделение, которое обслуживает АТС',
                                    max_length=30,
                                    blank=True)
 
