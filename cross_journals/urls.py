@@ -1,4 +1,7 @@
 """cross_journals URL Configuration
+Release: 0.1
+Author: Golikov Ivan
+Date: 10.07.2017
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.11/topics/http/urls/

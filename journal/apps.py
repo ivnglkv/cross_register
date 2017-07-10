@@ -1,3 +1,9 @@
+"""
+Release: 0.1
+Author: Golikov Ivan
+Date: 10.07.2017
+"""
+
 from django.apps import AppConfig
 from django.db.models import signals
 
