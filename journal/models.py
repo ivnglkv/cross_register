@@ -184,9 +184,7 @@ class PBX(BaseHistoryTrackerModel):
                                     max_length=10)
     model = models.CharField(verbose_name='модель', max_length=40)
     location = models.ForeignKey(Location,
-                                 verbose_name='расположение',
-                                 blank=True,
-                                 null=True)
+                                 verbose_name='расположение')
     description = models.CharField(verbose_name='примечание',
                                    max_length=30,
                                    blank=True)
