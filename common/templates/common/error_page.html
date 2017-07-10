@@ -1,0 +1,23 @@
+{% comment %}
+  Release: 0.1
+  Author: Golikov Ivan
+  Date: 10.07.2017
+{% endcomment %}
+
+{% extends "common/base.html" %}
+
+{% block page %}
+  <h1>
+    {% block error-message %}
+    {% endblock error-message %}
+  </h1>
+
+  <p>
+    {% block help-text %}
+    {% endblock help-text %}
+  </p>
+
+  {% block return %}
+    <p><a href="javascript:history.back()">← Вернуться назад</a></p>
+  {% endblock return %}
+{% endblock page %}

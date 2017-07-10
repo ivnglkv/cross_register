@@ -1,0 +1,19 @@
+{% comment %}
+  Release: 0.1
+  Author: Golikov Ivan
+  Date: 10.07.2017
+{% endcomment %}
+
+{% extends "common/error_page.html" %}
+
+{% block title %}
+  400: Bad Request
+{% endblock title %}
+
+{% block error-message %}
+  Неправильный запрос
+{% endblock error-message %}
+
+{% block help-text %}
+  Либо вы где-то допустили ошибку, либо ваш браузер вас подводит!
+{% endblock help-text %}

@@ -1,0 +1,34 @@
+{% comment %}
+  Release: 0.1
+  Author: Golikov Ivan
+  Date: 10.07.2017
+{% endcomment %}
+
+{% extends "common/base.html" %}
+
+{% load journal_extras %}
+
+{% block title %}
+    Карточка телефона №{{ pbxport.subscriber_number }}
+{% endblock title %}
+
+{% block page %}
+  <h3>Телефон №{{ pbxport.subscriber_number }}</h3>
+  <p><b>АТС:</b> {{ pbxport.pbx }}</p>
+  <table class="crosspath">
+  {% autoescape off %}
+    {% get_point_path_table point 1 0 %}
+  {% endautoescape %}
+  </table>
+
+  <p><b>Последние изменения:</b>
+  {% if last_edit_person %}
+    {% if last_edit_person.last_name or last_edit_person.first_name %}
+      {{ last_edit_person.last_name }} {{ last_edit_person.first_name }}
+    {% else %}
+      {{ last_edit_person.username }}
+    {% endif %}
+  {% else %}
+    Неизвестный пользователь
+  {% endif %}</p>
+{% endblock page %}

@@ -1,0 +1,20 @@
+{% comment %}
+  Release: 0.1
+  Author: Golikov Ivan
+  Date: 10.07.2017
+{% endcomment %}
+
+{% extends "common/error_page.html" %}
+
+{% block title %}
+  500: Internal Server Error
+{% endblock title %}
+
+{% block error-message %}
+  Ошибка приложения
+{% endblock error-message %}
+
+{% block help-text %}
+  Обязательно покажите эту страницу системному администратору и расскажите, как вы сюда попали,
+  чтобы он смог всё исправить!
+{% endblock help-text %}

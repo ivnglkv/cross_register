@@ -1,0 +1,23 @@
+{% comment %}
+  Release: 0.1
+  Author: Golikov Ivan
+  Date: 10.07.2017
+{% endcomment %}
+
+{% load staticfiles %}
+
+{% for change in changelist %}
+  <p>
+    <img src="{% static change.icon %}" alt="{{ change.historical_item.history_type }}">
+    {% if change.user %}
+      {{ change.user.last_name }} {{ change.user.first_name }}
+    {% else %}
+      Неизвестный пользователь
+    {% endif %}
+    {{ change.action }}
+    {% if change.historical_item.history_type == '~' %}
+      {{ change.old_object_state }} на
+    {% endif %}
+    {{ change.new_object_state }}
+  </p>
+{% endfor %}

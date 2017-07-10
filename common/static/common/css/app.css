@@ -1,0 +1,39 @@
+/*
+  Release: 0.1;
+  Authors: Golikov Ivan, Asaturan Kristina;
+  Date: 10.07.2017;
+*/
+
+html, body {
+  height: 100%;
+  background: aliceblue repeat;
+}
+
+.top-bar {
+  margin-bottom: 1rem;
+}
+
+.crosspath {
+  width: auto;
+  margin-bottom: 0rem;
+}
+
+.crosspath tbody td {
+  padding: 0.0rem 0.0rem 0.625rem;
+}
+
+.crosspath tbody tr:nth-child(even) {
+  background-color: #fff;
+}
+
+.top-bar-search {
+  margin-bottom: 0rem;
+}
+
+.content-row {
+  background: white repeat;
+  position: relative;
+  top: -1rem;
+  min-height: calc(100% - 56px - 1rem);
+  padding-top: 1rem;
+}

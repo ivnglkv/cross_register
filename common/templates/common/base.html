@@ -1,0 +1,71 @@
+{% comment %}
+  Release: 0.1
+  Authors: Golikov Ivan, Asaturan Kristina
+  Date: 10.07.2017
+{% endcomment %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="ru" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{% block title%}{% endblock %}</title>
+
+  {% block css %}
+    {% load staticfiles %}
+      <link rel="stylesheet" href="{% static 'common/css/foundation.min.css' %}">
+      <link rel="stylesheet" href="{% static 'common/css/app.css' %}">
+  {% endblock%}
+</head>
+<body>
+   <div class="top-bar">
+    <div class="top-bar-left">
+      <ul class="dropdown menu">
+        <li class="menu-text">Кроссовые журналы</li>
+        <li><a href="{% url 'index' %}">АТС</a></li>
+
+        {% if request.user.is_staff %}
+          <li><a href="{% url 'admin:index' %}">Администрирование</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    <div class="top-bar-right">
+      <ul class="menu">
+        <li>
+          <form action="{% url 'journal:search' %}" method="get">
+            <div class="input-group top-bar-search">
+              <input name="search_input" type="search" placeholder="Поиск…" class="input-group-field" >
+              <div class="input-group-button">
+                <input type="submit" class="button" value="Искать">
+              </div>
+            </div>
+          </form>
+        </li>
+        <li style="padding-left: 20px">
+          {% if request.user.is_authenticated %}
+            Вы вошли как {{ request.user.last_name }} {{ request.user.first_name }}
+          {% else %}
+            <a href="/admin/login/?next={{ request.path }} ">Войти</a>
+          {% endif %}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+    <div class="row content-row">
+      <div class="small-1 column"></div>
+      <div class="small-11 column">
+        {% block page %}{% endblock %}
+      </div>
+    </div>
+
+  {% block js %}
+    <script src="{% static 'common/js/vendor/jquery.min.js' %}"></script>
+    <script src="{% static 'common/js/vendor/what-input.js' %}"></script>
+    <script src="{% static 'common/js/vendor/foundation.min.js' %}"></script>
+    <script src="{% static 'common/js/app.js' %}"></script>
+  {% endblock js %}
+</body>
+</html>
