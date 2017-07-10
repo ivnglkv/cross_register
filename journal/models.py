@@ -191,7 +191,12 @@ class PBX(BaseHistoryTrackerModel):
                                    blank=True)
 
     def __str__(self):
-        return '{} {}'.format(self.get_manufacturer_display(), self.model)
+        result = '{} {}'.format(self.get_manufacturer_display(), self.model)
+
+        if len(self.description) > 0:
+            result += ' ({})'.format(self.description)
+
+        return result
 
     class Meta:
         verbose_name = 'АТС'
