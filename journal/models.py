@@ -183,6 +183,13 @@ class PBX(BaseHistoryTrackerModel):
                                     choices=MANUFACTURERS,
                                     max_length=10)
     model = models.CharField(verbose_name='модель', max_length=40)
+    location = models.ForeignKey(Location,
+                                 verbose_name='расположение',
+                                 blank=True,
+                                 null=True)
+    description = models.CharField(verbose_name='примечание',
+                                   max_length=30,
+                                   blank=True)
 
     def __str__(self):
         return '{} {}'.format(self.get_manufacturer_display(), self.model)
