@@ -226,6 +226,8 @@ class PBXPort(CrossPoint):
                                              self.get_type_display())
 
     def save(self, *args, **kwargs):
+        self.location = self.pbx.location
+
         if self.pk:
             from .utils import (
                 CrosspathPointEncoder,

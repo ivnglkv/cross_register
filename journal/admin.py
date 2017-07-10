@@ -4,6 +4,7 @@ from simple_history.admin import SimpleHistoryAdmin
 from .forms import (
     PunchBlockForm,
     PhoneForm,
+    PBXForm,
     PBXPortForm,
 )
 from .models import (
@@ -23,7 +24,6 @@ from .models import (
 admin.site.register(
     [Building,
      Cabinet,
-     PBX,
      PBXRoom,
      PunchBlockType,
      Room,
@@ -47,6 +47,11 @@ class PunchBlockAdmin(SimpleHistoryAdmin):
 @admin.register(Phone)
 class PhoneAdmin(SimpleHistoryAdmin):
     form = PhoneForm
+
+
+@admin.register(PBX)
+class PBXAdmin(SimpleHistoryAdmin):
+    form = PBXForm
 
 
 @admin.register(PBXPort)
