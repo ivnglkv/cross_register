@@ -4,6 +4,7 @@ from django.db.models import Q
 from .fields import CrosspointField
 from .models import (
     Location,
+    PBX,
     PBXPort,
     Phone,
     PunchBlock,
@@ -40,6 +41,18 @@ class PhoneForm(ModelForm):
 
 
 class PBXPortForm(ModelForm):
+    class Meta:
+        model = PBXPort
+        fields = [
+            'pbx',
+            'number',
+            'type',
+            'subscriber_number',
+            'description',
+        ]
+
+
+class PBXForm(ModelForm):
     location = ModelChoiceField(label='Расположение',
                                 queryset=Location.objects.filter(
                                     Q(cabinet__isnull=False) |
@@ -47,12 +60,10 @@ class PBXPortForm(ModelForm):
                                 )
 
     class Meta:
-        model = PBXPort
+        model = PBX
         fields = [
+            'manufacturer',
+            'model',
             'location',
-            'pbx',
-            'number',
-            'type',
-            'subscriber_number',
             'description',
         ]
