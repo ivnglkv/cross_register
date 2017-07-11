@@ -7,8 +7,14 @@ Date: 10.07.2017
 import re
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.forms.fields import CharField
-from django.forms import ValidationError
+from django.forms.fields import CharField, ChoiceField
+from django.forms import (
+    ModelChoiceField,
+    ModelMultipleChoiceField,
+    Select,
+    SelectMultiple,
+    ValidationError,
+)
 
 from .models import CrossPoint, PBXPort, PunchBlock, PunchBlockType
 
@@ -72,3 +78,24 @@ class CrosspointField(CharField):
                                   'указан несуществующий плинт или телефон')
 
         return result
+
+
+class ChosenField(ChoiceField):
+    def __init__(self, *args, **kwargs):
+        kwargs['widget'] = Select(attrs={'class': 'chosen-select'})
+
+        super().__init__(*args, **kwargs)
+
+
+class ModelChosenField(ModelChoiceField):
+    def __init__(self, *args, **kwargs):
+        kwargs['widget'] = Select(attrs={'class': 'chosen-select'})
+
+        super().__init__(*args, **kwargs)
+
+
+class ModelMultipleChosenField(ModelMultipleChoiceField):
+    def __init__(self, *args, **kwargs):
+        kwargs['widget'] = SelectMultiple(attrs={'class': 'chosen-select'})
+
+        super().__init__(*args, **kwargs)
