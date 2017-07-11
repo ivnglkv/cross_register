@@ -11,14 +11,20 @@ from .fields import (
     ChosenField,
     CrosspointField,
     ModelChosenField,
+    ModelMultipleChosenField,
 )
 from .models import (
+    Building,
+    Cabinet,
     Location,
     PBX,
     PBXPort,
+    PBXRoom,
     Phone,
     PunchBlock,
     PunchBlockType,
+    Room,
+    Subscriber,
 )
 
 
@@ -107,4 +113,61 @@ class PBXForm(ModelForm):
             'model',
             'location',
             'description',
+        ]
+
+
+class RoomForm(ModelForm):
+    building = ModelChosenField(
+        label='Корпус',
+        queryset=Building.objects.all(),
+    )
+
+    class Meta:
+        model = Room
+        fields = [
+            'building',
+            'room',
+        ]
+
+
+class SubscriberForm(ModelForm):
+    phones = ModelMultipleChosenField(
+        label='Телефоны',
+        queryset=Phone.objects.all(),
+    )
+
+    class Meta:
+        model = Subscriber
+        fields = [
+            'first_name',
+            'last_name',
+            'patronymic',
+            'phones',
+        ]
+
+
+class PBXRoomForm(ModelForm):
+    room = ModelChosenField(
+        label='Помещение',
+        queryset=Room.objects.all(),
+    )
+
+    class Meta:
+        model = PBXRoom
+        fields = [
+            'room',
+        ]
+
+
+class CabinetForm(ModelForm):
+    room = ModelChosenField(
+        label='Расположение',
+        queryset=Room.objects.all(),
+    )
+
+    class Meta:
+        model = Cabinet
+        fields = [
+            'room',
+            'number',
         ]

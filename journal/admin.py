@@ -12,6 +12,10 @@ from .forms import (
     PhoneForm,
     PBXForm,
     PBXPortForm,
+    RoomForm,
+    PBXRoomForm,
+    SubscriberForm,
+    CabinetForm,
 )
 from .models import (
     Building,
@@ -29,11 +33,7 @@ from .models import (
 
 admin.site.register(
     [Building,
-     Cabinet,
-     PBXRoom,
      PunchBlockType,
-     Room,
-     Subscriber,
      ],
     admin_class=SimpleHistoryAdmin,
 )
@@ -66,3 +66,23 @@ class PBXPortAdmin(SimpleHistoryAdmin):
     actions = [
         update_json_path,
     ]
+
+
+@admin.register(Room)
+class RoomAdmin(SimpleHistoryAdmin):
+    form = RoomForm
+
+
+@admin.register(Subscriber)
+class SubscriberAdmin(SimpleHistoryAdmin):
+    form = SubscriberForm
+
+
+@admin.register(PBXRoom)
+class PBXRoomAdmin(SimpleHistoryAdmin):
+    form = PBXRoomForm
+
+
+@admin.register(Cabinet)
+class CabinetAdmin(SimpleHistoryAdmin):
+    form = CabinetForm
