@@ -20,7 +20,7 @@ class BaseHistoryTrackerModel(models.Model):
 
 
 class Building(BaseHistoryTrackerModel):
-    number = models.CharField(verbose_name='номер', max_length=5, unique=True)
+    number = models.CharField(verbose_name='номер', max_length=5)
     letter = models.CharField(verbose_name='литера', max_length=2, blank=True)
 
     def __str__(self):
@@ -34,6 +34,8 @@ class Building(BaseHistoryTrackerModel):
     class Meta:
         verbose_name = 'корпус'
         verbose_name_plural = 'корпуса'
+
+        unique_together = ('number', 'letter')
 
 
 class Room(BaseHistoryTrackerModel):
