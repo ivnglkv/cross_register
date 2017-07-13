@@ -223,10 +223,10 @@ class PBXPort(CrossPoint):
                             choices=PORT_TYPES,
                             default='analog',
                             max_length=10)
-    subscriber_number = models.PositiveSmallIntegerField(verbose_name='абонентский номер',
-                                                         blank=True,
-                                                         null=True,
-                                                         unique=True)
+    subscriber_number = models.PositiveIntegerField(verbose_name='абонентский номер',
+                                                    blank=True,
+                                                    null=True,
+                                                    unique=True)
     description = models.CharField(verbose_name='описание', max_length=150, blank=True)
     json_path = models.TextField(verbose_name='маршрут в формате JSON',
                                  blank=True,
