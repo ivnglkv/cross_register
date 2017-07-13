@@ -404,7 +404,10 @@ class Subscriber(BaseHistoryTrackerModel):
         verbose_name_plural = 'абоненты'
 
     def __str__(self):
-        return '{} {}.{}.'.format(self.last_name,
-                                  self.first_name[0],
-                                  self.patronymic[0]
-                                  )
+        result = '{} {}.'.format(self.last_name,
+                                 self.first_name[0],)
+
+        if len(self.patronymic) > 0:
+            result += '{}.'.format(self.patronymic[0])
+
+        return result
