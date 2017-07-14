@@ -141,30 +141,14 @@ class CrossPoint(BaseHistoryTrackerModel):
         Функция находит родительскую точку кросса для текущей точки,
         предполагая, что у всех точек родительской является порт АТС
         """
-        from django.db import connection
-        src = None
+        result = None
 
-        with connection.cursor() as cursor:
-            from os import path
-            from django.conf import settings
+        try:
+            result = PBXPort.objects.get(pk=self.main_source_id)
+        except:
+            pass
 
-            sqlfile = open(path.join(settings.BASE_DIR,
-                                     'journal',
-                                     'sql',
-                                     'get_crosspoint_parent.sql',
-                                     ),
-                           'r')
-            sql = sqlfile.read().replace('/n', ' ')
-
-            cursor.execute(sql.format(self.pk))
-
-            row = cursor.fetchone()
-            try:
-                src = PBXPort.objects.get(pk=row[0])
-            except:
-                pass
-
-        return src
+        return result
 
     def clean(self):
         if self.pk and self.source:
