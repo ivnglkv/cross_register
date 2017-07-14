@@ -73,13 +73,19 @@ class RecentChange:
 
         self.user = historical_item.history_user
 
-        self.new_object_state = historical_item.history_object.changes_str()
+        try:
+            self.new_object_state = historical_item.history_object.changes_str()
+        except:
+            self.new_object_state = ''
 
         if historical_item.history_type == '~':
             moment_earlier = historical_item.history_date - timedelta(microseconds=1)
-            self.old_object_state = historical_item.history_object.history.as_of(moment_earlier).changes_str()
-
-        pass
+            try:
+                self.old_object_state = historical_item.history_object.history.as_of(
+                    moment_earlier
+                    ).changes_str()
+            except:
+                self.old_object_state = ''
 
     def __repr__(self):
         return self.historical_item.__repr__()
