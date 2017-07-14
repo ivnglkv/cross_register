@@ -115,6 +115,13 @@ class CrossPoint(BaseHistoryTrackerModel):
                                null=True,
                                blank=True,
                                )
+    main_source = models.ForeignKey('self',
+                                    verbose_name='порт-источник',
+                                    related_name='childs',
+                                    null=True,
+                                    blank=True,
+                                    editable=False,
+                                    )
     child_class = models.CharField(verbose_name='дочерний класс',
                                    max_length=100,
                                    blank=True,
