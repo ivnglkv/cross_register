@@ -166,7 +166,8 @@ class CrossPoint(BaseHistoryTrackerModel):
         return self.get_subclass().objects.get(crosspoint_ptr=self.pk).changes_str()
 
     def save(self, *args, **kwargs):
-        self.child_class = self.__class__.__name__
+        if self.pk is None:
+            self.child_class = self.__class__.__name__
 
         if self.child_class != 'PBXPort' and self.source is not None:
             self.main_source = self.source.main_source
