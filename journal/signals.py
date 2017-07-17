@@ -88,6 +88,10 @@ def on_crosspoint_post_change(instance, **kwargs):
                 destination.level = instance.level + 1
                 destination.save_without_historical_record()
 
+        # ------------ISSUE------------
+        # Может ли возникнуть проблема, если не успеют сохраниться все точки из destinations
+        # перед этим местом?
+        # ------------ISSUE------------
         restore_json_path()
 
 

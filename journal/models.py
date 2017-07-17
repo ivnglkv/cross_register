@@ -107,6 +107,21 @@ class Location(BaseHistoryTrackerModel):
 
 
 class CrossPoint(BaseHistoryTrackerModel):
+    """Общее описание точки кросса
+
+    От CrossPoint должен наследоваться любой класс, представляющий пункт маршрута
+    линии от АТС до КРТ и розетки
+
+    Args:
+        location (obj): расположение точки. Подклассы CrossPoint могут накладывать ограничения на
+            возможные расположения точки
+        source (obj, optional): точка кросса, с которой приходит линия
+        main_source (obj, optional): точка кросса, являющаяся "головной" для текущей. В большинстве
+            случаев это будет PBXPort
+        level(int): уровень расположения относительно main_source
+        child_class(str): название класса конкретной точки кросса
+            Выставляется автоматически: НЕ ПЕРЕОПРЕДЕЛЯТЬ!!!
+    """
     location = models.ForeignKey(Location,
                                  verbose_name='расположение')
     source = models.ForeignKey('self',
