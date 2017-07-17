@@ -22,7 +22,9 @@ class CrosspathPoint:
     journal_str = ''
 
     def __init__(self, crosspoint=None):
-        if crosspoint is not None:
+        if type(crosspoint) == CrossPoint:
+            self.init_from_crosspoint(crosspoint)
+        elif crosspoint is not None:
             self.crosspoint_id = crosspoint['id']
             self.location_id = crosspoint['location_id']
             self.parent_id = crosspoint['parent']
@@ -42,6 +44,19 @@ class CrosspathPoint:
             pass
 
         self.destination = []
+
+    def init_from_crosspoint(self, crosspoint):
+        self.crosspoint_id = crosspoint.pk
+        self.location_id = crosspoint.location_id
+        self.parent_id = crosspoint.source_id
+        self.main_src_id = crosspoint.main_source_id
+        self.level = crosspoint.level
+
+        self.admin_url = reverse(
+            'admin:journal_{}_change'.format(crosspoint.get_subclass()._meta.model_name),
+            args=(self.crosspoint_id,))
+
+        self.journal_str = crosspoint.journal_str()
 
     def __str__(self):
         return self.__repr__()
@@ -133,6 +148,36 @@ def get_crosspath(source):
             current_crosspath_index += 1
 
     return crosspath if isinstance(source, tuple) else crosspath[0]
+
+
+def new_get_my_crosspath(source):
+    if hasattr(source, '__iter__'):
+        source_is_iterable = True
+        crosspoints_filter = {'main_src_id__in': source}
+    else:
+        source_is_iterable = False
+        crosspoints_filter = {'main_src_id': source}
+
+    crosspoints = CrossPoint.objects.filter(**crosspoints_filter)
+
+    crosspath = []
+    current_crosspath_index = -1
+
+    for point in crosspoints:
+        cur_point = CrosspathPoint(point)
+
+        if cur_point.level == 1:
+            crosspath[current_crosspath_index].destination.append(cur_point)
+        elif cur_point.level >= 2:
+            source_point = crosspath[current_crosspath_index]
+            parent = source_point.find_parent(cur_point.parent_id)
+            parent.destination.append(cur_point)
+            pass
+        else:
+            crosspath.append(cur_point)
+            current_crosspath_index += 1
+
+    return crosspath if source_is_iterable else crosspath[0]
 
 
 class CrosspathPointEncoder(JSONEncoder):
