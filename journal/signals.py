@@ -47,6 +47,8 @@ def pbxport_post_save(instance, created, **kwargs):
 
 
 def on_crosspoint_pre_change(instance, **kwargs):
+    from .models import CrossPoint
+
     def get_parent_and_invalidate_json_path(crosspoint):
         pbxport = crosspoint.get_parent()
 
@@ -57,8 +59,11 @@ def on_crosspoint_pre_change(instance, **kwargs):
         if instance.source is not None:
             get_parent_and_invalidate_json_path(instance.source)
 
-        if instance.pk is not None:
-            get_parent_and_invalidate_json_path(instance)
+        try:
+            old_instance = CrossPoint.objects.get(pk=instance.pk)
+            get_parent_and_invalidate_json_path(old_instance)
+        except:
+            pass
 
 
 def autocreate_location(instance, created, **kwargs):
@@ -76,14 +81,14 @@ def autocreate_location(instance, created, **kwargs):
 
 def on_crosspoint_post_change(instance, **kwargs):
     if not kwargs.get('raw', False):
-        restore_json_path()
-
         created_or_deleted = kwargs.get('created', True)
 
         if not created_or_deleted:
             for destination in instance.destinations.all():
                 destination.level = instance.level + 1
                 destination.save_without_historical_record()
+
+        restore_json_path()
 
 
 def subscriber_phones_changed(instance, action, reverse, model, pk_set, **kwargs):

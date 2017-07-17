@@ -105,77 +105,46 @@ def get_crosspath(source):
     и возвращает его либо в виде одиночного объекта CrosspathPoint (если source -- int),
     либо в виде списка CrosspathPoint (если source -- tuple)
     """
-    crosspoints = {}
-
-    with connection.cursor() as cursor:
-        from os import path
-        from django.conf import settings
-
-        sqlfile = open(path.join(settings.BASE_DIR,
-                                 'journal',
-                                 'sql',
-                                 'get_crosspath.sql',
-                                 ),
-                       'r')
-        sql = sqlfile.read()
-
-        if isinstance(source, tuple):
-            if len(source) == 1:
-                points_ids_str = '({})'.format(source[0])
-            elif len(source) > 1:
-                points_ids_str = '{}'.format(source)
-        elif isinstance(source, int):
-            points_ids_str = '({})'.format(source)
-
-        cursor.execute(sql.format(points_ids_str))
-        crosspoints = dictfetchall(cursor)
-
-    crosspath = []
-    current_crosspath_index = -1
-
-    for point in crosspoints:
-        cur_point = CrosspathPoint(point)
-
-        if cur_point.level == 1:
-            crosspath[current_crosspath_index].destination.append(cur_point)
-        elif cur_point.level >= 2:
-            source_point = crosspath[current_crosspath_index]
-            parent = source_point.find_parent(cur_point.parent_id)
-            parent.destination.append(cur_point)
-            pass
-        else:
-            crosspath.append(cur_point)
-            current_crosspath_index += 1
-
-    return crosspath if isinstance(source, tuple) else crosspath[0]
-
-
-def new_get_my_crosspath(source):
     if hasattr(source, '__iter__'):
         source_is_iterable = True
-        crosspoints_filter = {'main_src_id__in': source}
+        crosspoints_filter = {'main_source_id__in': source}
     else:
         source_is_iterable = False
-        crosspoints_filter = {'main_src_id': source}
+        crosspoints_filter = {'main_source_id': source}
 
     crosspoints = CrossPoint.objects.filter(**crosspoints_filter)
 
     crosspath = []
     current_crosspath_index = -1
 
-    for point in crosspoints:
-        cur_point = CrosspathPoint(point)
+    while len(crosspoints) > 0:
+        exclude_points_list = []
 
-        if cur_point.level == 1:
-            crosspath[current_crosspath_index].destination.append(cur_point)
-        elif cur_point.level >= 2:
-            source_point = crosspath[current_crosspath_index]
-            parent = source_point.find_parent(cur_point.parent_id)
-            parent.destination.append(cur_point)
-            pass
-        else:
-            crosspath.append(cur_point)
-            current_crosspath_index += 1
+        for point in crosspoints:
+            cur_point = CrosspathPoint(point)
+
+            if cur_point.level == 1:
+                if current_crosspath_index >= 0:
+                    crosspath[current_crosspath_index].destination.append(cur_point)
+                    exclude_points_list.append(point.pk)
+            elif cur_point.level >= 2:
+                try:
+                    source_point = crosspath[current_crosspath_index]
+                    parent = source_point.find_parent(cur_point.parent_id)
+                    parent.destination.append(cur_point)
+                    exclude_points_list.append(point.pk)
+                except:
+                    pass
+            else:
+                crosspath.append(cur_point)
+                current_crosspath_index += 1
+
+                exclude_points_list.append(point.pk)
+
+        print(exclude_points_list)
+        print(crosspoints)
+        crosspoints = crosspoints.exclude(pk__in=exclude_points_list)
+        print(crosspoints)
 
     return crosspath if source_is_iterable else crosspath[0]
 
