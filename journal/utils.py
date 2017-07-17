@@ -4,7 +4,6 @@ Author: Golikov Ivan
 Date: 10.07.2017
 """
 
-from django.db import connection
 from django.urls import reverse
 from json import JSONEncoder, JSONDecoder, dumps
 
