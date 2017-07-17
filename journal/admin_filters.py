@@ -21,8 +21,8 @@ class LocationsFilter(admin.SimpleListFilter):
         unique_locations = Location.objects.filter(pk__in=unique_locations_pks)
 
         for location in unique_locations:
-            yield (str(location.pk), str(location))
+            yield (location.pk, location)
 
     def queryset(self, request, queryset):
         if self.value() is not None:
-            return queryset.filter(location_id=int(self.value()))
+            return queryset.filter(location_id=self.value())
