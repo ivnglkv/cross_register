@@ -174,6 +174,7 @@ class CrossPoint(BaseHistoryTrackerModel):
             self.level = self.source.level + 1
         else:
             self.main_source = self
+            self.level = 0
 
         super().save(*args, **kwargs)
 
