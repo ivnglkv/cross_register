@@ -1,12 +1,13 @@
 """
 Release: 0.1.5
 Author: Golikov Ivan
-Date: 10.07.2017
+Date: 17.07.2017
 """
 
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
+from .admin_filters import LocationsFilter
 from .forms import (
     PunchBlockForm,
     PhoneForm,
@@ -48,6 +49,7 @@ update_json_path.short_description = 'Обновить отображение в
 @admin.register(PunchBlock)
 class PunchBlockAdmin(SimpleHistoryAdmin):
     form = PunchBlockForm
+    list_filter = (LocationsFilter,)
 
 
 @admin.register(Phone)
