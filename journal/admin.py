@@ -50,6 +50,7 @@ update_json_path.short_description = 'Обновить отображение в
 class PunchBlockAdmin(SimpleHistoryAdmin):
     form = PunchBlockForm
     list_filter = (LocationsFilter,)
+    list_per_page = 30
 
 
 @admin.register(Phone)
