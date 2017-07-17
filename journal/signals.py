@@ -78,6 +78,13 @@ def on_crosspoint_post_change(instance, **kwargs):
     if not kwargs.get('raw', False):
         restore_json_path()
 
+        created_or_deleted = kwargs.get('created', True)
+
+        if not created_or_deleted:
+            for destination in instance.destinations.all():
+                destination.level = instance.level + 1
+                destination.save_without_historical_record()
+
 
 def subscriber_phones_changed(instance, action, reverse, model, pk_set, **kwargs):
     from .models import Phone

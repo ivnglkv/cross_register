@@ -122,6 +122,10 @@ class CrossPoint(BaseHistoryTrackerModel):
                                     blank=True,
                                     editable=False,
                                     )
+    level = models.PositiveSmallIntegerField(verbose_name='уровень',
+                                             default=0,
+                                             editable=False,
+                                             )
     child_class = models.CharField(verbose_name='дочерний класс',
                                    max_length=100,
                                    blank=True,
@@ -166,6 +170,7 @@ class CrossPoint(BaseHistoryTrackerModel):
 
         if self.child_class != 'PBXPort' and self.source is not None:
             self.main_source = self.source.main_source
+            self.level = self.source.level + 1
         else:
             self.main_source = self
 
