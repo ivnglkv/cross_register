@@ -41,7 +41,7 @@ class EmptyPunchBlocksFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         if self.value() is not None:
             get_empty = True if self.value() == '0' else False
-            queryset.filter(main_source__pbxport__isnull=get_empty)
+            queryset = queryset.filter(main_source__pbxport__isnull=get_empty)
 
         return queryset
 
