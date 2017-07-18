@@ -53,6 +53,9 @@ class PunchBlockAdmin(SimpleHistoryAdmin):
         EmptyPunchBlocksFilter,
         LocationsFilter,
     )
+    search_fields = [
+        '=number',
+    ]
     list_per_page = 30
 
 
