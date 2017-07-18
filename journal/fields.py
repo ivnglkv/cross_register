@@ -34,6 +34,8 @@ class CrosspointField(CharField):
     def clean(self, value):
         result = None
 
+        value = ''.join(value.split())
+
         if len(value) == 0:
             return result
 
