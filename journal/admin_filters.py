@@ -26,3 +26,19 @@ class LocationsFilter(admin.SimpleListFilter):
     def queryset(self, request, queryset):
         if self.value() is not None:
             return queryset.filter(location_id=self.value())
+
+
+class EmptyPunchBlocksFilter(admin.SimpleListFilter):
+    title = 'Занятость'
+    parameter_name = 'empty'
+
+    def lookups(self, request, model_admin):
+        return (
+            (0, 'Свободные'),
+            (1, 'Занятые'),
+        )
+
+    def queryset(self, request, queryset):
+        get_empty = True if self.value() == '0' else False
+
+        return queryset.filter(main_source__pbxport__isnull=get_empty)

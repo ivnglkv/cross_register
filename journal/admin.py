@@ -7,7 +7,7 @@ Date: 17.07.2017
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
-from .admin_filters import LocationsFilter
+from .admin_filters import EmptyPunchBlocksFilter, LocationsFilter
 from .forms import (
     PunchBlockForm,
     PhoneForm,
@@ -49,7 +49,10 @@ update_json_path.short_description = 'Обновить отображение в
 @admin.register(PunchBlock)
 class PunchBlockAdmin(SimpleHistoryAdmin):
     form = PunchBlockForm
-    list_filter = (LocationsFilter,)
+    list_filter = (
+        EmptyPunchBlocksFilter,
+        LocationsFilter,
+    )
     list_per_page = 30
 
 
