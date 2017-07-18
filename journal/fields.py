@@ -1,7 +1,7 @@
 """
 Release: 0.1.5
 Author: Golikov Ivan
-Date: 10.07.2017
+Date: 18.07.2017
 """
 
 import re
@@ -23,16 +23,17 @@ class CrosspointField(CharField):
     def prepare_value(self, value):
         result = ''
 
-        if re.match('\d+', str(value)):
-            id = value
-            result = CrossPoint.objects.get(pk=id).journal_str()
-        else:
+        try:
+            result = CrossPoint.objects.get(pk=value).journal_str()
+        except ObjectDoesNotExist:
             result = super().prepare_value(value)
 
         return result
 
     def clean(self, value):
         result = None
+
+        value = ''.join(value.split())
 
         if len(value) == 0:
             return result
