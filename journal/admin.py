@@ -74,6 +74,7 @@ class PBXPortAdmin(SimpleHistoryAdmin):
     ]
     list_filter = (
         EmptyPBXPortsFilter,
+        'pbx',
     )
 
 
