@@ -374,11 +374,12 @@ class PunchBlock(CrossPoint):
 
 class Phone(CrossPoint):
     def __str__(self):
-        src = self.get_parent()
+        parent_port = self.main_source
 
         result = ''
-        if src and src.subscriber_number:
-            result = str(src.subscriber_number)
+        if isinstance(parent_port, PBXPort):
+            result = '{} ({})'.format(str(parent_port.subscriber_number),
+                                      self.source.journal_str())
         else:
             result = 'Телефон'
 
