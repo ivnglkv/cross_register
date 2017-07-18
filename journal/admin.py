@@ -53,6 +53,9 @@ class PunchBlockAdmin(SimpleHistoryAdmin):
         EmptyPunchBlocksFilter,
         LocationsFilter,
     )
+    search_fields = [
+        '=number',
+    ]
     list_per_page = 30
 
 
@@ -76,11 +79,18 @@ class PBXPortAdmin(SimpleHistoryAdmin):
         EmptyPBXPortsFilter,
         'pbx',
     )
+    search_fields = (
+        '=subscriber_number',
+        'description',
+    )
 
 
 @admin.register(Room)
 class RoomAdmin(SimpleHistoryAdmin):
     form = RoomForm
+    search_fields = [
+        'room',
+    ]
 
 
 @admin.register(Subscriber)
