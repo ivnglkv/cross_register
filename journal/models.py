@@ -9,6 +9,7 @@ from json import dumps, loads
 
 from django.db import models
 from django.core.exceptions import ValidationError
+from polymorphic.models import PolymorphicModel
 from simple_history.models import HistoricalRecords
 
 
@@ -106,7 +107,7 @@ class Location(BaseHistoryTrackerModel):
         verbose_name_plural = 'расположения'
 
 
-class CrossPoint(BaseHistoryTrackerModel):
+class CrossPoint(BaseHistoryTrackerModel, PolymorphicModel):
     """Общее описание точки кросса
 
     От CrossPoint должен наследоваться любой класс, представляющий пункт маршрута
