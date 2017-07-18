@@ -1,7 +1,7 @@
 """
 Release: 0.1.5
 Author: Golikov Ivan
-Date: 17.07.2017
+Date: 19.07.2017
 """
 
 import sys
@@ -9,6 +9,7 @@ from json import dumps, loads
 
 from django.db import models
 from django.core.exceptions import ValidationError
+from polymorphic.models import PolymorphicModel
 from simple_history.models import HistoricalRecords
 
 
@@ -106,7 +107,7 @@ class Location(BaseHistoryTrackerModel):
         verbose_name_plural = 'расположения'
 
 
-class CrossPoint(BaseHistoryTrackerModel):
+class CrossPoint(BaseHistoryTrackerModel, PolymorphicModel):
     """Общее описание точки кросса
 
     От CrossPoint должен наследоваться любой класс, представляющий пункт маршрута
@@ -358,10 +359,11 @@ class PunchBlock(CrossPoint):
         else:
             result += '{}/{}'.format(self.number, self.location.cabinet.number)
 
-        parent_pbx_port = self.get_parent()
+        if add_phone:
+            parent_port = self.main_source
 
-        if parent_pbx_port and add_phone:
-            result += ' (тел. {})'.format(parent_pbx_port.subscriber_number)
+            if isinstance(parent_port, PBXPort):
+                result += ' (тел. {})'.format(parent_port.subscriber_number)
 
         return result
 
@@ -372,11 +374,12 @@ class PunchBlock(CrossPoint):
 
 class Phone(CrossPoint):
     def __str__(self):
-        src = self.get_parent()
+        parent_port = self.main_source
 
         result = ''
-        if src and src.subscriber_number:
-            result = str(src.subscriber_number)
+        if isinstance(parent_port, PBXPort):
+            result = '{} ({})'.format(str(parent_port.subscriber_number),
+                                      self.source.journal_str())
         else:
             result = 'Телефон'
 

@@ -1,7 +1,7 @@
 """
 Release: 0.1.5
 Author: Golikov Ivan
-Date: 17.07.2017
+Date: 19.07.2017
 """
 
 from django.urls import reverse
@@ -21,7 +21,7 @@ class CrosspathPoint:
     journal_str = ''
 
     def __init__(self, crosspoint=None):
-        if type(crosspoint) == CrossPoint:
+        if isinstance(crosspoint, CrossPoint):
             self.init_from_crosspoint(crosspoint)
         elif crosspoint is not None:
             self.crosspoint_id = crosspoint['id']

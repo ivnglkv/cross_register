@@ -1,7 +1,7 @@
 """
 Release: 0.1.5
 Author: Golikov Ivan
-Date: 10.07.2017
+Date: 19.07.2017
 """
 
 from django.forms import ModelForm
@@ -133,7 +133,12 @@ class RoomForm(ModelForm):
 class SubscriberForm(ModelForm):
     phones = ModelMultipleChosenField(
         label='Телефоны',
-        queryset=Phone.objects.all(),
+        queryset=Phone.objects.prefetch_related(
+            'main_source').prefetch_related(
+            'source').prefetch_related(
+            'source__location__cabinet').prefetch_related(
+            'source__type').prefetch_related(
+            'location__cabinet').all(),
     )
 
     class Meta:
