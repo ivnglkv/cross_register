@@ -1,7 +1,7 @@
 """
 Release: 0.1.5
 Author: Golikov Ivan
-Date: 18.07.2017
+Date: 19.07.2017
 """
 
 from django.contrib import admin
@@ -56,7 +56,18 @@ class PunchBlockAdmin(SimpleHistoryAdmin):
     search_fields = [
         '=number',
     ]
-    list_per_page = 30
+    list_per_page = 100
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        qs = qs.prefetch_related(
+            'main_source').prefetch_related(
+            'location__cabinet').prefetch_related(
+            'type').prefetch_related(
+            ).all()
+
+        return qs
 
 
 @admin.register(Phone)

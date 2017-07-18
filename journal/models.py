@@ -1,7 +1,7 @@
 """
 Release: 0.1.5
 Author: Golikov Ivan
-Date: 17.07.2017
+Date: 19.07.2017
 """
 
 import sys
@@ -359,10 +359,11 @@ class PunchBlock(CrossPoint):
         else:
             result += '{}/{}'.format(self.number, self.location.cabinet.number)
 
-        parent_pbx_port = self.get_parent()
+        if add_phone:
+            parent_port = self.main_source
 
-        if parent_pbx_port and add_phone:
-            result += ' (тел. {})'.format(parent_pbx_port.subscriber_number)
+            if isinstance(parent_port, PBXPort):
+                result += ' (тел. {})'.format(parent_port.subscriber_number)
 
         return result
 
