@@ -6,7 +6,7 @@ Date: 17.07.2017
 
 from django.contrib import admin
 
-from .models import Location
+from .models import Location, Phone
 
 
 class LocationsFilter(admin.SimpleListFilter):
@@ -42,3 +42,24 @@ class EmptyPunchBlocksFilter(admin.SimpleListFilter):
         get_empty = True if self.value() == '0' else False
 
         return queryset.filter(main_source__pbxport__isnull=get_empty)
+
+
+class EmptyPBXPortsFilter(admin.SimpleListFilter):
+    title = 'Занятость'
+    parameter_name = 'ports_empty'
+
+    def lookups(self, request, model_admin):
+        return (
+            (0, 'Свободные'),
+        )
+
+    def queryset(self, request, queryset):
+        get_empty = True if self.value() == '0' else False
+
+        if get_empty:
+            phones = Phone.objects.filter(main_source__isnull=False)
+            exclude_list = [x.main_source_id for x in phones]
+
+            queryset = queryset.exclude(pk__in=exclude_list)
+
+        return queryset

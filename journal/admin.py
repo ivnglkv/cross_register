@@ -7,7 +7,7 @@ Date: 17.07.2017
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
-from .admin_filters import EmptyPunchBlocksFilter, LocationsFilter
+from .admin_filters import EmptyPBXPortsFilter, EmptyPunchBlocksFilter, LocationsFilter
 from .forms import (
     PunchBlockForm,
     PhoneForm,
@@ -72,6 +72,9 @@ class PBXPortAdmin(SimpleHistoryAdmin):
     actions = [
         update_json_path,
     ]
+    list_filter = (
+        EmptyPBXPortsFilter,
+    )
 
 
 @admin.register(Room)
