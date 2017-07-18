@@ -1,7 +1,7 @@
 """
 Release: 0.1.5
 Author: Golikov Ivan
-Date: 10.07.2017
+Date: 17.07.2017
 """
 
 import sys
@@ -107,6 +107,21 @@ class Location(BaseHistoryTrackerModel):
 
 
 class CrossPoint(BaseHistoryTrackerModel):
+    """Общее описание точки кросса
+
+    От CrossPoint должен наследоваться любой класс, представляющий пункт маршрута
+    линии от АТС до КРТ и розетки
+
+    Args:
+        location (obj): расположение точки. Подклассы CrossPoint могут накладывать ограничения на
+            возможные расположения точки
+        source (obj, optional): точка кросса, с которой приходит линия
+        main_source (obj, optional): точка кросса, являющаяся "головной" для текущей. В большинстве
+            случаев это будет PBXPort
+        level(int): уровень расположения относительно main_source
+        child_class(str): название класса конкретной точки кросса
+            Выставляется автоматически: НЕ ПЕРЕОПРЕДЕЛЯТЬ!!!
+    """
     location = models.ForeignKey(Location,
                                  verbose_name='расположение')
     source = models.ForeignKey('self',
@@ -115,6 +130,17 @@ class CrossPoint(BaseHistoryTrackerModel):
                                null=True,
                                blank=True,
                                )
+    main_source = models.ForeignKey('self',
+                                    verbose_name='порт-источник',
+                                    related_name='childs',
+                                    null=True,
+                                    blank=True,
+                                    editable=False,
+                                    )
+    level = models.PositiveSmallIntegerField(verbose_name='уровень',
+                                             default=0,
+                                             editable=False,
+                                             )
     child_class = models.CharField(verbose_name='дочерний класс',
                                    max_length=100,
                                    blank=True,
@@ -134,30 +160,14 @@ class CrossPoint(BaseHistoryTrackerModel):
         Функция находит родительскую точку кросса для текущей точки,
         предполагая, что у всех точек родительской является порт АТС
         """
-        from django.db import connection
-        src = None
+        result = None
 
-        with connection.cursor() as cursor:
-            from os import path
-            from django.conf import settings
+        try:
+            result = PBXPort.objects.get(pk=self.main_source_id)
+        except:
+            pass
 
-            sqlfile = open(path.join(settings.BASE_DIR,
-                                     'journal',
-                                     'sql',
-                                     'get_crosspoint_parent.sql',
-                                     ),
-                           'r')
-            sql = sqlfile.read().replace('/n', ' ')
-
-            cursor.execute(sql.format(self.pk))
-
-            row = cursor.fetchone()
-            try:
-                src = PBXPort.objects.get(pk=row[0])
-            except:
-                pass
-
-        return src
+        return result
 
     def clean(self):
         if self.pk and self.source:
@@ -171,7 +181,16 @@ class CrossPoint(BaseHistoryTrackerModel):
         return self.get_subclass().objects.get(crosspoint_ptr=self.pk).changes_str()
 
     def save(self, *args, **kwargs):
-        self.child_class = self.__class__.__name__
+        if self.pk is None:
+            self.child_class = self.__class__.__name__
+
+        if self.child_class != 'PBXPort' and self.source is not None:
+            self.main_source = self.source.main_source
+            self.level = self.source.level + 1
+        else:
+            self.main_source = self
+            self.level = 0
+
         super().save(*args, **kwargs)
 
     def __str__(self):

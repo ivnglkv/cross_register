@@ -1,12 +1,13 @@
 """
 Release: 0.1.5
 Author: Golikov Ivan
-Date: 10.07.2017
+Date: 18.07.2017
 """
 
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
+from .admin_filters import EmptyPBXPortsFilter, EmptyPunchBlocksFilter, LocationsFilter
 from .forms import (
     PunchBlockForm,
     PhoneForm,
@@ -48,6 +49,11 @@ update_json_path.short_description = 'Обновить отображение в
 @admin.register(PunchBlock)
 class PunchBlockAdmin(SimpleHistoryAdmin):
     form = PunchBlockForm
+    list_filter = (
+        EmptyPunchBlocksFilter,
+        LocationsFilter,
+    )
+    list_per_page = 30
 
 
 @admin.register(Phone)
@@ -66,6 +72,10 @@ class PBXPortAdmin(SimpleHistoryAdmin):
     actions = [
         update_json_path,
     ]
+    list_filter = (
+        EmptyPBXPortsFilter,
+        'pbx',
+    )
 
 
 @admin.register(Room)
