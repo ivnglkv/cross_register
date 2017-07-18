@@ -88,6 +88,9 @@ class PBXPortAdmin(SimpleHistoryAdmin):
 @admin.register(Room)
 class RoomAdmin(SimpleHistoryAdmin):
     form = RoomForm
+    search_fields = [
+        'room',
+    ]
 
 
 @admin.register(Subscriber)
