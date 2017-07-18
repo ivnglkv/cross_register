@@ -23,10 +23,9 @@ class CrosspointField(CharField):
     def prepare_value(self, value):
         result = ''
 
-        if re.match('\d+', str(value)):
-            id = value
-            result = CrossPoint.objects.get(pk=id).journal_str()
-        else:
+        try:
+            result = CrossPoint.objects.get(pk=value).journal_str()
+        except ObjectDoesNotExist:
             result = super().prepare_value(value)
 
         return result
