@@ -13,16 +13,22 @@ def get_parent(crosspoint, apps):
     src = None
 
     with connection.cursor() as cursor:
-        from os import path
-        from django.conf import settings
-
-        sqlfile = open(path.join(settings.BASE_DIR,
-                                 'journal',
-                                 'sql',
-                                 'get_crosspoint_parent.sql',
-                                 ),
-                       'r')
-        sql = sqlfile.read().replace('/n', ' ')
+        sql = '''
+            WITH RECURSIVE
+            Rec (id, source_id, location_id)
+            AS (
+                  SELECT *, id AS main_id
+                    FROM journal_crosspoint
+                   WHERE source_id IS NULL
+                UNION ALL
+                  SELECT cp.*, r.main_id AS main_id
+                    FROM Rec r
+                    JOIN journal_crosspoint cp ON (r.id = cp.source_id)
+            )
+            SELECT main_id
+              FROM Rec
+             WHERE id = {}
+        '''
 
         cursor.execute(sql.format(crosspoint.pk))
 
