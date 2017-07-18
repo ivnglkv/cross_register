@@ -79,6 +79,10 @@ class PBXPortAdmin(SimpleHistoryAdmin):
         EmptyPBXPortsFilter,
         'pbx',
     )
+    search_fields = (
+        '=subscriber_number',
+        'description',
+    )
 
 
 @admin.register(Room)
