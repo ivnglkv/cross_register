@@ -1,5 +1,5 @@
 """
-Release: 0.2.1
+Release: 0.2.2
 Author: Golikov Ivan
 Date: 19.07.2017
 """
@@ -114,9 +114,7 @@ def subscriber_phones_changed(instance, action, reverse, model, pk_set, **kwargs
 
 def subscriber_pre_changed(instance, **kwargs):
     if not kwargs.get('raw', False):
-        created = kwargs.get('created', False)
-
-        if not created:
+        if instance.pk:
             for phone in instance.phones.all():
                 get_parent_and_invalidate_json_path(phone)
 
