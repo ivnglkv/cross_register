@@ -1,12 +1,13 @@
 """
-Release: 0.1.5
+Release: 0.2
 Author: Golikov Ivan
-Date: 10.07.2017
+Date: 19.07.2017
 """
 
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
+from .admin_filters import EmptyPBXPortsFilter, EmptyPunchBlocksFilter, LocationsFilter
 from .forms import (
     PunchBlockForm,
     PhoneForm,
@@ -48,11 +49,41 @@ update_json_path.short_description = 'Обновить отображение в
 @admin.register(PunchBlock)
 class PunchBlockAdmin(SimpleHistoryAdmin):
     form = PunchBlockForm
+    list_filter = (
+        EmptyPunchBlocksFilter,
+        LocationsFilter,
+    )
+    search_fields = [
+        '=number',
+    ]
+    list_per_page = 100
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        qs = qs.prefetch_related(
+            'main_source').prefetch_related(
+            'location__cabinet').prefetch_related(
+            'type').prefetch_related(
+            ).all()
+
+        return qs
 
 
 @admin.register(Phone)
 class PhoneAdmin(SimpleHistoryAdmin):
     form = PhoneForm
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        qs = qs.prefetch_related(
+            'main_source').prefetch_related(
+            'source').prefetch_related(
+            'source__type').prefetch_related(
+            'source__location__cabinet').all()
+
+        return qs
 
 
 @admin.register(PBX)
@@ -66,11 +97,22 @@ class PBXPortAdmin(SimpleHistoryAdmin):
     actions = [
         update_json_path,
     ]
+    list_filter = (
+        EmptyPBXPortsFilter,
+        'pbx',
+    )
+    search_fields = (
+        '=subscriber_number',
+        'description',
+    )
 
 
 @admin.register(Room)
 class RoomAdmin(SimpleHistoryAdmin):
     form = RoomForm
+    search_fields = [
+        'room',
+    ]
 
 
 @admin.register(Subscriber)
@@ -86,3 +128,12 @@ class PBXRoomAdmin(SimpleHistoryAdmin):
 @admin.register(Cabinet)
 class CabinetAdmin(SimpleHistoryAdmin):
     form = CabinetForm
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        qs = qs.prefetch_related(
+            'room').prefetch_related(
+            'room__building').all()
+
+        return qs

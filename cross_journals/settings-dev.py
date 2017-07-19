@@ -1,7 +1,7 @@
 """
-Release: 0.1.5
+Release: 0.2
 Author: Golikov Ivan
-Date: 10.07.2017
+Date: 19.07.2017
 
 Django settings for cross_journals project.
 
@@ -32,6 +32,7 @@ INTERNAL_IPS = ('127.0.0.1',)
 INSTALLED_APPS = [
     'journal.apps.JournalConfig',
     'common.apps.CommonConfig',
+    'polymorphic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

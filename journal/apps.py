@@ -1,7 +1,7 @@
 """
-Release: 0.1.5
+Release: 0.2
 Author: Golikov Ivan
-Date: 10.07.2017
+Date: 19.07.2017
 """
 
 from django.apps import AppConfig
@@ -35,3 +35,7 @@ class JournalConfig(AppConfig):
         signals.post_save.connect(journal_signals.autocreate_location, sender=Room)
 
         signals.m2m_changed.connect(journal_signals.subscriber_phones_changed, sender=Subscriber.phones.through)
+
+        signals.pre_save.connect(journal_signals.subscriber_pre_changed, sender=Subscriber)
+        signals.post_save.connect(journal_signals.subscriber_post_changed, sender=Subscriber)
+        signals.post_delete.connect(journal_signals.subscriber_post_changed, sender=Subscriber)

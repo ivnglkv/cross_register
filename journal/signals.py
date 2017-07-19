@@ -1,7 +1,7 @@
 """
-Release: 0.1.5
+Release: 0.2
 Author: Golikov Ivan
-Date: 10.07.2017
+Date: 19.07.2017
 """
 
 from json import dumps
@@ -13,6 +13,13 @@ INVALID_JSON_PATH_MARK = 'INVALID'
 def invalidate_json_path(pbx_port):
     pbx_port.json_path = INVALID_JSON_PATH_MARK
     pbx_port.save_without_historical_record()
+
+
+def get_parent_and_invalidate_json_path(crosspoint):
+    pbxport = crosspoint.get_parent()
+
+    if pbxport:
+        invalidate_json_path(pbxport)
 
 
 def restore_json_path():
@@ -47,18 +54,17 @@ def pbxport_post_save(instance, created, **kwargs):
 
 
 def on_crosspoint_pre_change(instance, **kwargs):
-    def get_parent_and_invalidate_json_path(crosspoint):
-        pbxport = crosspoint.get_parent()
-
-        if pbxport:
-            invalidate_json_path(pbxport)
+    from .models import CrossPoint
 
     if not kwargs.get('raw', False):
         if instance.source is not None:
             get_parent_and_invalidate_json_path(instance.source)
 
-        if instance.pk is not None:
-            get_parent_and_invalidate_json_path(instance)
+        try:
+            old_instance = CrossPoint.objects.get(pk=instance.pk)
+            get_parent_and_invalidate_json_path(old_instance)
+        except:
+            pass
 
 
 def autocreate_location(instance, created, **kwargs):
@@ -76,6 +82,17 @@ def autocreate_location(instance, created, **kwargs):
 
 def on_crosspoint_post_change(instance, **kwargs):
     if not kwargs.get('raw', False):
+        created_or_deleted = kwargs.get('created', True)
+
+        if not created_or_deleted:
+            for destination in instance.destinations.all():
+                destination.level = instance.level + 1
+                destination.save_without_historical_record()
+
+        # ------------ISSUE------------
+        # Может ли возникнуть проблема, если не успеют сохраниться все точки из destinations
+        # перед этим местом?
+        # ------------ISSUE------------
         restore_json_path()
 
 
@@ -92,4 +109,18 @@ def subscriber_phones_changed(instance, action, reverse, model, pk_set, **kwargs
         for pbx_port in pbx_ports:
             invalidate_json_path(pbx_port)
     elif action in post_actions:
+        restore_json_path()
+
+
+def subscriber_pre_changed(instance, **kwargs):
+    if not kwargs.get('raw', False):
+        created = kwargs.get('created', False)
+
+        if not created:
+            for phone in instance.phones.all():
+                get_parent_and_invalidate_json_path(phone)
+
+
+def subscriber_post_changed(instance, **kwargs):
+    if not kwargs.get('raw', False):
         restore_json_path()

@@ -1,5 +1,5 @@
 """cross_journals URL Configuration
-Release: 0.1.5
+Release: 0.2
 Author: Golikov Ivan
 Date: 10.07.2017
 

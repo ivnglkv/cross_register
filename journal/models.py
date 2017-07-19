@@ -1,7 +1,7 @@
 """
-Release: 0.1.5
+Release: 0.2
 Author: Golikov Ivan
-Date: 10.07.2017
+Date: 19.07.2017
 """
 
 import sys
@@ -9,6 +9,7 @@ from json import dumps, loads
 
 from django.db import models
 from django.core.exceptions import ValidationError
+from polymorphic.models import PolymorphicModel
 from simple_history.models import HistoricalRecords
 
 
@@ -106,7 +107,22 @@ class Location(BaseHistoryTrackerModel):
         verbose_name_plural = 'расположения'
 
 
-class CrossPoint(BaseHistoryTrackerModel):
+class CrossPoint(BaseHistoryTrackerModel, PolymorphicModel):
+    """Общее описание точки кросса
+
+    От CrossPoint должен наследоваться любой класс, представляющий пункт маршрута
+    линии от АТС до КРТ и розетки
+
+    Args:
+        location (obj): расположение точки. Подклассы CrossPoint могут накладывать ограничения на
+            возможные расположения точки
+        source (obj, optional): точка кросса, с которой приходит линия
+        main_source (obj, optional): точка кросса, являющаяся "головной" для текущей. В большинстве
+            случаев это будет PBXPort
+        level(int): уровень расположения относительно main_source
+        child_class(str): название класса конкретной точки кросса
+            Выставляется автоматически: НЕ ПЕРЕОПРЕДЕЛЯТЬ!!!
+    """
     location = models.ForeignKey(Location,
                                  verbose_name='расположение')
     source = models.ForeignKey('self',
@@ -115,6 +131,17 @@ class CrossPoint(BaseHistoryTrackerModel):
                                null=True,
                                blank=True,
                                )
+    main_source = models.ForeignKey('self',
+                                    verbose_name='порт-источник',
+                                    related_name='childs',
+                                    null=True,
+                                    blank=True,
+                                    editable=False,
+                                    )
+    level = models.PositiveSmallIntegerField(verbose_name='уровень',
+                                             default=0,
+                                             editable=False,
+                                             )
     child_class = models.CharField(verbose_name='дочерний класс',
                                    max_length=100,
                                    blank=True,
@@ -134,30 +161,9 @@ class CrossPoint(BaseHistoryTrackerModel):
         Функция находит родительскую точку кросса для текущей точки,
         предполагая, что у всех точек родительской является порт АТС
         """
-        from django.db import connection
-        src = None
+        main_source = self.main_source
 
-        with connection.cursor() as cursor:
-            from os import path
-            from django.conf import settings
-
-            sqlfile = open(path.join(settings.BASE_DIR,
-                                     'journal',
-                                     'sql',
-                                     'get_crosspoint_parent.sql',
-                                     ),
-                           'r')
-            sql = sqlfile.read().replace('/n', ' ')
-
-            cursor.execute(sql.format(self.pk))
-
-            row = cursor.fetchone()
-            try:
-                src = PBXPort.objects.get(pk=row[0])
-            except:
-                pass
-
-        return src
+        return main_source if isinstance(main_source, PBXPort) else None
 
     def clean(self):
         if self.pk and self.source:
@@ -171,7 +177,16 @@ class CrossPoint(BaseHistoryTrackerModel):
         return self.get_subclass().objects.get(crosspoint_ptr=self.pk).changes_str()
 
     def save(self, *args, **kwargs):
-        self.child_class = self.__class__.__name__
+        if self.pk is None:
+            self.child_class = self.__class__.__name__
+
+        if self.child_class != 'PBXPort' and self.source is not None:
+            self.main_source = self.source.main_source
+            self.level = self.source.level + 1
+        else:
+            self.main_source = self
+            self.level = 0
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -223,10 +238,10 @@ class PBXPort(CrossPoint):
                             choices=PORT_TYPES,
                             default='analog',
                             max_length=10)
-    subscriber_number = models.PositiveSmallIntegerField(verbose_name='абонентский номер',
-                                                         blank=True,
-                                                         null=True,
-                                                         unique=True)
+    subscriber_number = models.PositiveIntegerField(verbose_name='абонентский номер',
+                                                    blank=True,
+                                                    null=True,
+                                                    unique=True)
     description = models.CharField(verbose_name='описание', max_length=150, blank=True)
     json_path = models.TextField(verbose_name='маршрут в формате JSON',
                                  blank=True,
@@ -339,10 +354,11 @@ class PunchBlock(CrossPoint):
         else:
             result += '{}/{}'.format(self.number, self.location.cabinet.number)
 
-        parent_pbx_port = self.get_parent()
+        if add_phone:
+            parent_port = self.main_source
 
-        if parent_pbx_port and add_phone:
-            result += ' (тел. {})'.format(parent_pbx_port.subscriber_number)
+            if isinstance(parent_port, PBXPort):
+                result += ' (тел. {})'.format(parent_port.subscriber_number)
 
         return result
 
@@ -353,11 +369,12 @@ class PunchBlock(CrossPoint):
 
 class Phone(CrossPoint):
     def __str__(self):
-        src = self.get_parent()
+        parent_port = self.main_source
 
         result = ''
-        if src and src.subscriber_number:
-            result = str(src.subscriber_number)
+        if isinstance(parent_port, PBXPort):
+            result = '{} ({})'.format(str(parent_port.subscriber_number),
+                                      self.source.journal_str())
         else:
             result = 'Телефон'
 
@@ -404,7 +421,10 @@ class Subscriber(BaseHistoryTrackerModel):
         verbose_name_plural = 'абоненты'
 
     def __str__(self):
-        return '{} {}.{}.'.format(self.last_name,
-                                  self.first_name[0],
-                                  self.patronymic[0]
-                                  )
+        result = '{} {}.'.format(self.last_name,
+                                 self.first_name[0],)
+
+        if len(self.patronymic) > 0:
+            result += '{}.'.format(self.patronymic[0])
+
+        return result

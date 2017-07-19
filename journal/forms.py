@@ -1,7 +1,7 @@
 """
-Release: 0.1.5
+Release: 0.2
 Author: Golikov Ivan
-Date: 10.07.2017
+Date: 19.07.2017
 """
 
 from django.forms import ModelForm
@@ -58,7 +58,12 @@ class PhoneForm(ModelForm):
     location = ModelChosenField(
         label='Расположение',
         queryset=Location.objects.filter(
-            Q(room__isnull=False)),
+            Q(room__isnull=False)).order_by('-id').prefetch_related(
+            'cabinet').prefetch_related(
+            'cabinet__room').prefetch_related(
+            'cabinet__room__building').prefetch_related(
+            'room').prefetch_related(
+            'room__building'),
     )
     source = CrosspointField(label='Откуда приходит',
                              required=False,
@@ -133,7 +138,13 @@ class RoomForm(ModelForm):
 class SubscriberForm(ModelForm):
     phones = ModelMultipleChosenField(
         label='Телефоны',
-        queryset=Phone.objects.all(),
+        queryset=Phone.objects.prefetch_related(
+            'main_source').prefetch_related(
+            'source').prefetch_related(
+            'source__location__cabinet').prefetch_related(
+            'source__type').prefetch_related(
+            'location__cabinet').all(),
+        required=False,
     )
 
     class Meta:
@@ -162,7 +173,8 @@ class PBXRoomForm(ModelForm):
 class CabinetForm(ModelForm):
     room = ModelChosenField(
         label='Расположение',
-        queryset=Room.objects.all(),
+        queryset=Room.objects.prefetch_related(
+            'building').all(),
     )
 
     class Meta:
