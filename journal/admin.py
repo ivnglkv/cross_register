@@ -1,5 +1,5 @@
 """
-Release: 0.2.1
+Release: 0.2.2
 Author: Golikov Ivan
 Date: 19.07.2017
 """
