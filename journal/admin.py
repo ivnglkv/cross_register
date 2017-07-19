@@ -74,6 +74,17 @@ class PunchBlockAdmin(SimpleHistoryAdmin):
 class PhoneAdmin(SimpleHistoryAdmin):
     form = PhoneForm
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        qs = qs.prefetch_related(
+            'main_source').prefetch_related(
+            'source').prefetch_related(
+            'source__type').prefetch_related(
+            'source__location__cabinet').all()
+
+        return qs
+
 
 @admin.register(PBX)
 class PBXAdmin(SimpleHistoryAdmin):
