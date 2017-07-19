@@ -1,7 +1,7 @@
 """
 Release: 0.1.5
 Author: Golikov Ivan
-Date: 18.07.2017
+Date: 19.07.2017
 """
 
 from django.contrib import admin
@@ -39,9 +39,11 @@ class EmptyPunchBlocksFilter(admin.SimpleListFilter):
         )
 
     def queryset(self, request, queryset):
-        get_empty = True if self.value() == '0' else False
+        if self.value() is not None:
+            get_empty = True if self.value() == '0' else False
+            queryset = queryset.filter(main_source__pbxport__isnull=get_empty)
 
-        return queryset.filter(main_source__pbxport__isnull=get_empty)
+        return queryset
 
 
 class EmptyPBXPortsFilter(admin.SimpleListFilter):
