@@ -1,7 +1,7 @@
 """
-Release: 0.1.5
+Release: 0.2
 Author: Golikov Ivan
-Date: 17.07.2017
+Date: 19.07.2017
 """
 
 from json import dumps
