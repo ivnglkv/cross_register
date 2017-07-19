@@ -58,7 +58,12 @@ class PhoneForm(ModelForm):
     location = ModelChosenField(
         label='Расположение',
         queryset=Location.objects.filter(
-            Q(room__isnull=False)).order_by('-id'),
+            Q(room__isnull=False)).order_by('-id').prefetch_related(
+            'cabinet').prefetch_related(
+            'cabinet__room').prefetch_related(
+            'cabinet__room__building').prefetch_related(
+            'room').prefetch_related(
+            'room__building'),
     )
     source = CrosspointField(label='Откуда приходит',
                              required=False,
@@ -167,7 +172,8 @@ class PBXRoomForm(ModelForm):
 class CabinetForm(ModelForm):
     room = ModelChosenField(
         label='Расположение',
-        queryset=Room.objects.all(),
+        queryset=Room.objects.prefetch_related(
+            'building').all(),
     )
 
     class Meta:
