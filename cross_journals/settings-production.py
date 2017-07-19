@@ -1,5 +1,5 @@
 """
-Release: 0.2
+Release: 0.2.1
 Author: Golikov Ivan
 Date: 10.07.2017
 
@@ -30,6 +30,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'journal.apps.JournalConfig',
     'common.apps.CommonConfig',
+    'polymorphic',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
