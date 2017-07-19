@@ -128,3 +128,12 @@ class PBXRoomAdmin(SimpleHistoryAdmin):
 @admin.register(Cabinet)
 class CabinetAdmin(SimpleHistoryAdmin):
     form = CabinetForm
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        qs = qs.prefetch_related(
+            'room').prefetch_related(
+            'room__building').all()
+
+        return qs

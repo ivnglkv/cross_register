@@ -172,7 +172,8 @@ class PBXRoomForm(ModelForm):
 class CabinetForm(ModelForm):
     room = ModelChosenField(
         label='Расположение',
-        queryset=Room.objects.all(),
+        queryset=Room.objects.prefetch_related(
+            'building').all(),
     )
 
     class Meta:
