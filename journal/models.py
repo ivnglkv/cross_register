@@ -161,14 +161,9 @@ class CrossPoint(BaseHistoryTrackerModel, PolymorphicModel):
         Функция находит родительскую точку кросса для текущей точки,
         предполагая, что у всех точек родительской является порт АТС
         """
-        result = None
+        main_source = self.main_source
 
-        try:
-            result = PBXPort.objects.get(pk=self.main_source_id)
-        except:
-            pass
-
-        return result
+        return main_source if isinstance(main_source, PBXPort) else None
 
     def clean(self):
         if self.pk and self.source:
