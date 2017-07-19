@@ -144,6 +144,7 @@ class SubscriberForm(ModelForm):
             'source__location__cabinet').prefetch_related(
             'source__type').prefetch_related(
             'location__cabinet').all(),
+        required=False,
     )
 
     class Meta:
