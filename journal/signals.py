@@ -15,6 +15,13 @@ def invalidate_json_path(pbx_port):
     pbx_port.save_without_historical_record()
 
 
+def get_parent_and_invalidate_json_path(crosspoint):
+    pbxport = crosspoint.get_parent()
+
+    if pbxport:
+        invalidate_json_path(pbxport)
+
+
 def restore_json_path():
     from .models import PBXPort
 
@@ -48,12 +55,6 @@ def pbxport_post_save(instance, created, **kwargs):
 
 def on_crosspoint_pre_change(instance, **kwargs):
     from .models import CrossPoint
-
-    def get_parent_and_invalidate_json_path(crosspoint):
-        pbxport = crosspoint.get_parent()
-
-        if pbxport:
-            invalidate_json_path(pbxport)
 
     if not kwargs.get('raw', False):
         if instance.source is not None:
@@ -108,4 +109,18 @@ def subscriber_phones_changed(instance, action, reverse, model, pk_set, **kwargs
         for pbx_port in pbx_ports:
             invalidate_json_path(pbx_port)
     elif action in post_actions:
+        restore_json_path()
+
+
+def subscriber_pre_changed(instance, **kwargs):
+    if not kwargs.get('raw', False):
+        created = kwargs.get('created', False)
+
+        if not created:
+            for phone in instance.phones.all():
+                get_parent_and_invalidate_json_path(phone)
+
+
+def subscriber_post_changed(instance, **kwargs):
+    if not kwargs.get('raw', False):
         restore_json_path()
