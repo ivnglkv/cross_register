@@ -378,7 +378,9 @@ class PunchBlock(CrossPoint):
             qs = qs.exclude(pk=self)
 
         if qs.count() > 0:
-            raise ValidationError('Плинт с таким номером и расположением уже существует!')
+            raise ValidationError(
+                '{} с таким номером и расположением уже существует!'.format(self.type)
+            )
 
     class Meta:
         verbose_name = 'плинт'
