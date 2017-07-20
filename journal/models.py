@@ -8,6 +8,7 @@ import sys
 from json import dumps, loads
 
 from django.db import models
+from django.db.models import Q
 from django.core.exceptions import ValidationError
 from polymorphic.models import PolymorphicModel
 from simple_history.models import HistoricalRecords
@@ -361,6 +362,23 @@ class PunchBlock(CrossPoint):
                 result += ' (тел. {})'.format(parent_port.subscriber_number)
 
         return result
+
+    def clean(self):
+        # Так как нельзя привязать unique_together к полю
+        # в неабстрактной родительской модели, нужно
+        # провести валидацию, эмулирующую
+        # unique_together = ('type', 'number', 'location')
+        qs = PunchBlock.objects.filter(
+            Q(type=self.type) &
+            Q(number=self.number) &
+            Q(location=self.location)
+        )
+
+        if self.pk is not None:
+            qs = qs.exclude(pk=self)
+
+        if qs.count() > 0:
+            raise ValidationError('Плинт с таким номером и расположением уже существует!')
 
     class Meta:
         verbose_name = 'плинт'
