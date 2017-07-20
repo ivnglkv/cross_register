@@ -131,10 +131,7 @@ def get_crosspath(source):
 
                 exclude_points_list.append(point.pk)
 
-        print(exclude_points_list)
-        print(crosspoints)
         crosspoints = crosspoints.exclude(pk__in=exclude_points_list)
-        print(crosspoints)
 
     return crosspath if source_is_iterable else crosspath[0]
 
