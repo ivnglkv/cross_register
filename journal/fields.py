@@ -27,6 +27,10 @@ class CrosspointField(CharField):
             result = CrossPoint.objects.get(pk=value).journal_str()
         except ObjectDoesNotExist:
             result = super().prepare_value(value)
+        except ValueError:
+            # При возникновении ошибки на этапе сохранения (например, ValidationError)
+            # в поле будет передана строка с введенным значением
+            result = value
 
         return result
 
