@@ -39,6 +39,9 @@ def pbxport_post_save(instance, created, **kwargs):
             get_crosspath,
         )
 
+        instance.main_source = instance
+        instance.save_without_historical_record()
+
         cp = get_crosspath(instance.pk)
         instance.json_path = dumps(cp, cls=CrosspathPointEncoder)
         instance.save()
