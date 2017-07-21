@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 19.07.2017
+Date: 21.07.2017
 """
 
 import sys
@@ -334,7 +334,7 @@ class PunchBlock(CrossPoint):
     )
 
     number = models.CharField(verbose_name='номер',
-                              max_length=4,
+                              max_length=7,
                               blank=True,
                               null=True)
     type = models.ForeignKey(PunchBlockType,
