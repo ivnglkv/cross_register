@@ -185,7 +185,8 @@ class CrossPoint(BaseHistoryTrackerModel, PolymorphicModel):
             self.main_source = self.source.main_source
             self.level = self.source.level + 1
         else:
-            self.main_source = self
+            # main_source, если его нету, должен будет быть выставлен
+            # в обработчике сигнала post_save на None
             self.level = 0
 
         super().save(*args, **kwargs)

@@ -83,6 +83,11 @@ def autocreate_location(instance, created, **kwargs):
 def on_crosspoint_post_change(instance, **kwargs):
     if not kwargs.get('raw', False):
         created_or_deleted = kwargs.get('created', True)
+        created = kwargs.get('created', False)
+
+        if created and instance.main_source is None:
+            instance.main_source = instance
+            instance.save_without_historical_record()
 
         if not created_or_deleted:
             for destination in instance.destinations.all():
