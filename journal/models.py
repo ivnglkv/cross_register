@@ -404,8 +404,7 @@ class ExtensionBox(CrossPoint):
     """
 
     box_number = models.CharField(verbose_name='номер коробки',
-                                  max_length=5,
-                                  blank=True)
+                                  max_length=5)
     pair_number = models.PositiveSmallIntegerField(verbose_name='номер плинта')
 
     class Meta:
