@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 19.07.2017
+Date: 23.07.2017
 """
 
 from django.contrib import admin
@@ -9,6 +9,7 @@ from simple_history.admin import SimpleHistoryAdmin
 
 from .admin_filters import EmptyPBXPortsFilter, EmptyPunchBlocksFilter, LocationsFilter
 from .forms import (
+    ExtensionBoxForm,
     PunchBlockForm,
     PhoneForm,
     PBXForm,
@@ -21,6 +22,7 @@ from .forms import (
 from .models import (
     Building,
     Cabinet,
+    ExtensionBox,
     PBX,
     PBXPort,
     PBXRoom,
@@ -137,3 +139,15 @@ class CabinetAdmin(SimpleHistoryAdmin):
             'room__building').all()
 
         return qs
+
+
+@admin.register(ExtensionBox)
+class ExtensionBoxAdmin(SimpleHistoryAdmin):
+    form = ExtensionBoxForm
+
+    search_fields = [
+        '=box_number',
+    ]
+    list_filter = (
+        'location__room__building',
+    )
