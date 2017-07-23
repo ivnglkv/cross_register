@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 19.07.2017
+Date: 23.07.2017
 """
 
 from django.forms import ModelForm
@@ -16,6 +16,7 @@ from .fields import (
 from .models import (
     Building,
     Cabinet,
+    ExtensionBox,
     Location,
     PBX,
     PBXPort,
@@ -182,4 +183,25 @@ class CabinetForm(ModelForm):
         fields = [
             'room',
             'number',
+        ]
+
+
+class ExtensionBoxForm(ModelForm):
+    location = ModelChosenField(
+        label='Расположение',
+        queryset=Location.objects.filter(
+            Q(room__isnull=False) &
+            Q(room__pbxroom__isnull=True)
+        ).prefetch_related('room__building').all()
+    )
+    source = CrosspointField(label='Откуда приходит',
+                             required=False)
+
+    class Meta:
+        model = ExtensionBox
+        fields = [
+            'location',
+            'source',
+            'box_number',
+            'pair_number',
         ]

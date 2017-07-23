@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 21.07.2017
+Date: 23.07.2017
 """
 
 import sys
@@ -386,6 +386,41 @@ class PunchBlock(CrossPoint):
     class Meta:
         verbose_name = 'плинт'
         verbose_name_plural = 'плинты'
+
+
+class ExtensionBox(CrossPoint):
+    """КРТ -- коробка распределительная телефонная
+
+    Выделена отдельно от плинтов, потому что:
+    1) находится не в шкафах, или станционных помещениях,
+    2) номер коробки+пары уникален для расположения источника, а не собственного
+
+    Attributes
+    ----------
+    box_number : CharField
+        Номер коробки, например "03а".
+    pair_number : PositiveSmallIntegerField
+        Номер пары в коробке
+    """
+
+    box_number = models.CharField(verbose_name='номер коробки',
+                                  max_length=5)
+    pair_number = models.PositiveSmallIntegerField(verbose_name='номер плинта')
+
+    class Meta:
+        verbose_name = 'КРТ'
+        verbose_name_plural = 'КРТ'
+
+    def __str__(self):
+        result = 'КРТ {} п.{}'.format(self.box_number, self.pair_number)
+
+        return result
+
+    def journal_str(self):
+        return str(self)
+
+    def changes_str(self):
+        return str(self)
 
 
 class Phone(CrossPoint):
