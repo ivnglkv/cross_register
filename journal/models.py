@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 21.07.2017
+Date: 23.07.2017
 """
 
 import sys
@@ -411,6 +411,17 @@ class ExtensionBox(CrossPoint):
     class Meta:
         verbose_name = 'КРТ'
         verbose_name_plural = 'КРТ'
+
+    def __str__(self):
+        result = 'КРТ {} п.{}'.format(self.box_number, self.pair_number)
+
+        return result
+
+    def journal_str(self):
+        return str(self)
+
+    def changes_str(self):
+        return str(self)
 
 
 class Phone(CrossPoint):
