@@ -75,6 +75,7 @@ class PhoneForm(ModelForm):
         fields = [
             'location',
             'source',
+            'jack',
         ]
 
 

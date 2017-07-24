@@ -424,6 +424,10 @@ class ExtensionBox(CrossPoint):
 
 
 class Phone(CrossPoint):
+    jack = models.PositiveSmallIntegerField(verbose_name='номер розетки',
+                                            blank=True,
+                                            null=True)
+
     def __str__(self):
         parent_port = self.main_source
 
