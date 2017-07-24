@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 23.07.2017
+Date: 24.07.2017
 """
 
 import sys
