@@ -435,26 +435,36 @@ class Phone(CrossPoint):
         if isinstance(parent_port, PBXPort):
             result = '{} ({})'.format(str(parent_port.subscriber_number),
                                       self.source.journal_str())
+            if self.jack:
+                result += ', роз. {}'.format(self.jack)
         else:
             result = 'Телефон'
 
         return result
 
     def journal_str(self):
-        res = '{}'
+        res = '{location}'
         subscribers = self.subscribers.all()
 
+        if self.jack:
+            res += ', роз. {jack}'
+
         if subscribers:
+
             res += ' ('
             subscribers_count = len(subscribers)
             for i, s in enumerate(subscribers):
                 if i == subscribers_count - 1:
                     res += str(s)
                 else:
-                    res += '{}, '.format(s)
+                    res += '{subscribers}, '.format(s)
             res += ')'
 
-        return res.format(self.location, subscribers)
+        res = res.format(location=self.location,
+                         jack=self.jack,
+                         subscribers=subscribers)
+
+        return res
 
     def changes_str(self):
         return 'тел. {} ({})'.format(self, self.journal_str())
