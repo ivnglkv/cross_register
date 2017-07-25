@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 18.07.2017
+Date: 25.07.2017
 """
 
 import re
@@ -70,7 +70,7 @@ class CrosspointField(CharField):
                 except ObjectDoesNotExist:
                     pass
 
-        if not result and re.match(r'^\d{4}$', value):
+        if not result and re.match(r'^\d{3,7}$', value):
             phone_number = int(value)
 
             try:
