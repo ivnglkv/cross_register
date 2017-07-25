@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 24.07.2017
+Date: 25.07.2017
 """
 
 import sys
@@ -185,8 +185,8 @@ class CrossPoint(BaseHistoryTrackerModel, PolymorphicModel):
             self.main_source = self.source.main_source
             self.level = self.source.level + 1
         else:
-            # main_source, если его нету, должен будет быть выставлен
-            # в обработчике сигнала post_save на None
+            # main_source, если нет source, должен будет быть выставлен
+            # в обработчике сигнала post_save на self
             self.level = 0
 
         super().save(*args, **kwargs)

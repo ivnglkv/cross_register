@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 19.07.2017
+Date: 25.07.2017
 """
 
 from json import dumps
@@ -86,9 +86,10 @@ def autocreate_location(instance, created, **kwargs):
 def on_crosspoint_post_change(instance, **kwargs):
     if not kwargs.get('raw', False):
         created_or_deleted = kwargs.get('created', True)
-        created = kwargs.get('created', False)
 
-        if created and instance.main_source is None:
+        # При сохранении точки кросса с пустыми полями source и main_source
+        # надо main_source выставить в self
+        if instance.source is None and instance.main_source != instance:
             instance.main_source = instance
             instance.save_without_historical_record()
 
