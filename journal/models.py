@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 23.07.2017
+Date: 24.07.2017
 """
 
 import sys
@@ -424,6 +424,10 @@ class ExtensionBox(CrossPoint):
 
 
 class Phone(CrossPoint):
+    jack = models.PositiveSmallIntegerField(verbose_name='номер розетки',
+                                            blank=True,
+                                            null=True)
+
     def __str__(self):
         parent_port = self.main_source
 
@@ -431,26 +435,36 @@ class Phone(CrossPoint):
         if isinstance(parent_port, PBXPort):
             result = '{} ({})'.format(str(parent_port.subscriber_number),
                                       self.source.journal_str())
+            if self.jack:
+                result += ', роз. {}'.format(self.jack)
         else:
             result = 'Телефон'
 
         return result
 
     def journal_str(self):
-        res = '{}'
+        res = '{location}'
         subscribers = self.subscribers.all()
 
+        if self.jack:
+            res += ', роз. {jack}'
+
         if subscribers:
+
             res += ' ('
             subscribers_count = len(subscribers)
             for i, s in enumerate(subscribers):
                 if i == subscribers_count - 1:
                     res += str(s)
                 else:
-                    res += '{}, '.format(s)
+                    res += '{subscribers}, '.format(s)
             res += ')'
 
-        return res.format(self.location, subscribers)
+        res = res.format(location=self.location,
+                         jack=self.jack,
+                         subscribers=subscribers)
+
+        return res
 
     def changes_str(self):
         return 'тел. {} ({})'.format(self, self.journal_str())
