@@ -87,9 +87,9 @@ def on_crosspoint_post_change(instance, **kwargs):
     if not kwargs.get('raw', False):
         created_or_deleted = kwargs.get('created', True)
 
-        # При сохранении точки кросса с пустым полем source
+        # При сохранении точки кросса с пустыми полями source и main_source
         # надо main_source выставить в self
-        if instance.source is None:
+        if instance.source is None and instance.main_source != instance:
             instance.main_source = instance
             instance.save_without_historical_record()
 
