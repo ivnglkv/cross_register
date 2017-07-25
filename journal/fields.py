@@ -54,7 +54,8 @@ class CrosspointField(CharField):
             if match:
                 pb_type = pattern_type[1]
 
-                if match.group(pb_type.is_station_group) is not None:
+                if (pb_type.is_station_group is not None and
+                        match.group(pb_type.is_station_group) is not None):
                     pb_is_station = True
                 else:
                     pb_is_station = False
