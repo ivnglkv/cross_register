@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 25.07.2017
+Date: 26.07.2017
 """
 
 from django.apps import AppConfig
@@ -60,7 +60,7 @@ class JournalConfig(AppConfig):
         # Сигналы от точек кросса
         multiple_connect(pre_save, on_crosspoint_pre_change, crosspoints_classes)
         multiple_connect(post_save, on_crosspoint_post_change, ext_crosspoints_classes)
-        multiple_connect(pre_delete, on_crosspoint_post_change, crosspoints_classes)
+        multiple_connect(pre_delete, on_crosspoint_pre_change, crosspoints_classes)
         post_delete.connect(on_crosspoint_post_change, sender=CrossPoint)
 
         # Сигналы от расположений
