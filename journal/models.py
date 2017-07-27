@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 25.07.2017
+Date: 27.07.2017
 """
 
 import sys
@@ -457,7 +457,7 @@ class Phone(CrossPoint):
                 if i == subscribers_count - 1:
                     res += str(s)
                 else:
-                    res += '{subscribers}, '.format(s)
+                    res += '{subscribers}, '.format(subscribers=s)
             res += ')'
 
         res = res.format(location=self.location,
