@@ -109,7 +109,10 @@ class PBXForm(ModelForm):
         label='Расположение',
         queryset=Location.objects.filter(
             Q(cabinet__isnull=False) |
-            Q(room__pbxroom__isnull=False)),
+            Q(room__pbxroom__isnull=False)
+        ).prefetch_related(
+            'cabinet__room__building').prefetch_related(
+            'room__building'),
     )
 
     class Meta:
