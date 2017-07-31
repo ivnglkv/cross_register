@@ -18,7 +18,11 @@ class LocationsFilter(admin.SimpleListFilter):
 
         unique_locations_pks = qs.values_list('location').distinct()
 
-        unique_locations = Location.objects.filter(pk__in=unique_locations_pks)
+        unique_locations = Location.objects.filter(
+            pk__in=unique_locations_pks
+        ).prefetch_related(
+            'room').prefetch_related(
+            'cabinet__room__building')
 
         for location in unique_locations:
             yield (location.pk, location)
