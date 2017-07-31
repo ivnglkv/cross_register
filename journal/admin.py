@@ -115,6 +115,13 @@ class RoomAdmin(SimpleHistoryAdmin):
         'room',
     ]
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        qs = qs.prefetch_related('building')
+
+        return qs
+
 
 @admin.register(Subscriber)
 class SubscriberAdmin(SimpleHistoryAdmin):
