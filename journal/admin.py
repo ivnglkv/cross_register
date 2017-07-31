@@ -107,6 +107,13 @@ class PBXPortAdmin(SimpleHistoryAdmin):
         'description',
     )
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        qs = qs.prefetch_related('pbx')
+
+        return qs
+
 
 @admin.register(Room)
 class RoomAdmin(SimpleHistoryAdmin):
