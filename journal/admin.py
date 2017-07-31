@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 23.07.2017
+Date: 31.07.2017
 """
 
 from django.contrib import admin
@@ -67,7 +67,7 @@ class PunchBlockAdmin(SimpleHistoryAdmin):
             'main_source').prefetch_related(
             'location__cabinet').prefetch_related(
             'type').prefetch_related(
-            ).all()
+            )
 
         return qs
 
@@ -81,9 +81,8 @@ class PhoneAdmin(SimpleHistoryAdmin):
 
         qs = qs.prefetch_related(
             'main_source').prefetch_related(
-            'source').prefetch_related(
             'source__type').prefetch_related(
-            'source__location__cabinet').all()
+            'source__location__cabinet')
 
         return qs
 
@@ -108,6 +107,13 @@ class PBXPortAdmin(SimpleHistoryAdmin):
         'description',
     )
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        qs = qs.prefetch_related('pbx')
+
+        return qs
+
 
 @admin.register(Room)
 class RoomAdmin(SimpleHistoryAdmin):
@@ -115,6 +121,13 @@ class RoomAdmin(SimpleHistoryAdmin):
     search_fields = [
         'room',
     ]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        qs = qs.prefetch_related('building')
+
+        return qs
 
 
 @admin.register(Subscriber)
@@ -134,9 +147,7 @@ class CabinetAdmin(SimpleHistoryAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
 
-        qs = qs.prefetch_related(
-            'room').prefetch_related(
-            'room__building').all()
+        qs = qs.prefetch_related('room__building')
 
         return qs
 

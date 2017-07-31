@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 24.07.2017
+Date: 31.07.2017
 """
 
 from django.forms import ModelForm
@@ -38,7 +38,9 @@ class PunchBlockForm(ModelForm):
         label='Расположение',
         queryset=Location.objects.filter(
             Q(cabinet__isnull=False) |
-            Q(room__pbxroom__isnull=False)),
+            Q(room__pbxroom__isnull=False)).prefetch_related(
+            'room__building').prefetch_related(
+            'cabinet__room__building'),
     )
     source = CrosspointField(label='Откуда приходит',
                              required=False,
@@ -60,10 +62,7 @@ class PhoneForm(ModelForm):
         label='Расположение',
         queryset=Location.objects.filter(
             Q(room__isnull=False)).order_by('-id').prefetch_related(
-            'cabinet').prefetch_related(
-            'cabinet__room').prefetch_related(
             'cabinet__room__building').prefetch_related(
-            'room').prefetch_related(
             'room__building'),
     )
     source = CrosspointField(label='Откуда приходит',
@@ -110,7 +109,10 @@ class PBXForm(ModelForm):
         label='Расположение',
         queryset=Location.objects.filter(
             Q(cabinet__isnull=False) |
-            Q(room__pbxroom__isnull=False)),
+            Q(room__pbxroom__isnull=False)
+        ).prefetch_related(
+            'cabinet__room__building').prefetch_related(
+            'room__building'),
     )
 
     class Meta:
@@ -138,14 +140,17 @@ class RoomForm(ModelForm):
 
 
 class SubscriberForm(ModelForm):
+    phones_queryset = Phone.objects.filter(
+            source__punchblock__isnull=False).filter(
+            source__pbxport__isnull=False).prefetch_related(
+            'main_source').prefetch_related(
+            'source__type').prefetch_related(
+            'source__location__cabinet').prefetch_related(
+            'location__cabinet')
+
     phones = ModelMultipleChosenField(
         label='Телефоны',
-        queryset=Phone.objects.prefetch_related(
-            'main_source').prefetch_related(
-            'source').prefetch_related(
-            'source__location__cabinet').prefetch_related(
-            'source__type').prefetch_related(
-            'location__cabinet').all(),
+        queryset=phones_queryset,
         required=False,
     )
 
@@ -176,7 +181,7 @@ class CabinetForm(ModelForm):
     room = ModelChosenField(
         label='Расположение',
         queryset=Room.objects.prefetch_related(
-            'building').all(),
+            'building'),
     )
 
     class Meta:
@@ -193,7 +198,7 @@ class ExtensionBoxForm(ModelForm):
         queryset=Location.objects.filter(
             Q(room__isnull=False) &
             Q(room__pbxroom__isnull=True)
-        ).prefetch_related('room__building').all()
+        ).prefetch_related('room__building'),
     )
     source = CrosspointField(label='Откуда приходит',
                              required=False)
