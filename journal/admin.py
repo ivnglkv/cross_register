@@ -67,7 +67,7 @@ class PunchBlockAdmin(SimpleHistoryAdmin):
             'main_source').prefetch_related(
             'location__cabinet').prefetch_related(
             'type').prefetch_related(
-            ).all()
+            )
 
         return qs
 
@@ -81,9 +81,8 @@ class PhoneAdmin(SimpleHistoryAdmin):
 
         qs = qs.prefetch_related(
             'main_source').prefetch_related(
-            'source').prefetch_related(
             'source__type').prefetch_related(
-            'source__location__cabinet').all()
+            'source__location__cabinet')
 
         return qs
 
@@ -134,9 +133,7 @@ class CabinetAdmin(SimpleHistoryAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
 
-        qs = qs.prefetch_related(
-            'room').prefetch_related(
-            'room__building').all()
+        qs = qs.prefetch_related('room__building')
 
         return qs
 
