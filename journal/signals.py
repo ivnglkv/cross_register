@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 25.07.2017
+Date: 26.07.2017
 """
 
 from json import dumps
@@ -87,11 +87,15 @@ def on_crosspoint_post_change(instance, **kwargs):
     if not kwargs.get('raw', False):
         created_or_deleted = kwargs.get('created', True)
 
-        # При сохранении точки кросса с пустыми полями source и main_source
-        # надо main_source выставить в self
-        if instance.source is None and instance.main_source != instance:
-            instance.main_source = instance
-            instance.save_without_historical_record()
+        try:
+            # При сохранении точки кросса с пустыми полями source и main_source
+            # надо main_source выставить в self
+            if instance.source is None and instance.main_source != instance:
+                instance.main_source = instance
+                instance.save_without_historical_record()
+        except:
+            # Если объект был удален, ничего делать не надо
+            pass
 
         if not created_or_deleted:
             for destination in instance.destinations.all():
