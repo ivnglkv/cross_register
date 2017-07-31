@@ -141,8 +141,7 @@ class RoomForm(ModelForm):
 
 class SubscriberForm(ModelForm):
     phones_queryset = Phone.objects.filter(
-            source__punchblock__isnull=False).filter(
-            source__pbxport__isnull=False).prefetch_related(
+            source__punchblock__isnull=False).prefetch_related(
             'main_source').prefetch_related(
             'source__type').prefetch_related(
             'source__location__cabinet').prefetch_related(
