@@ -147,6 +147,7 @@ class SubscriberForm(ModelForm):
             'source__type').prefetch_related(
             'source__location__cabinet').prefetch_related(
             'location__cabinet')
+
     phones = ModelMultipleChosenField(
         label='Телефоны',
         queryset=phones_queryset,
