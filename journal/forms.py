@@ -140,14 +140,16 @@ class RoomForm(ModelForm):
 
 
 class SubscriberForm(ModelForm):
+    phones_queryset = Phone.objects.filter(
+            source__punchblock__isnull=False).filter(
+            source__pbxport__isnull=False).prefetch_related(
+            'main_source').prefetch_related(
+            'source__type').prefetch_related(
+            'source__location__cabinet').prefetch_related(
+            'location__cabinet')
     phones = ModelMultipleChosenField(
         label='Телефоны',
-        queryset=Phone.objects.prefetch_related(
-            'main_source').prefetch_related(
-            'source').prefetch_related(
-            'source__location__cabinet').prefetch_related(
-            'source__type').prefetch_related(
-            'location__cabinet').all(),
+        queryset=phones_queryset,
         required=False,
     )
 
