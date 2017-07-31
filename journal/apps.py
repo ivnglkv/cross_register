@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 26.07.2017
+Date: 31.07.2017
 """
 
 from django.apps import AppConfig
@@ -69,6 +69,7 @@ class JournalConfig(AppConfig):
         # Сигналы от абонента
         pre_save.connect(subscriber_pre_changed, sender=Subscriber)
         post_save.connect(subscriber_post_changed, sender=Subscriber)
+        pre_delete.connect(subscriber_pre_changed, sender=Subscriber)
         post_delete.connect(subscriber_post_changed, sender=Subscriber)
         m2m_changed.connect(subscriber_phones_changed, sender=Subscriber.phones.through)
 
