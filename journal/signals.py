@@ -33,6 +33,12 @@ def restore_json_path():
 
 
 def pbxport_post_save(instance, created, raw=False, **kwargs):
+    """Обработчик сигнала `post_save` объектов `PBXPort`
+
+    После создания нового порта полю `main_source` присваивается значение `self`,
+    а также записываются данные в поле json_path в объект `PBXPort` и соответствующий
+    ему объект `HistoricalPBXPort`
+    """
     if created and not raw:
         from .models import HistoricalPBXPort, PBXPort
         from .utils import (
@@ -46,17 +52,13 @@ def pbxport_post_save(instance, created, raw=False, **kwargs):
             instance_qs.update(main_source=instance)
 
         cp = get_crosspath(instance.pk)
-        instance.json_path = dumps(cp, cls=CrosspathPointEncoder)
-        instance.save()
+        json_cp = dumps(cp, cls=CrosspathPointEncoder)
+        instance_qs.update(json_path=json_cp)
 
         last_port_state = instance.history.values()[0]
-        last_saved_historical_port = HistoricalPBXPort.objects.get(pk=last_port_state['history_id'])
-        last_saved_historical_port.delete()
-
-        last_port_state = instance.history.values()[0]
-        last_saved_historical_port = HistoricalPBXPort.objects.get(pk=last_port_state['history_id'])
-        last_saved_historical_port.json_path = instance.json_path
-        last_saved_historical_port.save()
+        last_saved_historical_port_qs = HistoricalPBXPort.objects.filter(
+            pk=last_port_state['history_id'])
+        last_saved_historical_port_qs.update(json_path=json_cp)
 
 
 def on_crosspoint_pre_change(instance, raw=False, **kwargs):
