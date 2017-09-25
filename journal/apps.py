@@ -48,10 +48,6 @@ class JournalConfig(AppConfig):
             PunchBlock,
         ]
 
-        # По неизвестной мне причине, метод append в данном месте возвращает None
-        # В консоли всё хорошо
-        ext_crosspoints_classes = crosspoints_classes + [CrossPoint]
-
         locations_classes = [
             Cabinet,
             Room,
@@ -59,7 +55,7 @@ class JournalConfig(AppConfig):
 
         # Сигналы от точек кросса
         multiple_connect(pre_save, on_crosspoint_pre_change, crosspoints_classes)
-        multiple_connect(post_save, on_crosspoint_post_change, ext_crosspoints_classes)
+        multiple_connect(post_save, on_crosspoint_post_change, crosspoints_classes)
         multiple_connect(pre_delete, on_crosspoint_pre_change, crosspoints_classes)
         post_delete.connect(on_crosspoint_post_change, sender=CrossPoint)
 

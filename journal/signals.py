@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 26.07.2017
+Date: 25.09.2017
 """
 
 from json import dumps
@@ -11,8 +11,9 @@ INVALID_JSON_PATH_MARK = 'INVALID'
 
 
 def invalidate_json_path(pbx_port):
-    pbx_port.json_path = INVALID_JSON_PATH_MARK
-    pbx_port.save_without_historical_record()
+    from .models import PBXPort
+
+    PBXPort.objects.filter(pk=pbx_port.pk).update(json_path=INVALID_JSON_PATH_MARK)
 
 
 def get_parent_and_invalidate_json_path(crosspoint):
@@ -31,16 +32,18 @@ def restore_json_path():
         pbx_port.update_json()
 
 
-def pbxport_post_save(instance, created, **kwargs):
-    if created and not kwargs.get('raw', False):
-        from .models import HistoricalPBXPort
+def pbxport_post_save(instance, created, raw=False, **kwargs):
+    if created and not raw:
+        from .models import HistoricalPBXPort, PBXPort
         from .utils import (
             CrosspathPointEncoder,
             get_crosspath,
         )
 
-        instance.main_source = instance
-        instance.save_without_historical_record()
+        instance_qs = PBXPort.objects.filter(pk=instance.pk)
+
+        if not instance.main_source:
+            instance_qs.update(main_source=instance)
 
         cp = get_crosspath(instance.pk)
         instance.json_path = dumps(cp, cls=CrosspathPointEncoder)
@@ -56,10 +59,10 @@ def pbxport_post_save(instance, created, **kwargs):
         last_saved_historical_port.save()
 
 
-def on_crosspoint_pre_change(instance, **kwargs):
+def on_crosspoint_pre_change(instance, raw=False, **kwargs):
     from .models import CrossPoint
 
-    if not kwargs.get('raw', False):
+    if not raw:
         if instance.source is not None:
             get_parent_and_invalidate_json_path(instance.source)
 
@@ -70,8 +73,8 @@ def on_crosspoint_pre_change(instance, **kwargs):
             pass
 
 
-def autocreate_location(instance, created, **kwargs):
-    if created and not kwargs.get('raw', False):
+def autocreate_location(instance, created, raw=False, **kwargs):
+    if created and not raw:
         from .models import Cabinet, Location, Room
 
         new_location = Location()
@@ -83,29 +86,21 @@ def autocreate_location(instance, created, **kwargs):
         new_location.save()
 
 
-def on_crosspoint_post_change(instance, **kwargs):
-    if not kwargs.get('raw', False):
-        created_or_deleted = kwargs.get('created', True)
+def on_crosspoint_post_change(instance, created=False, raw=False, **kwargs):
+    """Обработчик сигналов post_save и post_delete объектов ExtensionBox, Phone, PunchBlock
 
-        try:
-            # При сохранении точки кросса с пустыми полями source и main_source
-            # надо main_source выставить в self
-            if instance.source is None and instance.main_source != instance:
-                instance.main_source = instance
-                instance.save_without_historical_record()
-        except:
-            # Если объект был удален, ничего делать не надо
-            pass
+    После сохранения нового объекта без источника, выставляется значение поля
+    main_source = self
 
-        if not created_or_deleted:
-            for destination in instance.destinations.all():
-                destination.level = instance.level + 1
-                destination.save_without_historical_record()
+    Также после изменения и удаления обновляется json_path
+    """
+    from .models import CrossPoint
 
-        # ------------ISSUE------------
-        # Может ли возникнуть проблема, если не успеют сохраниться все точки из destinations
-        # перед этим местом?
-        # ------------ISSUE------------
+    if not raw:
+        if created and not instance.main_source:
+            instance_qs = CrossPoint.objects.filter(pk=instance.pk)
+            instance_qs.update(main_source=instance)
+
         restore_json_path()
 
 
@@ -125,13 +120,12 @@ def subscriber_phones_changed(instance, action, reverse, model, pk_set, **kwargs
         restore_json_path()
 
 
-def subscriber_pre_changed(instance, **kwargs):
-    if not kwargs.get('raw', False):
-        if instance.pk:
-            for phone in instance.phones.all():
-                get_parent_and_invalidate_json_path(phone)
+def subscriber_pre_changed(instance, raw=False, **kwargs):
+    if not raw and instance.pk:
+        for phone in instance.phones.all():
+            get_parent_and_invalidate_json_path(phone)
 
 
-def subscriber_post_changed(instance, **kwargs):
-    if not kwargs.get('raw', False):
+def subscriber_post_changed(instance, raw=False, **kwargs):
+    if not raw:
         restore_json_path()
