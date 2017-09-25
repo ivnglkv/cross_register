@@ -1,14 +1,13 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 27.07.2017
+Date: 25.09.2017
 """
 
-import sys
 from json import dumps, loads
 
 from django.db import models
-from django.db.models import Q
+from django.db.models import F, Q
 from django.core.exceptions import ValidationError
 from polymorphic.models import PolymorphicModel
 from simple_history.models import HistoricalRecords
@@ -148,15 +147,6 @@ class CrossPoint(BaseHistoryTrackerModel, PolymorphicModel):
                                    blank=True,
                                    editable=False)
 
-    def get_subclass(self):
-        """
-        Метод необходим для случаев, когда мы оперируем объектами класса
-        CrossPoint, но необходимо знать подкласс объекта, например, для
-        формирования строкового представления, специфичного для этого подкласса
-        """
-
-        return getattr(sys.modules[self.__module__], self.child_class)
-
     def get_parent(self):
         """
         Функция находит родительскую точку кросса для текущей точки,
@@ -171,28 +161,73 @@ class CrossPoint(BaseHistoryTrackerModel, PolymorphicModel):
             if self.source.pk == self.pk:
                 raise ValidationError({'source': 'Нельзя составлять кольцевые связи'})
 
-    def journal_str(self):
-        return self.get_subclass().objects.get(crosspoint_ptr=self.pk).journal_str()
-
-    def changes_str(self):
-        return self.get_subclass().objects.get(crosspoint_ptr=self.pk).changes_str()
-
     def save(self, *args, **kwargs):
-        if self.pk is None:
-            self.child_class = self.__class__.__name__
+        """Выполняется обновление полей level и main_source в объекте и его точках назначения
 
-        if self.child_class != 'PBXPort' and self.source is not None:
-            self.main_source = self.source.main_source
-            self.level = self.source.level + 1
+        В обработчике сигнала post_save выставляется значение поля main_source = self,
+        если объект был только что создан без источника
+        """
+        try:
+            old_self = CrossPoint.objects.get(pk=self.pk)
+        except:
+            old_self = None
+
+        new_main_source = self.main_source
+        new_level = self.level
+        new_level_change = 0
+
+        if not self.source and self.main_source != self:
+            new_main_source = self
+            new_level = 0
+            new_level_change = new_level - self.level
+        elif self.source and self.main_source != self.source.main_source:
+            new_main_source = self.source.main_source
+            new_level = self.source.level + 1
+            new_level_change = new_level - self.level
+        elif (old_self and
+                not isinstance(self, PBXPort) and
+                old_self.main_source == self.source.main_source and
+                old_self.source != self.source):
+            new_main_source = self.main_source
+            new_level = self.source.level + 1
+            new_level_change = new_level - self.level
+
+        if not self.pk and new_main_source == self:
+            # При создании main_source будет выставлен в post_save
+            pass
         else:
-            # main_source, если нет source, должен будет быть выставлен
-            # в обработчике сигнала post_save на self
-            self.level = 0
+            self.main_source = new_main_source
+        self.level = new_level
+
+        if old_self:
+            old_self.get_all_point_childs().update(main_source=new_main_source,
+                                                   level=F('level') + new_level_change)
 
         super().save(*args, **kwargs)
 
-    def __str__(self):
-        return(str(self.get_subclass().objects.get(crosspoint_ptr=self.pk)))
+    def get_all_point_childs(self, include_self=False):
+        """Рекурсивное получение всех точек, следующих за этой
+
+        Параметры
+        ---------
+        include_self: bool
+            Определяет, будет ли включена текущая точка в результирующий QuerySet
+
+        Возвращаемое значение
+        ---------------------
+        QuerySet
+            Запрос на получение всех точек, следующих за этой
+        """
+        res_qs = CrossPoint.objects.filter(pk=self.pk)
+
+        if not include_self:
+            res_qs = res_qs.exclude(pk=self.pk)
+
+        direct_childs_qs = self.destinations.all()
+        for child in direct_childs_qs:
+            res_qs |= child.get_all_point_childs(include_self=True)
+
+        return res_qs
 
 
 class PBX(BaseHistoryTrackerModel):
@@ -432,7 +467,7 @@ class Phone(CrossPoint):
         parent_port = self.main_source
 
         result = ''
-        if isinstance(parent_port, PBXPort):
+        if isinstance(parent_port, PBXPort) and isinstance(self.source, CrossPoint):
             result = '{} ({})'.format(str(parent_port.subscriber_number),
                                       self.source.journal_str())
             if self.jack:

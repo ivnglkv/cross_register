@@ -30,14 +30,12 @@ class CrosspathPoint:
             self.main_src_id = crosspoint['main_src_id']
             self.level = crosspoint['level']
 
-            cp_tmp = CrossPoint.objects.get(pk=self.crosspoint_id)
-            cp_subclass = cp_tmp.get_subclass()
+            cp = CrossPoint.objects.get(pk=self.crosspoint_id)
 
             self.admin_url = reverse(
-                'admin:journal_{}_change'.format(cp_subclass._meta.model_name),
+                'admin:journal_{}_change'.format(cp._meta.model_name),
                 args=(self.crosspoint_id,))
 
-            cp = cp_subclass.objects.get(pk=cp_tmp.pk)
             self.journal_str = cp.journal_str()
         else:
             pass
@@ -52,7 +50,7 @@ class CrosspathPoint:
         self.level = crosspoint.level
 
         self.admin_url = reverse(
-            'admin:journal_{}_change'.format(crosspoint.get_subclass()._meta.model_name),
+            'admin:journal_{}_change'.format(crosspoint._meta.model_name),
             args=(self.crosspoint_id,))
 
         self.journal_str = crosspoint.journal_str()
