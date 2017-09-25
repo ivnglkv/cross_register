@@ -120,8 +120,6 @@ class CrossPoint(BaseHistoryTrackerModel, PolymorphicModel):
         main_source (obj, optional): точка кросса, являющаяся "головной" для текущей. В большинстве
             случаев это будет PBXPort
         level(int): уровень расположения относительно main_source
-        child_class(str): название класса конкретной точки кросса
-            Выставляется автоматически: НЕ ПЕРЕОПРЕДЕЛЯТЬ!!!
     """
     location = models.ForeignKey(Location,
                                  verbose_name='расположение')
@@ -142,10 +140,6 @@ class CrossPoint(BaseHistoryTrackerModel, PolymorphicModel):
                                              default=0,
                                              editable=False,
                                              )
-    child_class = models.CharField(verbose_name='дочерний класс',
-                                   max_length=100,
-                                   blank=True,
-                                   editable=False)
 
     def get_parent(self):
         """
