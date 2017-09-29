@@ -380,10 +380,15 @@ class PunchBlock(CrossPoint):
     def __str__(self, add_phone=True):
         result = self.type.short_name
 
-        if self.is_station:
-            result += 'с{}'.format(self.number)
-        else:
-            result += '{}/{}'.format(self.number, self.location.cabinet.number)
+        try:
+            if self.is_station:
+                result += 'с{}'.format(self.number)
+            else:
+                result += '{}/{}'.format(self.number, self.location.cabinet.number)
+        except AttributeError:
+            # На случай, если только что была попытка создать не станционный плинт
+            # в станционном помещении и составить валидную строку нет возможности
+            result = '---'
 
         if add_phone:
             parent_port = self.main_source
