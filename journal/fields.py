@@ -24,10 +24,13 @@ class CrosspointField(CharField):
         result = ''
 
         try:
+            if type(value) != int:
+                raise AssertionError
+
             result = CrossPoint.objects.get(pk=value).journal_str()
         except ObjectDoesNotExist:
             result = super().prepare_value(value)
-        except ValueError:
+        except (ValueError, AssertionError):
             # При возникновении ошибки на этапе сохранения (например, ValidationError)
             # в поле будет передана строка с введенным значением
             result = value
