@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 25.07.2017
+Date: 11.10.2017
 """
 
 import re
@@ -13,13 +13,18 @@ from django.forms import (
     ModelMultipleChoiceField,
     Select,
     SelectMultiple,
-    ValidationError,
 )
 
 from .models import CrossPoint, PBXPort, PunchBlock, PunchBlockType
+from .validators import validate_crosspoint
 
 
 class CrosspointField(CharField):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.validators.append(validate_crosspoint)
+
     def prepare_value(self, value):
         result = ''
 
@@ -37,7 +42,7 @@ class CrosspointField(CharField):
 
         return result
 
-    def clean(self, value):
+    def to_python(self, value):
         result = None
 
         value = ''.join(value.split())
@@ -82,11 +87,14 @@ class CrosspointField(CharField):
             except ObjectDoesNotExist:
                 pass
 
-        if not result:
-            raise ValidationError('В качестве точки, откуда приходит линия, '
-                                  'указан несуществующий плинт или телефон')
-
         return result
+
+    def clean(self, value):
+        value = self.to_python(value)
+        self.validate(value)
+        self.run_validators(value)
+
+        return value
 
 
 class ChosenField(ChoiceField):
