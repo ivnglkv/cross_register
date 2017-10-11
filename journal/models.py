@@ -1,7 +1,7 @@
 """
 Release: 0.2.2
 Author: Golikov Ivan
-Date: 25.09.2017
+Date: 29.09.2017
 """
 
 from json import dumps, loads
@@ -380,10 +380,15 @@ class PunchBlock(CrossPoint):
     def __str__(self, add_phone=True):
         result = self.type.short_name
 
-        if self.is_station:
-            result += 'с{}'.format(self.number)
-        else:
-            result += '{}/{}'.format(self.number, self.location.cabinet.number)
+        try:
+            if self.is_station:
+                result += 'с{}'.format(self.number)
+            else:
+                result += '{}/{}'.format(self.number, self.location.cabinet.number)
+        except AttributeError:
+            # На случай, если только что была попытка создать не станционный плинт
+            # в станционном помещении и составить валидную строку нет возможности
+            result = '---'
 
         if add_phone:
             parent_port = self.main_source
@@ -411,6 +416,13 @@ class PunchBlock(CrossPoint):
             raise ValidationError(
                 '{} с таким номером и расположением уже существует!'.format(self.type)
             )
+
+        try:
+            if self.location.room.pbxroom and not self.is_station:
+                raise ValidationError(
+                    'Нельзя создать не станционный плинт в станционном помещении')
+        except AttributeError:
+            pass
 
     class Meta:
         verbose_name = 'плинт'
