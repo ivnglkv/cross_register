@@ -32,9 +32,9 @@
 
 ![Главная страница](http://storage6.static.itmages.ru/i/17/1116/h_1510861845_7222423_d41d8cd98f.png)
 
-![Детализация номеров по АТС](http://storage8.static.itmages.ru/i/17/1116/h_1510862414_4314140_3b0d987f83.png)
+[Детализация номеров по АТС](http://storage8.static.itmages.ru/i/17/1116/h_1510862414_4314140_3b0d987f83.png)
 
-![Админка](http://storage1.static.itmages.ru/i/17/1116/h_1510862835_4447809_39e9a57389.png)
+[Админка](http://storage1.static.itmages.ru/i/17/1116/h_1510862835_4447809_39e9a57389.png)
 
 # Установка
 
