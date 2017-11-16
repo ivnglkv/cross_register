@@ -36,6 +36,14 @@
 
 [Админка](http://storage1.static.itmages.ru/i/17/1116/h_1510862835_4447809_39e9a57389.png)
 
+[Поиск свободных плинтов в шкафу](http://storage9.static.itmages.ru/i/17/1116/h_1510865046_2035990_69ee9e919c.png)
+
+[Карточка телефона](http://storage6.static.itmages.ru/i/17/1116/h_1510865305_8984922_5715e06a3b.png)
+
+[Редактирование плинта](http://storage4.static.itmages.ru/i/17/1116/h_1510865579_9320002_7b5da9d689.png)
+
+[Страница изменения абонента](http://storage2.static.itmages.ru/i/17/1116/h_1510865508_8947930_ca76b29868.png)
+
 # Установка
 
 ## Зависимости
