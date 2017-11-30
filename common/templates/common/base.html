@@ -43,7 +43,7 @@
             </div>
           </form>
         </li>
-        <li style="padding-left: 20px">
+        <li class="top-menu-username">
           {% if request.user.is_authenticated %}
             {{ request.user.last_name }} {{ request.user.first_name }}
           {% else %}
