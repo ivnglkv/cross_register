@@ -43,18 +43,18 @@
             </div>
           </form>
         </li>
-        <li class="top-menu-username">
-          {% if request.user.is_authenticated %}
-            {{ request.user.last_name }} {{ request.user.first_name }}
-          {% else %}
-            <a href="{% url 'admin:login' %}?next={{ request.path }} ">Войти</a>
-          {% endif %}
-        </li>
-        <li>
-          {% if request.user.is_authenticated %}
+        {% if request.user.is_authenticated %}
+          <li class="top-menu-username">
+              {{ request.user.last_name }} {{ request.user.first_name }}
+          </li>
+          <li>
             <a href="{% url 'admin:logout' %}?next={{ request.path }}">Выход</a>
-          {% endif %}
-        </li>
+          </li>
+        {% else %}
+          <li>
+            <a href="{% url 'admin:login' %}?next={{ request.path }} ">Войти</a>
+          </li>
+        {% endif %}
       </ul>
     </div>
   </div>
