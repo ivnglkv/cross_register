@@ -37,3 +37,7 @@ html, body {
   min-height: calc(100% - 56px - 1rem);
   padding-top: 1rem;
 }
+
+.top-menu-username {
+  color: #555;
+}
