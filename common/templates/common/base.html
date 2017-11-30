@@ -45,7 +45,7 @@
         </li>
         <li style="padding-left: 20px">
           {% if request.user.is_authenticated %}
-            Вы вошли как {{ request.user.last_name }} {{ request.user.first_name }}
+            {{ request.user.last_name }} {{ request.user.first_name }}
           {% else %}
             <a href="/admin/login/?next={{ request.path }} ">Войти</a>
           {% endif %}
