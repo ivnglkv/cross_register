@@ -6,9 +6,12 @@ Date: 10.07.2017
 
 from json import loads
 from math import ceil
+from os import path
+import markdown
 import re
 
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -96,3 +99,35 @@ class PBXPortsView(ListView):
 
     def get_queryset(self, *args, **kwargs):
         return PBXPort.objects.filter(pbx=int(kwargs['pbx']))
+
+
+def help_view(request, page_name=None):
+    context = {}
+    template = 'journal/help.html'
+    help_page_names_mapping = {
+        'table_of_contents': ('Содержание', 'table_of_contents.md'),
+    }
+    default_help_page = help_page_names_mapping['table_of_contents']
+
+    if page_name and page_name in help_page_names_mapping:
+        requested_help_title, requested_help_filename = help_page_names_mapping[page_name]
+    else:
+        requested_help_title, requested_help_filename = default_help_page
+
+    requested_help_page = path.join(settings.JOURNAL_HELP_PAGES_DIR,
+                                    requested_help_filename)
+
+    try:
+        markdown_help_file = open(requested_help_page, mode="r", encoding="utf-8")
+
+        if markdown_help_file:
+            print('file is here')
+
+        context['title'] = requested_help_title
+        context['content'] = markdown.markdown(markdown_help_file.read())
+
+        print(markdown.markdown(markdown_help_file.read()))
+
+        return render(request, template, context)
+    except FileNotFoundError:
+        return Http404

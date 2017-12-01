@@ -138,3 +138,5 @@ DEBUG_TOOLBAR_PANELS = [
 DEBUG_TOOLBAR_CONFIG = {
     'JQUERY_URL': '',
 }
+
+JOURNAL_HELP_PAGES_DIR = os.path.join(BASE_DIR, 'journal', 'docs', 'help_pages')
