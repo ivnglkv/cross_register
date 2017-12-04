@@ -15,6 +15,11 @@
 <link rel="stylesheet" href="{% static 'common/js/vendor/chosen/chosen.min.css' %}">
 {% endblock %}
 
+{% block userlinks %}
+  <a href="{% url 'journal:help' %}">Справка</a> /
+  {{ block.super }}
+{% endblock userlinks %}
+
 {% block footer %}
 <script type="text/javascript">
   $(".chosen-select").parents(".form-row")
