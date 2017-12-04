@@ -120,9 +120,6 @@ def help_view(request, page_name=None):
     try:
         markdown_help_file = open(requested_help_page, mode="r", encoding="utf-8")
 
-        if markdown_help_file:
-            print('file is here')
-
         context['title'] = requested_help_title
         context['content'] = markdown.markdown(markdown_help_file.read())
 
