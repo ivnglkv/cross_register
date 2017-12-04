@@ -29,6 +29,8 @@
         {% if request.user.is_staff %}
           <li><a href="{% url 'admin:index' %}">Администрирование</a></li>
         {% endif %}
+
+        <li><a href="{% url 'journal:help' %}">Справка</a></li>
       </ul>
     </div>
     <div class="top-bar-right">
