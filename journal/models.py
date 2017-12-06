@@ -271,17 +271,10 @@ class PBXPortType(models.Model):
 
 
 class PBXPort(CrossPoint):
-    PORT_TYPES = (
-        ('sip', 'SIP'),
-        ('analog', 'Аналоговый'),
-        ('pri', 'E1'),
-    )
     pbx = models.ForeignKey(PBX, verbose_name='АТС')
     number = models.CharField(verbose_name='номер порта', max_length=20, blank=True)
-    type = models.CharField(verbose_name='тип порта',
-                            choices=PORT_TYPES,
-                            default='analog',
-                            max_length=10)
+    type = models.ForeignKey(PBXPortType,
+                             verbose_name='тип порта')
     subscriber_number = models.PositiveIntegerField(verbose_name='абонентский номер',
                                                     blank=True,
                                                     null=True,
@@ -295,7 +288,7 @@ class PBXPort(CrossPoint):
         return '{}: {} (порт {}, {})'.format(self.pbx,
                                              self.subscriber_number,
                                              self.number,
-                                             self.get_type_display())
+                                             self.type)
 
     def save(self, *args, **kwargs):
         self.location = self.pbx.location
