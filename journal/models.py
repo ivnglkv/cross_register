@@ -257,6 +257,19 @@ class PBX(BaseHistoryTrackerModel):
         verbose_name_plural = 'АТС'
 
 
+class PBXPortType(models.Model):
+    name = models.CharField(verbose_name='название',
+                            max_length=20,
+                            unique=True)
+
+    class Meta:
+        verbose_name = 'Тип порта АТС'
+        verbose_name_plural = 'Типы портов АТС'
+
+    def __str__(self):
+        return self.name
+
+
 class PBXPort(CrossPoint):
     PORT_TYPES = (
         ('sip', 'SIP'),
