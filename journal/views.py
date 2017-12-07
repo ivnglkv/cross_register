@@ -9,6 +9,7 @@ from math import ceil
 import re
 
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -96,3 +97,9 @@ class PBXPortsView(ListView):
 
     def get_queryset(self, *args, **kwargs):
         return PBXPort.objects.filter(pbx=int(kwargs['pbx']))
+
+
+def help_view(request, page_name=None):
+    help_file_name = 'user_manual.pdf'
+
+    return redirect(settings.MEDIA_URL + help_file_name)
