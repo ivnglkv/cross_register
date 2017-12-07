@@ -6,8 +6,6 @@ Date: 10.07.2017
 
 from json import loads
 from math import ceil
-from os import path
-import markdown
 import re
 
 from django.contrib.auth.models import User
@@ -102,29 +100,6 @@ class PBXPortsView(ListView):
 
 
 def help_view(request, page_name=None):
-    context = {}
-    template = 'journal/help.html'
-    help_page_names_mapping = {
-        'table_of_contents': ('Содержание', 'table_of_contents.md'),
-    }
-    default_help_page = help_page_names_mapping['table_of_contents']
+    help_file_name = 'user_manual.pdf'
 
-    if page_name and page_name in help_page_names_mapping:
-        requested_help_title, requested_help_filename = help_page_names_mapping[page_name]
-    else:
-        requested_help_title, requested_help_filename = default_help_page
-
-    requested_help_page = path.join(settings.JOURNAL_HELP_PAGES_DIR,
-                                    requested_help_filename)
-
-    try:
-        markdown_help_file = open(requested_help_page, mode="r", encoding="utf-8")
-
-        context['title'] = requested_help_title
-        context['content'] = markdown.markdown(markdown_help_file.read())
-
-        print(markdown.markdown(markdown_help_file.read()))
-
-        return render(request, template, context)
-    except FileNotFoundError:
-        return Http404
+    return redirect(settings.MEDIA_URL + help_file_name)
