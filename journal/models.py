@@ -257,18 +257,24 @@ class PBX(BaseHistoryTrackerModel):
         verbose_name_plural = 'АТС'
 
 
+class PBXPortType(models.Model):
+    name = models.CharField(verbose_name='название',
+                            max_length=20,
+                            unique=True)
+
+    class Meta:
+        verbose_name = 'Тип порта АТС'
+        verbose_name_plural = 'Типы портов АТС'
+
+    def __str__(self):
+        return self.name
+
+
 class PBXPort(CrossPoint):
-    PORT_TYPES = (
-        ('sip', 'SIP'),
-        ('analog', 'Аналоговый'),
-        ('pri', 'E1'),
-    )
     pbx = models.ForeignKey(PBX, verbose_name='АТС')
     number = models.CharField(verbose_name='номер порта', max_length=20, blank=True)
-    type = models.CharField(verbose_name='тип порта',
-                            choices=PORT_TYPES,
-                            default='analog',
-                            max_length=10)
+    type = models.ForeignKey(PBXPortType,
+                             verbose_name='тип порта')
     subscriber_number = models.PositiveIntegerField(verbose_name='абонентский номер',
                                                     blank=True,
                                                     null=True,
@@ -282,7 +288,7 @@ class PBXPort(CrossPoint):
         return '{}: {} (порт {}, {})'.format(self.pbx,
                                              self.subscriber_number,
                                              self.number,
-                                             self.get_type_display())
+                                             self.type)
 
     def save(self, *args, **kwargs):
         self.location = self.pbx.location
@@ -429,6 +435,20 @@ class PunchBlock(CrossPoint):
         verbose_name_plural = 'плинты'
 
 
+class EmptyType(models.Model):
+    """Пустая модель без полей
+
+    Пустая модель необходима для точек кросса, к которым может подключаться телефон
+    и которые не имеют ссылочного поля type. Большинство таких точек его имеет
+    и использует для строковых или иных представлений, а строковое представление
+    телефонов использует строковое представление родительской точки, поэтому при
+    отображении множества телефонов одновременно нужно использовать выражение
+    `prefetch_related(source__type)`, что означает, что у всех класов промежуточных
+    точек должно быть ссылочное поле type
+    """
+    pass
+
+
 class ExtensionBox(CrossPoint):
     """КРТ -- коробка распределительная телефонная
 
@@ -447,6 +467,7 @@ class ExtensionBox(CrossPoint):
     box_number = models.CharField(verbose_name='номер коробки',
                                   max_length=5)
     pair_number = models.PositiveSmallIntegerField(verbose_name='номер плинта')
+    type = models.ForeignKey(EmptyType, editable=False, null=True)
 
     class Meta:
         verbose_name = 'КРТ'

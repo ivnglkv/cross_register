@@ -20,6 +20,7 @@ from .models import (
     Location,
     PBX,
     PBXPort,
+    PBXPortType,
     PBXRoom,
     Phone,
     PunchBlock,
@@ -83,10 +84,9 @@ class PBXPortForm(ModelForm):
         label='АТС',
         queryset=PBX.objects.all(),
     )
-    type = ChosenField(
+    type = ModelChosenField(
         label='Тип',
-        choices=PBXPort.PORT_TYPES,
-        initial=PBXPort._meta.get_field('type').default,
+        queryset=PBXPortType.objects.all(),
     )
 
     class Meta:
@@ -140,8 +140,7 @@ class RoomForm(ModelForm):
 
 
 class SubscriberForm(ModelForm):
-    phones_queryset = Phone.objects.filter(
-            source__punchblock__isnull=False).prefetch_related(
+    phones_queryset = Phone.objects.prefetch_related(
             'main_source').prefetch_related(
             'source__type').prefetch_related(
             'source__location__cabinet').prefetch_related(
