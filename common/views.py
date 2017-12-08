@@ -1,9 +1,3 @@
-"""
-Release: 0.2.2
-Author: Golikov Ivan
-Date: 10.07.2017
-"""
-
 from django.views.generic.list import ListView
 
 from journal.models import PBX

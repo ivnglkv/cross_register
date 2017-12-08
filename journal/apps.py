@@ -1,9 +1,3 @@
-"""
-Release: 0.2.2
-Author: Golikov Ivan
-Date: 31.07.2017
-"""
-
 from django.apps import AppConfig
 from django.db.models.signals import (
     m2m_changed,

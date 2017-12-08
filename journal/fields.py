@@ -1,9 +1,3 @@
-"""
-Release: 0.2.2
-Author: Golikov Ivan
-Date: 11.10.2017
-"""
-
 import re
 
 from django.core.exceptions import ObjectDoesNotExist

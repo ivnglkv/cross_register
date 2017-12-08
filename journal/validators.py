@@ -1,9 +1,3 @@
-"""
-Release: 0.2.2
-Author: Golikov Ivan
-Date: 10.10.2017
-"""
-
 from django.core.exceptions import ValidationError
 
 from .models import CrossPoint

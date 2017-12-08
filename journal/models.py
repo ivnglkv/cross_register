@@ -1,9 +1,3 @@
-"""
-Release: 0.2.2
-Author: Golikov Ivan
-Date: 29.09.2017
-"""
-
 from json import dumps, loads
 
 from django.db import models

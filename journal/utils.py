@@ -1,9 +1,3 @@
-"""
-Release: 0.2.2
-Author: Golikov Ivan
-Date: 19.07.2017
-"""
-
 from django.urls import reverse
 from json import JSONEncoder, JSONDecoder, dumps
 

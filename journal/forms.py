@@ -1,9 +1,3 @@
-"""
-Release: 0.2.2
-Author: Golikov Ivan
-Date: 31.07.2017
-"""
-
 from django.forms import ModelForm
 from django.db.models import Q
 
