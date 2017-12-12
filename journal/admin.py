@@ -143,6 +143,9 @@ class RoomAdmin(SimpleHistoryAdmin):
 @admin.register(Subscriber)
 class SubscriberAdmin(SimpleHistoryAdmin):
     form = SubscriberForm
+    search_fields = (
+        'last_name',
+    )
 
 
 @admin.register(PBXRoom)
