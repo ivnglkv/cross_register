@@ -13,6 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+
+# This file is part of Cregister - cross register management software
+# Copyright (C) 2017  Golikov Ivan <ivnglkv@eml.cc>
+# GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 from django.conf import settings
 from django.conf.urls import include, url
 from django.conf.urls.static import static
