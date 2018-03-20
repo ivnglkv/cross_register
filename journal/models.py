@@ -502,11 +502,16 @@ class Phone(CrossPoint):
 
     def __str__(self):
         parent_port = self.main_source
+        parallel_phones_count = Phone.objects.filter(main_source=parent_port).count()
 
         result = ''
         if isinstance(parent_port, PBXPort) and isinstance(self.source, CrossPoint):
-            result = '{} ({})'.format(str(parent_port.subscriber_number),
-                                      self.source.journal_str())
+            if parallel_phones_count > 1:
+                result = '{} ({})'.format(str(parent_port.subscriber_number),
+                                          self.source.journal_str())
+            else:
+                result = '{}'.format(str(parent_port.subscriber_number))
+
             if self.jack:
                 result += ', роз. {}'.format(self.jack)
         else:
