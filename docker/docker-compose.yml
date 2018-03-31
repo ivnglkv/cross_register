@@ -1,0 +1,47 @@
+version: '2'
+
+services:
+
+  cr-source:
+    image: busybox
+    container_name: cr-source
+    volumes:
+      - ./../:$SRC_DIR
+
+  cr-python:
+    build:
+      context: ..
+      dockerfile: docker/python/dev/Dockerfile
+    image: ivnglkv/cr-python
+    container_name: cr-python
+    environment:
+      - DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+      - DB_HOST=cr-postgres
+      - DB_NAME=$DB_NAME
+      - DB_USER=$DB_USER
+      - DB_PASS=$DB_PASS
+      - SECRET_KEY=$SECRET_KEY
+    depends_on:
+      - cr-postgres
+    networks:
+      - cr-backend
+    ports:
+      - '$VIRTUAL_HOST_EXPOSE_PORT:$VIRTUAL_HOST_PORT'
+    volumes_from:
+      - cr-source
+    command: python manage.py runserver 0.0.0.0:$VIRTUAL_HOST_PORT
+
+  cr-postgres:
+    image: postgres:9.6
+    restart: always
+    container_name: cr-postgres
+    environment:
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_PASSWORD: $DB_PASS
+    networks:
+      - cr-backend
+    volumes:
+      - /opt/database/cross_register:/var/lib/postgresql/data
+
+networks:
+  cr-backend:
