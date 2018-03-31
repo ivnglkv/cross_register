@@ -15,7 +15,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ['DJANGO_CJ_SECRET_KEY']
+SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'cross_journals.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ['DJANGO_CJ_DB'],
-        'USER': os.environ['DJANGO_CJ_DB_USER'],
-        'PASSWORD': os.environ['DJANGO_CJ_DB_PASS'],
-        'HOST': os.environ['DJANGO_CJ_DB_HOST'],
+        'NAME': os.environ['DB_NAME'],
+        'USER': os.environ['DB_USER'],
+        'PASSWORD': os.environ['DB_PASS'],
+        'HOST': os.environ['DB_HOST'],
     }
 }
 
