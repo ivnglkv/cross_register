@@ -26,7 +26,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic import ListView
 
-from .models import PBXPort, PBX
+from .models import PBXPort, PBX, Subscriber, Phone
 from .utils import CrosspathPointDecoder
 
 
@@ -86,20 +86,41 @@ def subscriber_card_view(request, card):
 
     return render(request, template, context)
 
-
-def search(request):
-    result = None
-
+def search_view(request):
+    context = {}
+    template = 'journal/search.html'
     search_input = request.GET.get('search_input', None)
 
-    if search_input is not None and re.match('\d+', search_input):
-        get_object_or_404(PBXPort, subscriber_number=int(search_input))
-        result = redirect(reverse('journal:subscriber_card', args=(search_input,)))
+    if search_input is not None:
+        if re.match('\d+', search_input):
+            pbxport_set = PBXPort.objects.filter(subscriber_number = search_input)
+            number_crosspath = [
+                loads(pbxport.json_path, cls=CrosspathPointDecoder) for pbxport in pbxport_set
+            ]
+            context['number_crosspath'] = number_crosspath
+
+            phone_set = Phone.objects.filter(location__room__room__iregex = r'^[^0-9]*{0}[^0-9]*$'.format(search_input))
+            pbxport_set = PBXPort.objects.filter(main_source__in = phone_set.values('main_source'))
+            room_crosspath = [
+                loads(pbxport.json_path, cls=CrosspathPointDecoder) for pbxport in pbxport_set
+            ]
+            context['room_crosspath'] = room_crosspath
+        else:
+            subscriber_set = Subscriber.objects.order_by(
+                'last_name').filter(
+                last_name__icontains = search_input).prefetch_related(
+                'phones__main_source')
+
+            subscriber_crosspath = {}
+            for subscriber in subscriber_set:
+                for phone in subscriber.phones.all():
+                    path = loads(PBXPort.objects.get(main_source = phone.main_source).json_path, cls=CrosspathPointDecoder)
+                    subscriber_crosspath.setdefault(str(subscriber), []).append(path)
+            context['subscriber_crosspath'] = subscriber_crosspath
     else:
         raise Http404
 
-    return result
-
+    return render(request, template, context)
 
 class PBXPortsView(ListView):
     model = PBXPort
