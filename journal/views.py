@@ -93,14 +93,15 @@ def search_view(request):
 
     if search_input is not None:
         if re.match('\d+', search_input):
-            pbxport_set = PBXPort.objects.filter(subscriber_number = search_input)
+            pbxport_set = PBXPort.objects.filter(subscriber_number=search_input)
             number_crosspath = [
                 loads(pbxport.json_path, cls=CrosspathPointDecoder) for pbxport in pbxport_set
             ]
             context['number_crosspath'] = number_crosspath
 
-            phone_set = Phone.objects.filter(location__room__room__iregex = r'^[^0-9]*{0}[^0-9]*$'.format(search_input))
-            pbxport_set = PBXPort.objects.filter(main_source__in = phone_set.values('main_source'))
+            room_number_pattern = r'^\D*{}\D*$'.format(search_input)
+            phone_set = Phone.objects.filter(location__room__room__iregex=room_number_pattern)
+            pbxport_set = PBXPort.objects.filter(pk__in=phone_set.values('main_source'))
             room_crosspath = [
                 loads(pbxport.json_path, cls=CrosspathPointDecoder) for pbxport in pbxport_set
             ]
@@ -114,11 +115,9 @@ def search_view(request):
             subscriber_crosspath = {}
             for subscriber in subscriber_set:
                 for phone in subscriber.phones.all():
-                    path = loads(PBXPort.objects.get(main_source = phone.main_source).json_path, cls=CrosspathPointDecoder)
-                    subscriber_crosspath.setdefault(str(subscriber), []).append(path)
+                    path = loads(PBXPort.objects.get(pk=phone.main_source).json_path, cls=CrosspathPointDecoder)
+                    subscriber_crosspath.setdefault(subscriber, []).append(path)
             context['subscriber_crosspath'] = subscriber_crosspath
-    else:
-        raise Http404
 
     return render(request, template, context)
 

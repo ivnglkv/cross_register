@@ -1,6 +1,5 @@
 {% extends "common/base.html" %}
 
-{% load common_extras %}
 {% load journal_extras %}
 
 {% block title %}
@@ -30,9 +29,9 @@
         </table>
       {% endfor %}
     {% endif %}
-    {% for last_name, array in subscriber_crosspath.items %}
-    <h4>{{last_name}}:</h4>
-      {% for point in array %}
+    {% for subscriber, crosspath in subscriber_crosspath.items %}
+    <h4>{{ subscriber|str }}:</h4>
+      {% for point in crosspath %}
         <table class="crosspath">
         {% autoescape off %}
           {% get_point_path_table point 1 0 %}
