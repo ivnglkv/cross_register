@@ -91,7 +91,7 @@ def search_view(request):
     template = 'journal/search.html'
     search_input = request.GET.get('search_input', None)
 
-    if search_input is not None:
+    if search_input is not None and search_input != "":
         if re.match('\d+', search_input):
             pbxport_set = PBXPort.objects.filter(subscriber_number=search_input)
             number_crosspath = [
