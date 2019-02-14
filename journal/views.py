@@ -109,14 +109,17 @@ def search_view(request):
         else:
             subscriber_set = Subscriber.objects.order_by(
                 'last_name').filter(
-                last_name__icontains = search_input).prefetch_related(
-                'phones__main_source')
+                last_name__icontains=search_input)
 
             subscriber_crosspath = {}
             for subscriber in subscriber_set:
-                for phone in subscriber.phones.all():
-                    path = loads(PBXPort.objects.get(pk=phone.main_source).json_path, cls=CrosspathPointDecoder)
-                    subscriber_crosspath.setdefault(subscriber, []).append(path)
+                phone_set = subscriber.phones.all().values('main_source')
+                pbxport_set = PBXPort.objects.filter(pk__in=phone_set)
+                if pbxport_set:
+                    crosspath = [
+                        loads(pbxport.json_path, cls=CrosspathPointDecoder) for pbxport in pbxport_set
+                    ]
+                    subscriber_crosspath.setdefault(subscriber, []).extend(crosspath)
             context['subscriber_crosspath'] = subscriber_crosspath
 
     return render(request, template, context)
