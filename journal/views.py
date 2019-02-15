@@ -90,7 +90,7 @@ def search_view(request):
             pbxport_set = PBXPort.objects.filter(subscriber_number=search_input)
             context['number_crosspath'] = pbxport_to_crosspath(pbxport_set)
 
-            room_number_pattern = r'\D*{}\D*'.format(search_input)
+            room_number_pattern = r'(^|\D+){}(\D+|$)'.format(search_input)
             phone_set = Phone.objects.filter(location__room__room__iregex=room_number_pattern)
             pbxport_set = PBXPort.objects.filter(pk__in=phone_set.values('main_source'))
             context['room_crosspath'] = pbxport_to_crosspath(pbxport_set)
