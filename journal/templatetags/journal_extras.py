@@ -122,7 +122,3 @@ def recent_changes(items_count, **kwargs):
     return {
         'changelist': changelist,
     }
-
-@register.filter(name='str')
-def __str__(value):
-    return str(value)

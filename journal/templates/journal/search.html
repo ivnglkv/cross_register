@@ -30,7 +30,7 @@
       {% endfor %}
     {% endif %}
     {% for subscriber, crosspath in subscriber_crosspath.items %}
-    <h4>{{ subscriber|str }}:</h4>
+    <h5>{{ subscriber }}:</h5>
       {% for point in crosspath %}
         <table class="crosspath">
         {% autoescape off %}
