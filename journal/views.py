@@ -85,27 +85,31 @@ def search_view(request):
     template = 'journal/search.html'
     search_input = request.GET.get('search_input', '').strip()
 
-    if search_input != "":
-        if re.match('\d+', search_input):
-            pbxport_set = PBXPort.objects.filter(subscriber_number=search_input)
-            context['number_crosspath'] = pbxport_to_crosspath(pbxport_set)
+    if re.match(r'\d+', search_input):
+        pbxport_set = PBXPort.objects.filter(subscriber_number=search_input)
+        context['number_crosspath'] = pbxport_to_crosspath(pbxport_set)
 
-            room_number_pattern = r'(^|\D+){}(\D+|$)'.format(search_input)
-            phone_set = Phone.objects.filter(location__room__room__iregex=room_number_pattern)
-            pbxport_set = PBXPort.objects.filter(pk__in=phone_set.values('main_source'))
-            context['room_crosspath'] = pbxport_to_crosspath(pbxport_set)
-        else:
-            subscriber_set = Subscriber.objects.order_by(
-                'last_name').filter(
-                last_name__icontains=search_input)
+        room_number_pattern = r'(^|\D+){}(\D+|$)'.format(search_input)
+        phone_set = Phone.objects.filter(location__room__room__iregex=room_number_pattern)
+        pbxport_set = PBXPort.objects.filter(pk__in=phone_set.values('main_source'))
 
-            subscriber_crosspath = {}
-            for subscriber in subscriber_set:
-                phone_set = subscriber.phones.all().values('main_source')
-                pbxport_set = PBXPort.objects.filter(pk__in=phone_set)
-                if pbxport_set:
-                    subscriber_crosspath[subscriber] = pbxport_to_crosspath(pbxport_set)
-            context['subscriber_crosspath'] = subscriber_crosspath
+        context['room_crosspath'] = pbxport_to_crosspath(pbxport_set)
+
+    elif search_input != '':
+        subscriber_set = Subscriber.objects.order_by(
+            'last_name').filter(
+            last_name__icontains=search_input)
+
+        subscriber_crosspath = {}
+
+        for subscriber in subscriber_set:
+            phone_set = subscriber.phones.all().values('main_source')
+            pbxport_set = PBXPort.objects.filter(pk__in=phone_set)
+
+            if pbxport_set:
+                subscriber_crosspath[subscriber] = pbxport_to_crosspath(pbxport_set)
+
+        context['subscriber_crosspath'] = subscriber_crosspath
 
     return render(request, template, context)
 
