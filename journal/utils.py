@@ -15,7 +15,7 @@
 # along with Cregister.  If not, see <http://www.gnu.org/licenses/>.
 
 from django.urls import reverse
-from json import JSONEncoder, JSONDecoder, dumps
+from json import JSONEncoder, JSONDecoder, dumps, loads
 
 from .models import CrossPoint
 
@@ -195,3 +195,14 @@ class CrosspathPointDecoder(JSONDecoder):
             result = decoded_json
 
         return result
+
+
+def pbxport_to_crosspath(source):
+    if hasattr(source, '__iter__'):
+        result = [
+           loads(pbxport.json_path, cls=CrosspathPointDecoder) for pbxport in source
+        ]
+    else:
+        result = loads(source.json_path, cls=CrosspathPointDecoder)
+
+    return result

@@ -1,0 +1,43 @@
+{% extends "common/base.html" %}
+
+{% load journal_extras %}
+
+{% block title %}
+    Результаты поиска
+{% endblock title %}
+
+{% block page %}
+  {% if not number_crosspath and not room_crosspath and not subscriber_crosspath %}
+    <h3>Ничего не найдено</h3>
+  {% else %}
+    <h3>Результаты поиска</h3>
+    {% if number_crosspath %}
+      {% for point in number_crosspath %}
+        <table class="crosspath">
+        {% autoescape off %}
+          {% get_point_path_table point 1 0 %}
+        {% endautoescape %}
+        </table>
+      {% endfor %}
+    {% endif %}
+    {% if room_crosspath %}
+      {% for point in room_crosspath %}
+        <table class="crosspath">
+        {% autoescape off %}
+          {% get_point_path_table point 1 0 %}
+        {% endautoescape %}
+        </table>
+      {% endfor %}
+    {% endif %}
+    {% for subscriber, crosspath in subscriber_crosspath.items %}
+    <h5>{{ subscriber }}:</h5>
+      {% for point in crosspath %}
+        <table class="crosspath">
+        {% autoescape off %}
+          {% get_point_path_table point 1 0 %}
+        {% endautoescape %}
+        </table>
+      {% endfor %}
+    {% endfor %}
+  {% endif %}
+{% endblock %}

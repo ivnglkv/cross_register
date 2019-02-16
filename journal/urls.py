@@ -11,5 +11,5 @@ urlpatterns = [
     url(r'^help/?$', views.help_view, name='help'),
     url(r'^pbx/(?P<pbx>\d+)/page-(?P<page>\d+)$', views.pbx_ports_view, name='pbx_ports'),
     url(r'^subscriber_card/(?P<card>\d+)$', views.subscriber_card_view, name='subscriber_card'),
-    url(r'^search$', views.search, name='search'),
+    url(r'^search$', views.search_view, name='search'),
 ]

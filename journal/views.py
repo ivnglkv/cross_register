@@ -14,20 +14,17 @@
 # You should have received a copy of the GNU General Public License
 # along with Cregister.  If not, see <http://www.gnu.org/licenses/>.
 
-from json import loads
 from math import ceil
 import re
 
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
+from django.shortcuts import redirect, render
 from django.views.generic import ListView
 
-from .models import PBXPort, PBX
-from .utils import CrosspathPointDecoder
+from .models import PBXPort, PBX, Subscriber, Phone
+from .utils import pbxport_to_crosspath
 
 
 def pbx_ports_view(request, pbx, page):
@@ -56,11 +53,7 @@ def pbx_ports_view(request, pbx, page):
     context['last_element_index'] = last_element_index
     context['can_add_pbxport'] = request.user.has_perm('journal.add_pbxport')
 
-    crosspath = [
-        loads(point.json_path, cls=CrosspathPointDecoder) for point in pbxports_list
-    ]
-
-    context['crosspath'] = crosspath
+    context['crosspath'] = pbxport_to_crosspath(pbxports_list)
 
     return render(request, template, context)
 
@@ -72,7 +65,7 @@ def subscriber_card_view(request, card):
     pbxport = PBXPort.objects.get(subscriber_number=card)
 
     context['pbxport'] = pbxport
-    context['point'] = loads(pbxport.json_path, cls=CrosspathPointDecoder)
+    context['point'] = pbxport_to_crosspath(pbxport)
 
     last_pbxport_state = pbxport.history.values()[0]
 
@@ -87,18 +80,34 @@ def subscriber_card_view(request, card):
     return render(request, template, context)
 
 
-def search(request):
-    result = None
+def search_view(request):
+    context = {}
+    template = 'journal/search.html'
+    search_input = request.GET.get('search_input', '').strip()
 
-    search_input = request.GET.get('search_input', None)
+    if search_input != "":
+        if re.match('\d+', search_input):
+            pbxport_set = PBXPort.objects.filter(subscriber_number=search_input)
+            context['number_crosspath'] = pbxport_to_crosspath(pbxport_set)
 
-    if search_input is not None and re.match('\d+', search_input):
-        get_object_or_404(PBXPort, subscriber_number=int(search_input))
-        result = redirect(reverse('journal:subscriber_card', args=(search_input,)))
-    else:
-        raise Http404
+            room_number_pattern = r'(^|\D+){}(\D+|$)'.format(search_input)
+            phone_set = Phone.objects.filter(location__room__room__iregex=room_number_pattern)
+            pbxport_set = PBXPort.objects.filter(pk__in=phone_set.values('main_source'))
+            context['room_crosspath'] = pbxport_to_crosspath(pbxport_set)
+        else:
+            subscriber_set = Subscriber.objects.order_by(
+                'last_name').filter(
+                last_name__icontains=search_input)
 
-    return result
+            subscriber_crosspath = {}
+            for subscriber in subscriber_set:
+                phone_set = subscriber.phones.all().values('main_source')
+                pbxport_set = PBXPort.objects.filter(pk__in=phone_set)
+                if pbxport_set:
+                    subscriber_crosspath[subscriber] = pbxport_to_crosspath(pbxport_set)
+            context['subscriber_crosspath'] = subscriber_crosspath
+
+    return render(request, template, context)
 
 
 class PBXPortsView(ListView):
