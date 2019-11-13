@@ -30,19 +30,47 @@
 
 # Скриншоты
 
-![Главная страница](http://storage6.static.itmages.ru/i/17/1116/h_1510861845_7222423_d41d8cd98f.png)
+<details>
+<summary>Главная страница</summary>
 
-[Детализация номеров по АТС](http://storage8.static.itmages.ru/i/17/1116/h_1510862414_4314140_3b0d987f83.png)
+![Главная страница](docs/screenshots/main_page.png "Главная страница")
+</details>
 
-[Админка](http://storage1.static.itmages.ru/i/17/1116/h_1510862835_4447809_39e9a57389.png)
+<details>
+<summary>Детализация номеров по АТС</summary>
 
-[Поиск свободных плинтов в шкафу](http://storage9.static.itmages.ru/i/17/1116/h_1510865046_2035990_69ee9e919c.png)
+![Детализация номеров по АТС](docs/screenshots/pbx_page.png "Детализация номеров по АТС")
+</details>
 
-[Карточка телефона](http://storage6.static.itmages.ru/i/17/1116/h_1510865305_8984922_5715e06a3b.png)
+<details>
+<summary>Админка</summary>
 
-[Редактирование плинта](http://storage4.static.itmages.ru/i/17/1116/h_1510865579_9320002_7b5da9d689.png)
+![Админка](docs/screenshots/admin_page.png "Админка")
+</details>
 
-[Страница изменения абонента](http://storage2.static.itmages.ru/i/17/1116/h_1510865508_8947930_ca76b29868.png)
+<details>
+<summary>Поиск свободных плинтов в шкафу</summary>
+
+![Поиск свободных плинтов в шкафу](docs/screenshots/free_punchblocks_search.png "Поиск свободных плинтов в шкафу")
+</details>
+
+<details>
+<summary>Карточка телефона</summary>
+
+![Карточка телефона](docs/screenshots/phone_page.png "Карточка телефона")
+</details>
+
+<details>
+<summary>Редактирование плинта</summary>
+
+![Редактирование плинта](docs/screenshots/punchblock_edit.png "Редактирование плинта")
+</details>
+
+<details>
+<summary>Страница изменения абонента</summary>
+
+![Страница изменения абонента](docs/screenshots/subscriber_edit.png "Страница изменения абонента")
+</details>
 
 # Установка
 
