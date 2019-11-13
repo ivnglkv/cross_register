@@ -48,7 +48,11 @@
 ![Админка](docs/screenshots/admin_page.png "Админка")
 </details>
 
-[Поиск свободных плинтов в шкафу](http://storage9.static.itmages.ru/i/17/1116/h_1510865046_2035990_69ee9e919c.png)
+<details>
+<summary>Поиск свободных плинтов в шкафу</summary>
+
+![Поиск свободных плинтов в шкафу](docs/screenshots/free_punchblocks_search.png "Поиск свободных плинтов в шкафу")
+</details>
 
 [Карточка телефона](http://storage6.static.itmages.ru/i/17/1116/h_1510865305_8984922_5715e06a3b.png)
 
