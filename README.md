@@ -30,7 +30,11 @@
 
 # Скриншоты
 
-![Главная страница](http://storage6.static.itmages.ru/i/17/1116/h_1510861845_7222423_d41d8cd98f.png)
+<details>
+
+![Главная страница](docs/screenshots/main_page.png "Главная страница")
+
+</details>
 
 [Детализация номеров по АТС](http://storage8.static.itmages.ru/i/17/1116/h_1510862414_4314140_3b0d987f83.png)
 
