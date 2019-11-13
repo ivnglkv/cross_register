@@ -34,10 +34,13 @@
 <summary>Главная страница</summary>
 
 ![Главная страница](docs/screenshots/main_page.png "Главная страница")
-
 </details>
 
-[Детализация номеров по АТС](http://storage8.static.itmages.ru/i/17/1116/h_1510862414_4314140_3b0d987f83.png)
+<details>
+<summary>Детализация номеров по АТС</summary>
+
+[Детализация номеров по АТС](docs/screenshots/pbx_page.png "Детализация номеров по АТС")
+</details>
 
 [Админка](http://storage1.static.itmages.ru/i/17/1116/h_1510862835_4447809_39e9a57389.png)
 
