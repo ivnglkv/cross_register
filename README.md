@@ -42,7 +42,11 @@
 ![Детализация номеров по АТС](docs/screenshots/pbx_page.png "Детализация номеров по АТС")
 </details>
 
-[Админка](http://storage1.static.itmages.ru/i/17/1116/h_1510862835_4447809_39e9a57389.png)
+<details>
+<summary>Админка</summary>
+
+![Админка](docs/screenshots/admin_page.png "Админка")
+</details>
 
 [Поиск свободных плинтов в шкафу](http://storage9.static.itmages.ru/i/17/1116/h_1510865046_2035990_69ee9e919c.png)
 
