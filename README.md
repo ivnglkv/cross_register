@@ -31,6 +31,7 @@
 # Скриншоты
 
 <details>
+<summary>Главная страница</summary>
 
 ![Главная страница](docs/screenshots/main_page.png "Главная страница")
 
