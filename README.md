@@ -66,7 +66,11 @@
 ![Редактирование плинта](docs/screenshots/punchblock_edit.png "Редактирование плинта")
 </details>
 
-[Страница изменения абонента](http://storage2.static.itmages.ru/i/17/1116/h_1510865508_8947930_ca76b29868.png)
+<details>
+<summary>Страница изменения абонента</summary>
+
+![Страница изменения абонента](docs/screenshots/subscriber_edit.png "Страница изменения абонента")
+</details>
 
 # Установка
 
