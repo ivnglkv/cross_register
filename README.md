@@ -60,7 +60,11 @@
 ![Карточка телефона](docs/screenshots/phone_page.png "Карточка телефона")
 </details>
 
-[Редактирование плинта](http://storage4.static.itmages.ru/i/17/1116/h_1510865579_9320002_7b5da9d689.png)
+<details>
+<summary>Редактирование плинта</summary>
+
+![Редактирование плинта](docs/screenshots/punchblock_edit.png "Редактирование плинта")
+</details>
 
 [Страница изменения абонента](http://storage2.static.itmages.ru/i/17/1116/h_1510865508_8947930_ca76b29868.png)
 
