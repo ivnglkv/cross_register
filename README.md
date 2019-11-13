@@ -54,7 +54,11 @@
 ![Поиск свободных плинтов в шкафу](docs/screenshots/free_punchblocks_search.png "Поиск свободных плинтов в шкафу")
 </details>
 
-[Карточка телефона](http://storage6.static.itmages.ru/i/17/1116/h_1510865305_8984922_5715e06a3b.png)
+<details>
+<summary>Карточка телефона</summary>
+
+![Карточка телефона](docs/screenshots/phone_page.png "Карточка телефона")
+</details>
 
 [Редактирование плинта](http://storage4.static.itmages.ru/i/17/1116/h_1510865579_9320002_7b5da9d689.png)
 
